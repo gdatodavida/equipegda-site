@@ -38,7 +38,7 @@
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <label for="consulta-whatsapp" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">WhatsApp cadastrado</label>
-        <input id="consulta-whatsapp" name="consulta-whatsapp" type="tel" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+        <input id="consulta-whatsapp" name="consulta-whatsapp" type="tel" inputmode="numeric" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
       </div>
 
       <button id="btn-consultar" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none; opacity: 0.45; cursor: not-allowed;">Consultar →</button>
@@ -50,15 +50,6 @@
           <div id="result-icon" style="width: 52px; height: 52px; border-radius: 999px; background: rgba(255,219,0,0.12); border: 1.5px solid #FFDB00; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #FFDB00;">⏳</div>
           <h2 id="result-title" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; color: #F5F1EA;">Cadastro em análise</h2>
           <p id="result-text" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #D8D2C7; max-width: 400px;">Recebemos seus dados e a equipe de suporte está revisando. Assim que for aprovado, você recebe o convite pro grupo oficial no WhatsApp.</p>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C; text-align: center;">Pré-visualização — ver os três resultados possíveis:</span>
-          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-            <button id="btn-pendente" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Pendente</button>
-            <button id="btn-aprovado" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Aprovado</button>
-            <button id="btn-recusado" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Recusado</button>
-          </div>
         </div>
       </div>
     </div>
@@ -73,13 +64,13 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script>
 (function () {
   'use strict';
 
-  var ACTIVE = 'background-color:#FFDB00;color:#14110F;border-color:#FFDB00;';
-  var INACTIVE = 'background-color:#171310;color:#D8D2C7;';
-  var state = { whatsapp: '', showResult: false, result: 'pendente' };
+  var state = { whatsapp: '', showResult: false, loading: false, result: null };
 
   var resultMap = {
     pendente: {
@@ -96,15 +87,38 @@
       title: 'Cadastro não aprovado',
       text: 'Dessa vez seu cadastro não foi aprovado. Fale com o suporte pelo WhatsApp da equipe pra entender os próximos passos.',
       bg: 'rgba(220,90,90,0.12)', color: '#DC5A5A', icon: '×'
+    },
+    'nao-encontrado': {
+      title: 'Cadastro não encontrado',
+      text: 'Não achamos nenhum cadastro com esse WhatsApp. Confira se digitou certo ou faça seu cadastro pela página "Fazer parte da equipe".',
+      bg: 'rgba(245,241,234,0.08)', color: '#A89C8E', icon: '?'
+    },
+    erro: {
+      title: 'Não foi possível consultar agora',
+      text: 'Tivemos um problema pra buscar seu cadastro. Verifique sua internet e tente de novo em instantes.',
+      bg: 'rgba(220,90,90,0.12)', color: '#DC5A5A', icon: '!'
     }
   };
 
+  function maskPhone(raw) {
+    var d = (raw || '').replace(/\D/g, '').slice(0, 11);
+    if (!d.length) return '';
+    var ddd = d.slice(0, 2);
+    var rest = d.slice(2);
+    if (d.length <= 2) return '(' + ddd;
+    if (rest.length <= 5) return '(' + ddd + ') ' + rest;
+    return '(' + ddd + ') ' + rest.slice(0, 5) + '-' + rest.slice(5);
+  }
+
   function render() {
     var btn = document.getElementById('btn-consultar');
-    btn.style.opacity = state.whatsapp ? '1' : '0.45';
-    btn.style.cursor = state.whatsapp ? 'pointer' : 'not-allowed';
+    var podeConsultar = !!state.whatsapp && !state.loading;
+    btn.style.opacity = podeConsultar ? '1' : '0.45';
+    btn.style.cursor = podeConsultar ? 'pointer' : 'not-allowed';
+    btn.textContent = state.loading ? 'Consultando…' : 'Consultar →';
 
     document.getElementById('result-block').style.display = state.showResult ? 'flex' : 'none';
+    if (!state.result) return;
 
     var current = resultMap[state.result];
     document.getElementById('result-title').textContent = current.title;
@@ -114,21 +128,40 @@
     iconEl.style.borderColor = current.color;
     iconEl.style.color = current.color;
     iconEl.textContent = current.icon;
-
-    document.getElementById('btn-pendente').setAttribute('style', 'padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px;' + (state.result === 'pendente' ? ACTIVE : INACTIVE));
-    document.getElementById('btn-aprovado').setAttribute('style', 'padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px;' + (state.result === 'aprovado' ? ACTIVE : INACTIVE));
-    document.getElementById('btn-recusado').setAttribute('style', 'padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px;' + (state.result === 'recusado' ? ACTIVE : INACTIVE));
   }
 
-  document.getElementById('consulta-whatsapp').addEventListener('input', function (e) { state.whatsapp = e.target.value; render(); });
-  document.getElementById('btn-consultar').addEventListener('click', function () {
-    if (!state.whatsapp) return;
-    state.showResult = true;
+  document.getElementById('consulta-whatsapp').addEventListener('input', function (e) {
+    var masked = maskPhone(e.target.value);
+    state.whatsapp = masked;
+    e.target.value = masked;
     render();
   });
-  document.getElementById('btn-pendente').addEventListener('click', function () { state.result = 'pendente'; render(); });
-  document.getElementById('btn-aprovado').addEventListener('click', function () { state.result = 'aprovado'; render(); });
-  document.getElementById('btn-recusado').addEventListener('click', function () { state.result = 'recusado'; render(); });
+
+  document.getElementById('btn-consultar').addEventListener('click', function () {
+    if (!state.whatsapp || state.loading) return;
+    if (!window.gdaSupabase) {
+      state.showResult = true;
+      state.result = 'erro';
+      render();
+      return;
+    }
+    state.loading = true;
+    render();
+
+    window.gdaSupabase.rpc('consultar_status_cadastro', { p_whatsapp: state.whatsapp }).then(function (result) {
+      state.loading = false;
+      state.showResult = true;
+      if (result.error) {
+        console.error('[GDA] erro ao consultar cadastro:', result.error);
+        state.result = 'erro';
+      } else if (result.data && result.data.length) {
+        state.result = result.data[0].status;
+      } else {
+        state.result = 'nao-encontrado';
+      }
+      render();
+    });
+  });
 
   render();
 })();
