@@ -126,6 +126,8 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script>
 (function () {
   'use strict';
@@ -139,9 +141,12 @@
     item: get('item') === 'feminina' ? 'feminina' : 'masculina',
     piloto: get('piloto'),
     nome: get('nome'),
+    identificacao: get('identificacao'),
+    whatsapp: get('whatsapp'),
     concordo: false,
     pedidoEnviado: false,
-    pixCopiado: false
+    pixCopiado: false,
+    enviando: false
   };
 
   var CAMISA_PRICE = 109.90;
@@ -178,9 +183,10 @@
     document.getElementById('concordo-mark').textContent = state.concordo ? '✓' : '';
 
     var btnEnviar = document.getElementById('btn-enviar');
-    btnEnviar.style.opacity = state.concordo ? '1' : '0.45';
-    btnEnviar.style.cursor = state.concordo ? 'pointer' : 'not-allowed';
-    btnEnviar.textContent = state.pedidoEnviado ? 'Pedido enviado ✓' : 'Enviar pedido';
+    var podeEnviar = state.concordo && !state.enviando;
+    btnEnviar.style.opacity = podeEnviar || state.pedidoEnviado ? '1' : '0.45';
+    btnEnviar.style.cursor = podeEnviar ? 'pointer' : 'not-allowed';
+    btnEnviar.textContent = state.pedidoEnviado ? 'Pedido enviado ✓' : (state.enviando ? 'Enviando…' : 'Enviar pedido');
 
     document.getElementById('pedido-enviado-box').style.display = state.pedidoEnviado ? 'flex' : 'none';
     document.getElementById('btn-copiar-pix').textContent = state.pixCopiado ? 'Copiado ✓' : 'Copiar chave';
@@ -196,8 +202,7 @@
     render();
   });
 
-  document.getElementById('btn-enviar').addEventListener('click', function () {
-    if (!state.concordo) return;
+  function abrirWhatsappEMarcarEnviado() {
     var isFeminina = state.item === 'feminina';
     var isParcelado = state.paymentMethod === 'parcelado';
     var pilotoInfo = (state.nome || state.piloto)
@@ -216,7 +221,34 @@
     var url = 'https://wa.me/557331914501?text=' + encodeURIComponent(msg);
     try { window.open(url, '_blank'); } catch (err) {}
     state.pedidoEnviado = true;
+    state.enviando = false;
     render();
+  }
+
+  document.getElementById('btn-enviar').addEventListener('click', function () {
+    if (!state.concordo || state.enviando || state.pedidoEnviado) return;
+
+    if (!window.gdaSupabase) {
+      abrirWhatsappEMarcarEnviado();
+      return;
+    }
+
+    state.enviando = true;
+    render();
+
+    window.gdaSupabase.from('pedidos').insert({
+      identificacao: state.identificacao || null,
+      piloto: state.piloto || null,
+      whatsapp: state.whatsapp || null,
+      item: state.item,
+      nome_estampa: state.nome || null,
+      forma_pagamento: state.paymentMethod
+    }).then(function (result) {
+      if (result.error) {
+        console.error('[GDA] erro ao gravar pedido:', result.error);
+      }
+      abrirWhatsappEMarcarEnviado();
+    });
   });
 
   render();

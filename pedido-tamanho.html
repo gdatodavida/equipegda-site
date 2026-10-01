@@ -71,7 +71,9 @@
   var item = get('item') === 'feminina' ? 'feminina' : 'masculina';
   var piloto = get('piloto');
   var nome = get('nome');
-  var qs = 'item=' + item + '&piloto=' + encodeURIComponent(piloto) + '&nome=' + encodeURIComponent(nome);
+  var identificacao = get('identificacao');
+  var whatsapp = get('whatsapp');
+  var qs = 'item=' + item + '&piloto=' + encodeURIComponent(piloto) + '&nome=' + encodeURIComponent(nome) + '&identificacao=' + encodeURIComponent(identificacao) + '&whatsapp=' + encodeURIComponent(whatsapp);
   document.getElementById('link-continuar-qtd').href = 'pedido-quantidade.html?' + qs;
 })();
 </script>
