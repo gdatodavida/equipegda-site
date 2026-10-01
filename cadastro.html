@@ -184,6 +184,8 @@
 
         <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C;">Campos marcados com * são obrigatórios.</span>
 
+        <span id="cad-submit-error" style="display: none; font-family: 'Manrope', sans-serif; font-size: 13px; color: #DC5A5A;">Não foi possível enviar seu cadastro agora. Verifique sua internet e tente de novo.</span>
+
         <div style="display: flex; gap: 12px;">
           <button id="btn-voltar-s1" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 15px;">← Voltar</button>
           <button id="btn-continuar2" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Continuar →</button>
@@ -215,6 +217,8 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script>
 (function () {
   'use strict';
@@ -332,10 +336,51 @@
   });
   document.getElementById('btn-continuar2').addEventListener('click', function () {
     if (!window._cadState.allFilled2) return;
-    scrollToTop();
-    state.screen = 3;
-    render();
+    submitCadastro();
   });
+
+  function submitCadastro() {
+    var btn2 = document.getElementById('btn-continuar2');
+    var errEl = document.getElementById('cad-submit-error');
+    errEl.style.display = 'none';
+
+    if (!window.gdaSupabase) {
+      errEl.style.display = '';
+      return;
+    }
+
+    btn2.textContent = 'Enviando…';
+    btn2.disabled = true;
+
+    window.gdaSupabase.from('cadastros').insert({
+      nome: state.nome,
+      apelido: state.apelido || null,
+      whatsapp: state.whatsapp,
+      email: state.email,
+      nascimento: state.nascimento,
+      tipo_sanguineo: state.tipoSanguineo,
+      veiculo_tipo: state.veiculoTipo,
+      rastreador: state.rastreador || null,
+      moto_tipo: state.motoTipo || null,
+      rastreador_carro: state.rastreadorCarro || null,
+      carro_tipo: state.carroTipo || null,
+      protecao_veicular: state.protecaoVeicular,
+      seguro_vida: state.seguroVida,
+      plano_saude: state.planoSaude,
+      mei: state.mei
+    }).then(function (result) {
+      btn2.disabled = false;
+      btn2.textContent = 'Continuar →';
+      if (result.error) {
+        console.error('[GDA] erro ao gravar cadastro:', result.error);
+        errEl.style.display = '';
+        return;
+      }
+      scrollToTop();
+      state.screen = 3;
+      render();
+    });
+  }
   document.getElementById('header-back-2').addEventListener('click', function () {
     scrollToTop();
     state.screen = 1;

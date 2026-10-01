@@ -206,7 +206,9 @@
 
     var pilotoParam = encodeURIComponent(state.piloto || '');
     var nomeParam = encodeURIComponent(state.nome || '');
-    document.getElementById('link-continuar-tamanho').href = 'pedido-tamanho.html?item=' + state.item + '&piloto=' + pilotoParam + '&nome=' + nomeParam;
+    var identificacaoParam = encodeURIComponent(state.identificacao || '');
+    var whatsappParam = encodeURIComponent(state.whatsapp || '');
+    document.getElementById('link-continuar-tamanho').href = 'pedido-tamanho.html?item=' + state.item + '&piloto=' + pilotoParam + '&nome=' + nomeParam + '&identificacao=' + identificacaoParam + '&whatsapp=' + whatsappParam;
   }
 
   document.getElementById('identificacao').addEventListener('input', function (e) { state.identificacao = e.target.value; });
