@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consultar cadastro — Equipe GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  body{margin:0;background:#14110F;}
+  a{text-decoration:none;}
+  a:hover{opacity:0.85;}
+  input{outline:none;}
+  input:focus{border-color:#FFDB00;}
+  button{cursor:pointer;}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+
+  <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: auto; display: block;">
+    </a>
+    <a href="index.html" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">← Voltar ao portal</a>
+  </header>
+
+  <section style="position: relative; display: flex; align-items: center; padding: 56px 40px 36px; box-sizing: border-box; background: linear-gradient(160deg, #1D1712 0%, #14110F 48%, #100D0B 100%); overflow: hidden;">
+    <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
+    <div style="position: relative; max-width: 640px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Fazer parte da equipe</span>
+      <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 38px; line-height: 1.15; color: #F5F1EA;">Consultar meu cadastro</h1>
+      <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: #D8D2C7; max-width: 460px;">Digite o WhatsApp que você usou no cadastro pra ver se já foi aprovado.</p>
+    </div>
+  </section>
+
+  <section style="padding: 20px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+    <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; padding: 40px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label for="consulta-whatsapp" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">WhatsApp cadastrado</label>
+        <input id="consulta-whatsapp" name="consulta-whatsapp" type="tel" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+      </div>
+
+      <button id="btn-consultar" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none; opacity: 0.45; cursor: not-allowed;">Consultar →</button>
+
+      <div id="result-block" style="display: none; flex-direction: column; gap: 28px;">
+        <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
+
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 28px 20px; background: #171310; border-radius: 16px;">
+          <div id="result-icon" style="width: 52px; height: 52px; border-radius: 999px; background: rgba(255,219,0,0.12); border: 1.5px solid #FFDB00; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #FFDB00;">⏳</div>
+          <h2 id="result-title" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; color: #F5F1EA;">Cadastro em análise</h2>
+          <p id="result-text" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #D8D2C7; max-width: 400px;">Recebemos seus dados e a equipe de suporte está revisando. Assim que for aprovado, você recebe o convite pro grupo oficial no WhatsApp.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C; text-align: center;">Pré-visualização — ver os três resultados possíveis:</span>
+          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <button id="btn-pendente" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Pendente</button>
+            <button id="btn-aprovado" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Aprovado</button>
+            <button id="btn-recusado" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Recusado</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #56504A;">© 2026 Equipe GDA — GDA toda vida.</span>
+      <a href="index.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ACTIVE = 'background-color:#FFDB00;color:#14110F;border-color:#FFDB00;';
+  var INACTIVE = 'background-color:#171310;color:#D8D2C7;';
+  var state = { whatsapp: '', showResult: false, result: 'pendente' };
+
+  var resultMap = {
+    pendente: {
+      title: 'Cadastro em análise',
+      text: 'Recebemos seus dados e a equipe de suporte está revisando. Assim que for aprovado, você recebe o convite pro grupo oficial no WhatsApp.',
+      bg: 'rgba(255,219,0,0.12)', color: '#FFDB00', icon: '⏳'
+    },
+    aprovado: {
+      title: 'Cadastro aprovado!',
+      text: 'Você já faz parte da Equipe GDA. Fique de olho no WhatsApp — o convite pro grupo oficial chega em breve.',
+      bg: 'rgba(90,200,120,0.12)', color: '#5AC878', icon: '✓'
+    },
+    recusado: {
+      title: 'Cadastro não aprovado',
+      text: 'Dessa vez seu cadastro não foi aprovado. Fale com o suporte pelo WhatsApp da equipe pra entender os próximos passos.',
+      bg: 'rgba(220,90,90,0.12)', color: '#DC5A5A', icon: '×'
+    }
+  };
+
+  function render() {
+    var btn = document.getElementById('btn-consultar');
+    btn.style.opacity = state.whatsapp ? '1' : '0.45';
+    btn.style.cursor = state.whatsapp ? 'pointer' : 'not-allowed';
+
+    document.getElementById('result-block').style.display = state.showResult ? 'flex' : 'none';
+
+    var current = resultMap[state.result];
+    document.getElementById('result-title').textContent = current.title;
+    document.getElementById('result-text').textContent = current.text;
+    var iconEl = document.getElementById('result-icon');
+    iconEl.style.background = current.bg;
+    iconEl.style.borderColor = current.color;
+    iconEl.style.color = current.color;
+    iconEl.textContent = current.icon;
+
+    document.getElementById('btn-pendente').setAttribute('style', 'padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px;' + (state.result === 'pendente' ? ACTIVE : INACTIVE));
+    document.getElementById('btn-aprovado').setAttribute('style', 'padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px;' + (state.result === 'aprovado' ? ACTIVE : INACTIVE));
+    document.getElementById('btn-recusado').setAttribute('style', 'padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px;' + (state.result === 'recusado' ? ACTIVE : INACTIVE));
+  }
+
+  document.getElementById('consulta-whatsapp').addEventListener('input', function (e) { state.whatsapp = e.target.value; render(); });
+  document.getElementById('btn-consultar').addEventListener('click', function () {
+    if (!state.whatsapp) return;
+    state.showResult = true;
+    render();
+  });
+  document.getElementById('btn-pendente').addEventListener('click', function () { state.result = 'pendente'; render(); });
+  document.getElementById('btn-aprovado').addEventListener('click', function () { state.result = 'aprovado'; render(); });
+  document.getElementById('btn-recusado').addEventListener('click', function () { state.result = 'recusado'; render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>

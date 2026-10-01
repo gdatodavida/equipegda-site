@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadastro — Equipe GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  body{margin:0;background:#14110F;}
+  a{text-decoration:none;}
+  a:hover{opacity:0.85;}
+  input{outline:none;}
+  input:focus{border-color:#FFDB00;}
+  button{cursor:pointer;}
+  select{outline:none;}
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+
+  <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: auto; display: block;">
+    </a>
+    <a id="header-back-1" href="fazer-parte.html" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">← Voltar</a>
+    <button id="header-back-2" type="button" style="display: none; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7; background: none; border: none; padding: 0;">← Voltar</button>
+    <span id="header-back-3" style="display: none;"></span>
+  </header>
+
+  <div id="screen-1">
+    <section style="position: relative; display: flex; align-items: center; min-height: 260px; padding: 70px 40px 40px; box-sizing: border-box; background: linear-gradient(160deg, #1D1712 0%, #14110F 48%, #100D0B 100%); overflow: hidden;">
+      <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
+      <div style="position: relative; max-width: 640px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Fazer parte da equipe</span>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 38px; line-height: 1.15; color: #F5F1EA;">Cadastro de novo membro</h1>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: #D8D2C7; max-width: 460px;">Leva poucos minutos. Depois dessas etapas, você envia foto e documento e recebe seu número de piloto.</p>
+      </div>
+    </section>
+
+    <section style="padding: 20px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+      <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; padding: 40px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Passo 1 de 4</span>
+          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Seus dados pessoais</h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label for="cad-nome" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Nome completo *</label>
+          <input id="cad-nome" name="cad-nome" type="text" placeholder="Digite seu nome completo" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label for="cad-apelido" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Apelido <span style="color: #6B655C; font-weight: 500;">(opcional)</span></label>
+          <input id="cad-apelido" name="cad-apelido" type="text" placeholder="Como te chamam por aí" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="cad-whatsapp" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">WhatsApp *</label>
+            <input id="cad-whatsapp" name="cad-whatsapp" type="tel" inputmode="numeric" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+            <span id="whatsapp-error" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; color: #DC5A5A;"></span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="cad-email" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">E-mail *</label>
+            <input id="cad-email" name="cad-email" type="email" placeholder="seuemail@exemplo.com" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="cad-nascimento" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Data de nascimento *</label>
+            <input id="cad-nascimento" name="cad-nascimento" type="text" placeholder="DD/MM/AAAA" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="cad-tipo-sanguineo" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Tipo sanguíneo *</label>
+            <select id="cad-tipo-sanguineo" name="cad-tipo-sanguineo" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+              <option value="">Selecione uma opção</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="Não sei">Não sei</option>
+            </select>
+          </div>
+        </div>
+
+        <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C;">Campos marcados com * são obrigatórios.</span>
+
+        <button id="btn-continuar1" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Continuar →</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="screen-2" style="display: none;">
+    <section style="padding: 20px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+      <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 26px; padding: 40px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
+
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Passo 2 de 4</span>
+          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Perfil profissional</h2>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Trabalha com moto ou carro? *</span>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button data-pill="veiculoTipo:moto" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Moto</button>
+            <button data-pill="veiculoTipo:carro" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Carro</button>
+            <button data-pill="veiculoTipo:ambos" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Ambos</button>
+          </div>
+        </div>
+
+        <div id="section-moto" style="display: none; flex-direction: column; gap: 20px; padding: 18px; background: #171310; border: 1px solid rgba(245,241,234,0.06); border-radius: 14px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B655C;">Sobre a moto</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Usa rastreador na moto? *</span>
+            <div style="display: flex; gap: 8px;">
+              <button data-pill="rastreador:sim" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Sim</button>
+              <button data-pill="rastreador:nao" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Não</button>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Moto própria ou alugada? *</span>
+            <div style="display: flex; gap: 8px;">
+              <button data-pill="motoTipo:propria" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Própria</button>
+              <button data-pill="motoTipo:alugada" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Alugada</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-carro" style="display: none; flex-direction: column; gap: 20px; padding: 18px; background: #171310; border: 1px solid rgba(245,241,234,0.06); border-radius: 14px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B655C;">Sobre o carro</span>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Usa rastreador no carro? *</span>
+            <div style="display: flex; gap: 8px;">
+              <button data-pill="rastreadorCarro:sim" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Sim</button>
+              <button data-pill="rastreadorCarro:nao" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Não</button>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Carro próprio ou alugado? *</span>
+            <div style="display: flex; gap: 8px;">
+              <button data-pill="carroTipo:propria" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Próprio</button>
+              <button data-pill="carroTipo:alugada" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Alugado</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Possui proteção veicular? *</span>
+          <div style="display: flex; gap: 8px;">
+            <button data-pill="protecaoVeicular:sim" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Sim</button>
+            <button data-pill="protecaoVeicular:nao" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Não</button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Possui seguro de vida? *</span>
+          <div style="display: flex; gap: 8px;">
+            <button data-pill="seguroVida:sim" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Sim</button>
+            <button data-pill="seguroVida:nao" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Não</button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Possui plano de saúde? *</span>
+          <div style="display: flex; gap: 8px;">
+            <button data-pill="planoSaude:sim" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Sim</button>
+            <button data-pill="planoSaude:nao" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Não</button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">É MEI (Microempreendedor Individual)? *</span>
+          <div style="display: flex; gap: 8px;">
+            <button data-pill="mei:sim" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Sim</button>
+            <button data-pill="mei:nao" type="button" style="padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Não</button>
+          </div>
+        </div>
+
+        <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C;">Campos marcados com * são obrigatórios.</span>
+
+        <div style="display: flex; gap: 12px;">
+          <button id="btn-voltar-s1" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 15px;">← Voltar</button>
+          <button id="btn-continuar2" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Continuar →</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="screen-3" style="display: none;">
+    <section style="padding: 90px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+      <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; padding: 44px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
+        <div style="width: 56px; height: 56px; border-radius: 999px; background: rgba(255,219,0,0.12); border: 1.5px solid #FFDB00; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 24px; color: #FFDB00;">✓</div>
+        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; color: #F5F1EA;">Dados recebidos!</h2>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: #D8D2C7;">Nossa equipe de suporte vai revisar seus dados. Em breve adicionamos aqui a próxima etapa — envio de foto e documento, com atribuição automática do seu número de piloto e a chave Pix para o pagamento do adesivo.</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+          <button id="btn-voltar-s2" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">← Revisar meus dados</button>
+          <a href="consultar-cadastro.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Consultar meu cadastro →</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #56504A;">© 2026 Equipe GDA — GDA toda vida.</span>
+      <a href="index.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var state = {
+    screen: 1, nome: '', apelido: '', whatsapp: '', email: '', nascimento: '', tipoSanguineo: '',
+    veiculoTipo: '', protecaoVeicular: '', rastreador: '', seguroVida: '', planoSaude: '', mei: '', motoTipo: '',
+    rastreadorCarro: '', carroTipo: ''
+  };
+
+  var ACTIVE_STYLE = 'background-color:#FFDB00;color:#14110F;border-color:#FFDB00;';
+  var INACTIVE_STYLE = 'background-color:#171310;color:#D8D2C7;';
+  var BASE_PILL = 'padding: 10px 22px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 14px;';
+
+  function scrollToTop() {
+    try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (err) {
+      try { window.scrollTo(0, 0); } catch (err2) {}
+    }
+  }
+
+  function maskPhone(raw) {
+    var d = (raw || '').replace(/\D/g, '').slice(0, 11);
+    if (!d.length) return '';
+    var ddd = d.slice(0, 2);
+    var rest = d.slice(2);
+    if (d.length <= 2) return '(' + ddd;
+    if (rest.length <= 5) return '(' + ddd + ') ' + rest;
+    return '(' + ddd + ') ' + rest.slice(0, 5) + '-' + rest.slice(5);
+  }
+
+  var pillButtons = Array.prototype.slice.call(document.querySelectorAll('[data-pill]'));
+  pillButtons.forEach(function (btn) {
+    var parts = btn.getAttribute('data-pill').split(':');
+    var field = parts[0], value = parts[1];
+    btn.addEventListener('click', function () {
+      state[field] = value;
+      render();
+    });
+  });
+
+  function setPillStyles() {
+    pillButtons.forEach(function (btn) {
+      var parts = btn.getAttribute('data-pill').split(':');
+      var field = parts[0], value = parts[1];
+      var active = state[field] === value;
+      btn.setAttribute('style', BASE_PILL + (active ? ACTIVE_STYLE : INACTIVE_STYLE));
+    });
+  }
+
+  function render() {
+    document.getElementById('screen-1').style.display = state.screen === 1 ? '' : 'none';
+    document.getElementById('screen-2').style.display = state.screen === 2 ? '' : 'none';
+    document.getElementById('screen-3').style.display = state.screen === 3 ? '' : 'none';
+
+    document.getElementById('header-back-1').style.display = state.screen === 1 ? 'inline-flex' : 'none';
+    document.getElementById('header-back-2').style.display = state.screen === 2 ? 'inline-flex' : 'none';
+    document.getElementById('header-back-3').style.display = state.screen === 3 ? 'inline' : 'none';
+
+    var whatsappDigits = (state.whatsapp || '').replace(/\D/g, '');
+    var whatsappValid = whatsappDigits.length === 11 && whatsappDigits.charAt(2) === '9';
+    var whatsappTooLong = whatsappDigits.length > 11;
+    var whatsappWrongStart = whatsappDigits.length === 11 && whatsappDigits.charAt(2) !== '9';
+    var showWhatsappError = whatsappDigits.length > 0 && !whatsappValid;
+    var whatsappErrorText = whatsappTooLong
+      ? 'Número com dígitos a mais — confira o DDD + 9 dígitos'
+      : whatsappWrongStart
+      ? 'Confira o número — depois do DDD deve começar com 9'
+      : 'Número incompleto — falta DDD ou dígitos';
+
+    var whatsappInput = document.getElementById('cad-whatsapp');
+    whatsappInput.style.borderColor = showWhatsappError ? '#DC5A5A' : 'rgba(245,241,234,0.16)';
+    var errEl = document.getElementById('whatsapp-error');
+    errEl.style.display = showWhatsappError ? '' : 'none';
+    errEl.textContent = whatsappErrorText;
+
+    var allFilled = !!(state.nome && whatsappValid && state.email && state.nascimento && state.tipoSanguineo);
+    var btn1 = document.getElementById('btn-continuar1');
+    btn1.style.opacity = allFilled ? '1' : '0.45';
+    btn1.style.cursor = allFilled ? 'pointer' : 'not-allowed';
+
+    var showMoto = state.veiculoTipo === 'moto' || state.veiculoTipo === 'ambos';
+    var showCarro = state.veiculoTipo === 'carro' || state.veiculoTipo === 'ambos';
+    document.getElementById('section-moto').style.display = showMoto ? 'flex' : 'none';
+    document.getElementById('section-carro').style.display = showCarro ? 'flex' : 'none';
+
+    var motoOk = !showMoto || !!(state.rastreador && state.motoTipo);
+    var carroOk = !showCarro || !!(state.rastreadorCarro && state.carroTipo);
+    var allFilled2 = !!(state.veiculoTipo && motoOk && carroOk && state.protecaoVeicular && state.seguroVida && state.planoSaude && state.mei);
+    var btn2 = document.getElementById('btn-continuar2');
+    btn2.style.opacity = allFilled2 ? '1' : '0.45';
+    btn2.style.cursor = allFilled2 ? 'pointer' : 'not-allowed';
+
+    setPillStyles();
+
+    window._cadState = { state: state, allFilled: allFilled, allFilled2: allFilled2 };
+  }
+
+  document.getElementById('cad-nome').addEventListener('input', function (e) { state.nome = e.target.value; render(); });
+  document.getElementById('cad-apelido').addEventListener('input', function (e) { state.apelido = e.target.value; });
+  document.getElementById('cad-whatsapp').addEventListener('input', function (e) {
+    var masked = maskPhone(e.target.value);
+    state.whatsapp = masked;
+    e.target.value = masked;
+    render();
+  });
+  document.getElementById('cad-email').addEventListener('input', function (e) { state.email = e.target.value; render(); });
+  document.getElementById('cad-nascimento').addEventListener('input', function (e) { state.nascimento = e.target.value; render(); });
+  document.getElementById('cad-tipo-sanguineo').addEventListener('change', function (e) { state.tipoSanguineo = e.target.value; render(); });
+
+  document.getElementById('btn-continuar1').addEventListener('click', function () {
+    if (!window._cadState.allFilled) return;
+    scrollToTop();
+    state.screen = 2;
+    render();
+  });
+  document.getElementById('btn-continuar2').addEventListener('click', function () {
+    if (!window._cadState.allFilled2) return;
+    scrollToTop();
+    state.screen = 3;
+    render();
+  });
+  document.getElementById('header-back-2').addEventListener('click', function () {
+    scrollToTop();
+    state.screen = 1;
+    render();
+  });
+  document.getElementById('btn-voltar-s1').addEventListener('click', function () {
+    scrollToTop();
+    state.screen = 1;
+    render();
+  });
+  document.getElementById('btn-voltar-s2').addEventListener('click', function () {
+    scrollToTop();
+    state.screen = 2;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

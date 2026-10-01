@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equipe GDA — Portal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  body{margin:0;background:#14110F;}
+  a{text-decoration:none;}
+  a:hover{opacity:0.85;}
+  @keyframes gda-remessa-marquee{from{transform:translateX(-1584px);}to{transform:translateX(0);}}
+  @media (prefers-reduced-motion: reduce){.gda-marquee-track{animation:none !important;}}
+
+  @media (max-width: 760px) {
+    html { overflow-x: hidden; }
+    .gda-nav { display: none !important; }
+    .gda-header-inner { padding: 14px 20px !important; gap: 16px !important; justify-content: space-between !important; }
+    .gda-pill-cta { width: auto !important; height: auto !important; padding: 8px 14px !important; font-size: 12px !important; white-space: normal !important; text-align: center; line-height: 1.3 !important; }
+
+    #hero { padding: 88px 20px 52px !important; min-height: 0 !important; }
+    #hero h1 { width: auto !important; height: auto !important; font-size: 42px !important; }
+    #hero p { font-size: 16px !important; }
+    .gda-hero-ctas { width: auto !important; height: auto !important; font-size: 15px !important; flex-direction: column !important; align-items: stretch !important; }
+    .gda-hero-ctas > a { width: 100% !important; height: auto !important; box-sizing: border-box !important; justify-content: center !important; font-size: 16px !important; }
+
+    #destaques { padding: 40px 20px !important; }
+    #frentes { padding: 56px 20px !important; }
+    #sobre { padding: 56px 20px !important; }
+    #conquistas { padding: 56px 20px !important; }
+    #galeria { padding: 56px 20px !important; }
+    #fazer-parte { padding: 64px 20px !important; }
+    #contato { padding: 40px 20px 28px !important; }
+
+    .gda-grid-4, .gda-grid-3 { grid-template-columns: 1fr !important; }
+    .gda-grid-2 { grid-template-columns: 1fr !important; gap: 28px !important; }
+    .gda-grid-3-gal { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .gda-sobre-photo { height: 220px !important; }
+
+    .gda-container-pad { padding-left: 20px !important; padding-right: 20px !important; }
+    .gda-remessa-p { width: auto !important; font-size: 14px !important; line-height: 1.5 !important; }
+
+    #hero, #frentes, #remessa, #sobre, #galeria, #contato { scroll-margin-top: 110px !important; }
+
+    #remessa { padding: 48px 0 !important; }
+    .gda-remessa-head { gap: 8px !important; }
+    .gda-remessa-head h2 { font-size: 27px !important; line-height: 1.2 !important; }
+    .gda-remessa-marquee-wrap { margin: 26px 0 !important; }
+    .gda-remessa-cta { gap: 16px !important; }
+    .gda-remessa-btn { padding: 13px 30px !important; font-size: 15px !important; }
+  }
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+
+  <header style="position: sticky; top: 0; z-index: 50; width: 100%; box-sizing: border-box; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
+    <div class="gda-header-inner" style="max-width: 1240px; margin: 0 auto; padding: 16px 40px; box-sizing: border-box; display: flex; align-items: center; gap: 48px;">
+      <a href="#hero" style="display: flex; align-items: center; gap: 12px;">
+        <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block">
+      </a>
+
+      <a href="fazer-parte.html" style="display: none; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 999px; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; white-space: nowrap; background-color: #FFDB00; font-style: normal">Fazer parte da equipe</a><nav class="gda-nav" style="display: flex; align-items: center; gap: 30px; width: 590px; height: 50px"><a href="#sobre" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Quem somos</a>
+        <a href="#frentes" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Nossos Produtos</a>
+        <a href="#galeria" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Galeria</a>
+        <a href="#contato" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Contato</a>
+
+      </nav><a href="#remessa" class="gda-pill-cta" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px; background-color: rgb(255, 219, 0); color: rgb(20, 17, 15); font-family: Manrope, sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap; width: 202px; height: 32px">3ª Remessa: Camisa Oficial GDA</a>
+    </div>
+  </header>
+
+  <section id="hero" style="position: relative; display: flex; align-items: center; min-height: 620px; padding: 110px 40px 90px; box-sizing: border-box; background: #14110F; overflow: hidden">
+    <img src="img/4488fa8c5cd0b34b5e0ba45835f489f8.jpg" alt="Equipe GDA reunida" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%">
+    <div style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(29,23,18,0.93) 0%, rgba(20,17,15,0.91) 48%, rgba(16,13,11,0.96) 100%); opacity: 0.87"></div>
+    <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
+    <div style="position: relative; max-width: 1240px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 22px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">GDA - TODA VIDA</span>
+      <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 78px; line-height: 1.0; color: #ffdb00; max-width: 780px; width: 412px; height: 82px">EQUIPE GDA</h1>
+      <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 19px; line-height: 1.55; color: #D8D2C7; max-width: 560px">Portal oficial da Equipe GDA: Recrutamento, Loja oficial, encontros, Informações e muito mais — em um só lugar</p>
+      <div class="gda-hero-ctas" style="display: flex; align-items: center; gap: 16px; margin-top: 8px; flex-wrap: wrap; color: #ffdb00; font-weight: 800; width: 1323px; height: 103px; font-size: 108px; letter-spacing: 0px"><a href="fazer-parte.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 999px; color: rgb(20, 17, 15); font-family: Manrope, sans-serif; font-size: 28px; background-color: #ffdb00; width: 299px; height: 45px">Fazer parte da equipe&nbsp;</a>
+        <a href="#sobre" style="display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 999px; border: 1px solid rgba(245, 241, 234, 0.35); color: #f5f1ea; font-family: Manrope, sans-serif; font-size: 15px">Conhecer a equipe</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="destaques" style="padding: 64px 40px; background: #14110F; box-sizing: border-box;">
+    <div class="gda-grid-4" style="max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px;">
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 26px 22px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F5F1EA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1"></path><circle cx="10" cy="7" r="3.5"></circle><path d="M19.5 20v-1a4 4 0 0 0-2.7-3.8"></path><path d="M15.3 3.7a3.5 3.5 0 0 1 0 6.6"></path></svg>
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">Comunidade de verdade</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.5; color: #A89C8E;">Quilômetros rodados juntos, do primeiro passeio à confraternização de aniversário.</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 26px 22px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F5F1EA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="9" x2="19" y2="9"></line><line x1="5" y1="15" x2="19" y2="15"></line><line x1="10" y1="4" x2="8" y2="20"></line><line x1="16" y1="4" x2="14" y2="20"></line></svg>
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">Numeração exclusiva</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.5; color: #A89C8E;">Cada membro recebe seu número oficial da equipe ao ser aprovado.</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 26px 22px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F5F1EA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7L6 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">Loja oficial</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.5; color: #A89C8E;">Bonés, camisetas, adesivos e mais — direto da equipe pra você.</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; padding: 26px 22px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F5F1EA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"></rect><line x1="4" y1="10" x2="20" y2="10"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="16" y1="3" x2="16" y2="7"></line></svg>
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">Eventos e confraternizações</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.5; color: #A89C8E;">Encontros, viagens e a nossa festa de aniversário, sempre com data marcada.</span>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="frentes" style="padding: 84px 40px; background: #1A1512; box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px;">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">Tudo em um só lugar</span>
+        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 36px; color: #F5F1EA;">O que você encontra aqui</h2>
+      </div>
+      <div class="gda-grid-3" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+
+        <div style="display: flex; flex-direction: column; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 18px; overflow: hidden;">
+          <div style="height: 160px; display: flex; align-items: center; justify-content: center; background: #171310;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px;">
+            <h3 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 19px; color: #F5F1EA;">Recrutamento</h3>
+            <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.55; color: #A89C8E;">Quer rodar com a gente? Faça seu cadastro, receba seu número oficial e entre pro grupo.</p>
+            <a href="fazer-parte.html" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #ffdb00">Acessar recrutamento →</a>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 18px; overflow: hidden;">
+          <div style="height: 160px; display: flex; align-items: center; justify-content: center; background: #171310;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px;">
+            <h3 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 19px; color: #F5F1EA;">Loja &amp; catálogo</h3>
+            <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.55; color: #A89C8E;">Confira os produtos oficiais da equipe: bonés, camisetas, adesivos e mais.</p>
+            <a href="#" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #ffdb00">Ver produtos →</a>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 18px; overflow: hidden;">
+          <div style="height: 160px; display: flex; align-items: center; justify-content: center; background: #171310;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px; padding: 24px;">
+            <h3 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 19px; color: #F5F1EA;">Eventos</h3>
+            <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.55; color: #A89C8E;">Datas, confirmação de presença e tudo sobre os encontros e viagens da equipe.</p>
+            <a href="#" style="display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #ffdb00">Ver eventos →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="remessa" style="padding: 90px 0; background: #1A1512; box-sizing: border-box; overflow: hidden;">
+    <div class="gda-container-pad gda-remessa-head" style="max-width: 1240px; margin: 0 auto; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">3ª Remessa</span>
+      <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 34px; color: #F5F1EA;">Camisa Oficial de Piloto GDA</h2>
+    </div>
+
+    <div class="gda-remessa-marquee-wrap" style="width: 100%; overflow: hidden; margin: 40px 0;">
+      <div class="gda-marquee-track" style="display: flex; gap: 24px; width: max-content; animation: gda-remessa-marquee 50s linear infinite;">
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/430300a9818762fab4bd4a797cb08364.jpg" alt="Camisa Oficial de Piloto GDA — modelo mostrando o relógio" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/5d185eb6209efd651f2a0c0e090edeb7.jpg" alt="Camisa Oficial de Piloto GDA — masculina" style="width: 100%; height: 100%; object-fit: cover; object-position: center 4%; transform: scale(1.35); display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/a75b20899f7d6ab52bcdfd4d47b2b458.jpg" alt="Camisa Oficial de Piloto GDA — modelo braços cruzados" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/e30d0dd35a2f9e0df96a721191c8a27c.jpg" alt="Camisa Oficial de Piloto GDA — feminina" style="width: 100%; height: 100%; object-fit: cover; object-position: center 4%; transform: scale(1.35); display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/d969ff820c417e3e6d56ac68147aac94.jpg" alt="Camisa Oficial de Piloto GDA — modelo de boné" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/51e65b558f0a4e952ab22acf9d44c646.jpg" alt="Camisa Oficial de Piloto GDA — modelo feminina" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/430300a9818762fab4bd4a797cb08364.jpg" alt="Camisa Oficial de Piloto GDA — modelo mostrando o relógio" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/5d185eb6209efd651f2a0c0e090edeb7.jpg" alt="Camisa Oficial de Piloto GDA — masculina" style="width: 100%; height: 100%; object-fit: cover; object-position: center 4%; transform: scale(1.35); display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/a75b20899f7d6ab52bcdfd4d47b2b458.jpg" alt="Camisa Oficial de Piloto GDA — modelo braços cruzados" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/e30d0dd35a2f9e0df96a721191c8a27c.jpg" alt="Camisa Oficial de Piloto GDA — feminina" style="width: 100%; height: 100%; object-fit: cover; object-position: center 4%; transform: scale(1.35); display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/d969ff820c417e3e6d56ac68147aac94.jpg" alt="Camisa Oficial de Piloto GDA — modelo de boné" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div style="flex: 0 0 auto; width: 240px; height: 330px; border-radius: 14px; overflow: hidden; background: #211B17; border: 1px solid rgba(245,241,234,0.08);"><img src="img/51e65b558f0a4e952ab22acf9d44c646.jpg" alt="Camisa Oficial de Piloto GDA — modelo feminina" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+      </div>
+    </div>
+
+    <div class="gda-container-pad gda-remessa-cta" style="max-width: 640px; margin: 0 auto; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px;">
+      <p class="gda-remessa-p" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; width: 646px">Essa é a sua Camisa Oficial de Piloto GDA. Feita sob encomenda e sob medida para você.<br>(Exclusivo para membros que possuem Número do Piloto).<br>&nbsp;Peça já a sua!</p>
+      <a href="pedido-camisa.html" class="gda-remessa-btn" style="display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: 999px; background-color: #ffdb00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 16px;">Fazer meu pedido</a>
+    </div>
+  </section>
+
+  <section id="sobre" style="padding: 90px 40px; background: #14110F; box-sizing: border-box;">
+    <div class="gda-grid-2" style="max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;">
+      <div class="gda-sobre-photo" style="height: 420px; border-radius: 20px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #56504A;">[foto da equipe]</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">Quem somos</span>
+        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 34px; color: #F5F1EA; line-height: 1.2;">A história da Equipe GDA</h2>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-style: italic; font-size: 16px; line-height: 1.65; color: #9C9186;">[Conte aqui a história da Equipe GDA — quando o grupo nasceu, o que motivou a criação e o que "GDA toda vida" representa pra vocês. Esse é o espaço pra falar direto com quem tá pensando em entrar.]</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="conquistas" style="padding: 90px 40px; background: #1A1512; box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px;">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">Conquistas</span>
+        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 34px; color: #F5F1EA;">Números da Equipe GDA</h2>
+      </div>
+      <div class="gda-grid-3" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+
+        <div style="position: relative; min-height: 220px; border-radius: 18px; overflow: hidden; background: #221D19; display: flex; align-items: flex-end;">
+          <span style="position: absolute; top: 18px; left: 20px; font-family: 'Manrope', sans-serif; font-size: 12px; color: #4A453D;">[foto]</span>
+          <div style="position: relative; width: 100%; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 4px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
+            <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #FFDB00;">[X]</span>
+            <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #F5F1EA; text-transform: uppercase; letter-spacing: 0.04em;">Membros na ativa</span>
+          </div>
+        </div>
+
+        <div style="position: relative; min-height: 220px; border-radius: 18px; overflow: hidden; background: #221D19; display: flex; align-items: flex-end;">
+          <span style="position: absolute; top: 18px; left: 20px; font-family: 'Manrope', sans-serif; font-size: 12px; color: #4A453D;">[foto]</span>
+          <div style="position: relative; width: 100%; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 4px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
+            <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #FFDB00;">[X]</span>
+            <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #F5F1EA; text-transform: uppercase; letter-spacing: 0.04em;">Anos de estrada</span>
+          </div>
+        </div>
+
+        <div style="position: relative; min-height: 220px; border-radius: 18px; overflow: hidden; background: #221D19; display: flex; align-items: flex-end;">
+          <span style="position: absolute; top: 18px; left: 20px; font-family: 'Manrope', sans-serif; font-size: 12px; color: #4A453D;">[foto]</span>
+          <div style="position: relative; width: 100%; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 4px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
+            <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #FFDB00;">[X]</span>
+            <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #F5F1EA; text-transform: uppercase; letter-spacing: 0.04em;">Eventos realizados</span>
+          </div>
+        </div>
+
+      </div>
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #6B655C;">Números de exemplo — troque pelos números reais da equipe.</span>
+    </div>
+  </section>
+
+  <section id="galeria" style="padding: 90px 40px; background: #14110F; box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px;">
+      <div style="display: flex; flex-direction: column; gap: 10px; max-width: 640px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">Galeria</span>
+        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 34px; color: #F5F1EA;">A estrada em imagens</h2>
+      </div>
+      <div class="gda-grid-3-gal" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fazer-parte" style="padding: 110px 40px; background: linear-gradient(135deg, #221D19, #14110F); box-sizing: border-box; text-align: center;">
+    <div style="max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">Quer rodar com a gente?</span>
+      <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #F5F1EA">Faça parte da Equipe GDA</h2>
+      <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.55; color: #D8D2C7; max-width: 480px;">Preencha seu cadastro, receba seu número oficial e entre pro grupo oficial da equipe.</p>
+      <a href="fazer-parte.html" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 15px 32px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 16px;">Iniciar meu cadastro →</a>
+    </div>
+  </section>
+
+  <footer id="contato" style="padding: 56px 40px 40px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px;">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 260px;">
+          <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 30px; width: auto; display: block;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">GDA toda vida.</span>
+        </div>
+        <nav style="display: flex; gap: 28px; flex-wrap: wrap;">
+          <a href="#sobre" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">Quem somos</a>
+          <a href="#frentes" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">Loja &amp; recrutamento</a>
+          <a href="#galeria" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">Galeria</a>
+        </nav>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <a href="#" aria-label="Instagram da Equipe GDA" style="width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); display: flex; align-items: center; justify-content: center;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D8D2C7" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.7" fill="#D8D2C7" stroke="none"></circle></svg>
+          </a>
+          <a href="#" aria-label="WhatsApp da Equipe GDA" style="width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); display: flex; align-items: center; justify-content: center;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D8D2C7" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>
+          </a>
+          <a href="mailto:contato@equipegda.com.br" aria-label="E-mail da Equipe GDA" style="width: 38px; height: 38px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); display: flex; align-items: center; justify-content: center;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D8D2C7" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 6l9 7 9-7"></path></svg>
+          </a>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 24px; border-top: 1px solid rgba(245,241,234,0.06);">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #56504A;">© 2026 Equipe GDA — GDA toda vida.</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #56504A;">equipegda.com.br</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
