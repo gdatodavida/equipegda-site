@@ -36,16 +36,18 @@
         <div style="display: flex; align-items: center; gap: 12px;">
           <img id="item-shirt-image" src="img/8987fe5f2320481229de861ec2ce05df.jpg" alt="Foto do produto — camisa" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; object-position: center top; flex-shrink: 0; border: 1px solid rgba(245,241,234,0.12);">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1; min-width: 0;">
-            <span id="item-label" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #D8D2C7;">[exemplo] Camisa Oficial Masculina — tam. M</span>
+            <span id="item-label" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #D8D2C7;">Camisa Oficial Masculina</span>
             <span id="camisa-price" style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px; color: #F5F1EA; white-space: nowrap;">R$ 109,90</span>
           </div>
         </div>
-        <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img id="item-balaclava-image" src="img/587fac2d99c0d11c8a0b84a0ecf56408.jpg" alt="Foto do produto — balaclava" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(245,241,234,0.12);">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1; min-width: 0;">
-            <span style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #D8D2C7;">[exemplo] Balaclava oficial GDA</span>
-            <span id="balaclava-price" style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px; color: #F5F1EA; white-space: nowrap;">R$ 39,90</span>
+        <div id="balaclava-row-wrap" style="display: none; flex-direction: column; gap: 12px;">
+          <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <img id="item-balaclava-image" src="img/587fac2d99c0d11c8a0b84a0ecf56408.jpg" alt="Foto do produto — balaclava" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(245,241,234,0.12);">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1; min-width: 0;">
+              <span id="balaclava-label" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #D8D2C7;">Balaclava oficial GDA</span>
+              <span id="balaclava-price" style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px; color: #F5F1EA; white-space: nowrap;">R$ 39,90</span>
+            </div>
           </div>
         </div>
         <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
@@ -54,7 +56,6 @@
           <span id="total-price" style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; color: #FFDB00;">R$ 149,80</span>
         </div>
       </div>
-      <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; color: #6B655C; margin-top: -14px;">[resumo de exemplo — na versão funcional isso reflete o que a pessoa escolheu nos passos anteriores]</span>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Como você quer pagar?</span>
@@ -136,6 +137,11 @@
   try { params = new URLSearchParams(window.location.search); } catch (err) { params = null; }
   function get(key) { try { return (params && params.get(key)) || ''; } catch (err) { return ''; } }
 
+  function getInt(key, fallback) {
+    var n = parseInt(get(key), 10);
+    return isNaN(n) ? fallback : n;
+  }
+
   var state = {
     paymentMethod: 'vista',
     item: get('item') === 'feminina' ? 'feminina' : 'masculina',
@@ -143,6 +149,9 @@
     nome: get('nome'),
     identificacao: get('identificacao'),
     whatsapp: get('whatsapp'),
+    tamanho: get('tamanho'),
+    quantidadeCamisa: Math.max(1, getInt('quantidadeCamisa', 1)),
+    quantidadeBalaclava: Math.max(0, getInt('quantidadeBalaclava', 0)),
     concordo: false,
     pedidoEnviado: false,
     pixCopiado: false,
@@ -151,11 +160,20 @@
 
   var CAMISA_PRICE = 109.90;
   var BALACLAVA_PRICE = 39.90;
-  var TOTAL = CAMISA_PRICE + BALACLAVA_PRICE;
-  var INSTALLMENT = TOTAL / 2;
 
   function formatCurrency(value) {
     return 'R$ ' + value.toFixed(2).replace('.', ',');
+  }
+
+  function itemLabelText() {
+    var isFeminina = state.item === 'feminina';
+    return 'Camisa Oficial ' + (isFeminina ? 'Feminina' : 'Masculina') +
+      (state.tamanho ? ' — tam. ' + state.tamanho : '') +
+      (state.quantidadeCamisa > 1 ? ' (x' + state.quantidadeCamisa + ')' : '');
+  }
+
+  function balaclavaLabelText() {
+    return 'Balaclava oficial GDA' + (state.quantidadeBalaclava > 1 ? ' (x' + state.quantidadeBalaclava + ')' : '');
   }
 
   function render() {
@@ -163,15 +181,22 @@
     var isVista = state.paymentMethod === 'vista';
     var isParcelado = state.paymentMethod === 'parcelado';
 
-    document.getElementById('item-label').textContent = '[exemplo] Camisa Oficial ' + (isFeminina ? 'Feminina' : 'Masculina') + ' — tam. M';
+    var camisaTotal = CAMISA_PRICE * state.quantidadeCamisa;
+    var balaclavaTotal = BALACLAVA_PRICE * state.quantidadeBalaclava;
+    var total = camisaTotal + balaclavaTotal;
+    var installment = total / 2;
+
+    document.getElementById('item-label').textContent = itemLabelText();
     document.getElementById('item-shirt-image').src = isFeminina ? 'img/39f7aabc0fe9efb89670e406730a35cd.jpg' : 'img/8987fe5f2320481229de861ec2ce05df.jpg';
     document.getElementById('item-balaclava-image').src = isFeminina ? 'img/aeca852af46ba8de4f3bbd4aff0d9cb7.jpg' : 'img/587fac2d99c0d11c8a0b84a0ecf56408.jpg';
-    document.getElementById('camisa-price').textContent = formatCurrency(CAMISA_PRICE);
-    document.getElementById('balaclava-price').textContent = formatCurrency(BALACLAVA_PRICE);
-    document.getElementById('total-price').textContent = formatCurrency(TOTAL);
+    document.getElementById('camisa-price').textContent = formatCurrency(camisaTotal);
+    document.getElementById('balaclava-label').textContent = balaclavaLabelText();
+    document.getElementById('balaclava-price').textContent = formatCurrency(balaclavaTotal);
+    document.getElementById('balaclava-row-wrap').style.display = state.quantidadeBalaclava > 0 ? 'flex' : 'none';
+    document.getElementById('total-price').textContent = formatCurrency(total);
 
-    document.getElementById('vista-sub').textContent = formatCurrency(TOTAL) + ' via Pix ou Dinheiro em mãos';
-    document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(INSTALLMENT) + ' + ' + formatCurrency(INSTALLMENT) + ' até 16/10';
+    document.getElementById('vista-sub').textContent = formatCurrency(total) + ' via Pix ou Dinheiro em mãos';
+    document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(installment) + ' + ' + formatCurrency(installment) + ' até 16/10';
 
     document.getElementById('btn-vista').style.background = isVista ? 'rgba(255,219,0,0.1)' : '#171310';
     document.getElementById('btn-vista').style.border = isVista ? '2px solid #FFDB00' : '1px solid rgba(245,241,234,0.16)';
@@ -203,20 +228,23 @@
   });
 
   function abrirWhatsappEMarcarEnviado() {
-    var isFeminina = state.item === 'feminina';
     var isParcelado = state.paymentMethod === 'parcelado';
+    var camisaTotal = CAMISA_PRICE * state.quantidadeCamisa;
+    var balaclavaTotal = BALACLAVA_PRICE * state.quantidadeBalaclava;
+    var total = camisaTotal + balaclavaTotal;
+    var installment = total / 2;
     var pilotoInfo = (state.nome || state.piloto)
       ? ((state.nome || '') + (state.piloto ? ' (nº ' + state.piloto + ')' : ''))
       : '[nome/nº de piloto]';
     var paymentLabel = isParcelado
-      ? ('Pix parcelado — entrada ' + formatCurrency(INSTALLMENT) + ' agora + ' + formatCurrency(INSTALLMENT) + ' até 16/10')
-      : ('À vista — ' + formatCurrency(TOTAL));
+      ? ('Pix parcelado — entrada ' + formatCurrency(installment) + ' agora + ' + formatCurrency(installment) + ' até 16/10')
+      : ('À vista — ' + formatCurrency(total));
     var msg = 'Olá! Segue meu pedido da Camisa Oficial GDA:\n\n' +
       'Piloto: ' + pilotoInfo + '\n' +
-      'Item: [exemplo] Camisa Oficial ' + (isFeminina ? 'Feminina' : 'Masculina') + ' — tam. M\n' +
-      'Balaclava: [exemplo] Balaclava oficial GDA\n' +
+      'Item: ' + itemLabelText() + '\n' +
+      (state.quantidadeBalaclava > 0 ? ('Balaclava: ' + balaclavaLabelText() + '\n') : '') +
       'Pagamento: ' + paymentLabel + '\n' +
-      'Total: ' + formatCurrency(TOTAL) + '\n\n' +
+      'Total: ' + formatCurrency(total) + '\n\n' +
       'Vou enviar o comprovante aqui em seguida.';
     var url = 'https://wa.me/557331914501?text=' + encodeURIComponent(msg);
     try { window.open(url, '_blank'); } catch (err) {}
@@ -242,6 +270,9 @@
       whatsapp: state.whatsapp || null,
       item: state.item,
       nome_estampa: state.nome || null,
+      tamanho: state.tamanho || null,
+      quantidade_camisa: state.quantidadeCamisa,
+      quantidade_balaclava: state.quantidadeBalaclava,
       forma_pagamento: state.paymentMethod
     }).then(function (result) {
       if (result.error) {

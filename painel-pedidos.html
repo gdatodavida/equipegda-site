@@ -74,6 +74,16 @@
     return 'https://wa.me/' + digits;
   }
 
+  function itemHtml(p) {
+    var texto = (itemLabel[p.item] || escapeHtml(p.item));
+    if (p.tamanho) texto += ' — tam. ' + escapeHtml(p.tamanho);
+    if (p.quantidade_camisa && p.quantidade_camisa > 1) texto += ' (x' + p.quantidade_camisa + ')';
+    if (p.quantidade_balaclava && p.quantidade_balaclava > 0) {
+      texto += ' + Balaclava' + (p.quantidade_balaclava > 1 ? (' (x' + p.quantidade_balaclava + ')') : '');
+    }
+    return texto;
+  }
+
   function linhaHtml(p) {
     var nomeOuPiloto = p.identificacao || (p.piloto ? ('Piloto nº ' + p.piloto) : '—') + (p.nome_estampa ? (' — estampa: ' + p.nome_estampa) : '');
     var link = waLink(p.whatsapp);
@@ -85,7 +95,7 @@
       '<div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.8fr 0.9fr; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(245,241,234,0.06);">' +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + escapeHtml(nomeOuPiloto) + '</span>' +
         waHtml +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + (itemLabel[p.item] || escapeHtml(p.item)) + '</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + itemHtml(p) + '</span>' +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + (pagamentoLabel[p.forma_pagamento] || escapeHtml(p.forma_pagamento)) + '</span>' +
       '</div>'
     );

@@ -9,6 +9,11 @@
   body{margin:0;background:#14110F;}
   a{text-decoration:none;}
   a:hover{opacity:0.85;}
+  button{cursor:pointer;}
+  .gda-tamanho-grid{display:grid;grid-template-columns:repeat(5, minmax(0, 1fr));gap:10px;}
+  @media (max-width: 480px){
+    .gda-tamanho-grid{grid-template-columns:repeat(4, minmax(0, 1fr));row-gap:10px;}
+  }
 </style>
 </head>
 <body>
@@ -29,19 +34,19 @@
         <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Qual o tamanho?</h2>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px;">
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">PP</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">P</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 2px solid #FFDB00; background: rgba(255,219,0,0.1); font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 15px; color: #FFDB00;">M</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">GG</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">XG</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G1</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G2</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G3</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G4</span>
+      <div class="gda-tamanho-grid" id="grid-tamanho">
+        <button type="button" data-tamanho="PP" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">PP</button>
+        <button type="button" data-tamanho="P" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">P</button>
+        <button type="button" data-tamanho="M" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">M</button>
+        <button type="button" data-tamanho="G" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G</button>
+        <button type="button" data-tamanho="GG" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">GG</button>
+        <button type="button" data-tamanho="XG" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">XG</button>
+        <button type="button" data-tamanho="G1" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G1</button>
+        <button type="button" data-tamanho="G2" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G2</button>
+        <button type="button" data-tamanho="G3" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G3</button>
+        <button type="button" data-tamanho="G4" style="display: flex; align-items: center; justify-content: center; padding: 14px 0; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">G4</button>
       </div>
-      <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; color: #6B655C;">[M destacado é só um exemplo de como fica o tamanho selecionado ao tocar]</span>
+      <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; color: #6B655C;">Toque no tamanho desejado.</span>
 
       <div style="display: flex; flex-direction: column; gap: 10px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Tabela de medidas</span>
@@ -49,7 +54,7 @@
         <span style="font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C;">Meça uma peça parecida que você já tenha e compare com a coluna que faz mais sentido pra você (largura, altura ou manga) antes de escolher.</span>
       </div>
 
-      <a id="link-continuar-qtd" href="pedido-quantidade.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px;">Continuar →</a>
+      <a id="link-continuar-qtd" href="pedido-quantidade.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; opacity: 0.45; pointer-events: none;">Continuar →</a>
     </div>
   </section>
 
@@ -73,8 +78,39 @@
   var nome = get('nome');
   var identificacao = get('identificacao');
   var whatsapp = get('whatsapp');
-  var qs = 'item=' + item + '&piloto=' + encodeURIComponent(piloto) + '&nome=' + encodeURIComponent(nome) + '&identificacao=' + encodeURIComponent(identificacao) + '&whatsapp=' + encodeURIComponent(whatsapp);
-  document.getElementById('link-continuar-qtd').href = 'pedido-quantidade.html?' + qs;
+  var tamanho = '';
+
+  var link = document.getElementById('link-continuar-qtd');
+  var botoes = document.querySelectorAll('#grid-tamanho button');
+
+  function pillStyle(active) {
+    return active
+      ? { border: '2px solid #FFDB00', background: 'rgba(255,219,0,0.1)', color: '#FFDB00', fontWeight: '700' }
+      : { border: '1px solid rgba(245,241,234,0.16)', background: 'transparent', color: '#F5F1EA', fontWeight: '600' };
+  }
+
+  function render() {
+    botoes.forEach(function (btn) {
+      var s = pillStyle(btn.getAttribute('data-tamanho') === tamanho);
+      btn.style.border = s.border;
+      btn.style.background = s.background;
+      btn.style.color = s.color;
+      btn.style.fontWeight = s.fontWeight;
+    });
+    var qs = 'item=' + item + '&piloto=' + encodeURIComponent(piloto) + '&nome=' + encodeURIComponent(nome) + '&identificacao=' + encodeURIComponent(identificacao) + '&whatsapp=' + encodeURIComponent(whatsapp) + '&tamanho=' + encodeURIComponent(tamanho);
+    link.href = 'pedido-quantidade.html?' + qs;
+    link.style.opacity = tamanho ? '1' : '0.45';
+    link.style.pointerEvents = tamanho ? 'auto' : 'none';
+  }
+
+  botoes.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tamanho = btn.getAttribute('data-tamanho');
+      render();
+    });
+  });
+
+  render();
 })();
 </script>
 </body>

@@ -9,6 +9,12 @@
   body{margin:0;background:#14110F;}
   a{text-decoration:none;}
   a:hover{opacity:0.85;}
+  button{cursor:pointer;}
+  .gda-qtd-grid{display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:10px;}
+  @media (max-width: 480px){
+    .gda-qtd-grid{grid-template-columns:repeat(2, minmax(0, 1fr));row-gap:10px;}
+    .gda-qtd-grid button{font-size:12px !important;line-height:1.3 !important;white-space:normal !important;padding:10px 4px !important;}
+  }
 </style>
 </head>
 <body>
@@ -29,13 +35,13 @@
         <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Quantas camisas?</h2>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
-        <span style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 2px solid #FFDB00; background: rgba(255,219,0,0.1); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #FFDB00; text-align: center;">01 CAMISA</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">02 CAMISAS</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">03 CAMISAS</span>
-        <span style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">+ UNIDADES</span>
+      <div class="gda-qtd-grid" id="grid-camisa">
+        <button type="button" data-qtd="1" style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">01 CAMISA</button>
+        <button type="button" data-qtd="2" style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">02 CAMISAS</button>
+        <button type="button" data-qtd="3" style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">03 CAMISAS</button>
+        <button type="button" data-qtd="4" style="display: flex; align-items: center; justify-content: center; padding: 12px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #F5F1EA; text-align: center;">+ UNIDADES</button>
       </div>
-      <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; color: #6B655C; margin-top: -14px;">[01 camisa destacado é só um exemplo de seleção]</span>
+      <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; color: #6B655C; margin-top: -14px;">Toque na quantidade desejada.</span>
 
       <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
 
@@ -49,12 +55,13 @@
           <img src="img/84337e545f99fae3b3522a4e6c48c0d8.jpg" alt="Balaclava oficial GDA — frente e verso" style="width: 100%; aspect-ratio: 4/5; object-fit: cover; object-position: center; border-radius: 12px; border: 1px solid rgba(245,241,234,0.12); display: block;">
           <img src="img/12edcc1081f496373c14330e8db03f15.jpg" alt="Balaclava oficial GDA sendo usada" style="width: 100%; aspect-ratio: 4/5; object-fit: cover; object-position: center top; border-radius: 12px; border: 1px solid rgba(245,241,234,0.12); display: block;">
         </div>
-        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
-          <span style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">1 BALACLAVA</span>
-          <span style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">2 BALACLAVAS</span>
-          <span style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">3 BALACLAVAS</span>
-          <span style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">+ UNIDADES</span>
+        <div class="gda-qtd-grid" id="grid-balaclava">
+          <button type="button" data-qtd="1" style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">1 BALACLAVA</button>
+          <button type="button" data-qtd="2" style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">2 BALACLAVAS</button>
+          <button type="button" data-qtd="3" style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">3 BALACLAVAS</button>
+          <button type="button" data-qtd="4" style="display: flex; align-items: center; justify-content: center; padding: 11px 4px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px; color: #F5F1EA; text-align: center;">+ UNIDADES</button>
         </div>
+        <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; color: #6B655C;">Toque pra escolher. Toque de novo pra remover — a balaclava é opcional.</span>
       </div>
 
       <a id="link-continuar-resumo" href="pedido-resumo.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px;">Continuar →</a>
@@ -81,8 +88,61 @@
   var nome = get('nome');
   var identificacao = get('identificacao');
   var whatsapp = get('whatsapp');
-  var qs = 'item=' + item + '&piloto=' + encodeURIComponent(piloto) + '&nome=' + encodeURIComponent(nome) + '&identificacao=' + encodeURIComponent(identificacao) + '&whatsapp=' + encodeURIComponent(whatsapp);
-  document.getElementById('link-continuar-resumo').href = 'pedido-resumo.html?' + qs;
+  var tamanho = get('tamanho');
+
+  var quantidadeCamisa = 1;
+  var quantidadeBalaclava = 0;
+
+  var link = document.getElementById('link-continuar-resumo');
+  var botoesCamisa = document.querySelectorAll('#grid-camisa button');
+  var botoesBalaclava = document.querySelectorAll('#grid-balaclava button');
+
+  function pillStyle(active) {
+    return active
+      ? { border: '2px solid #FFDB00', background: 'rgba(255,219,0,0.1)', color: '#FFDB00' }
+      : { border: '1px solid rgba(245,241,234,0.16)', background: 'transparent', color: '#F5F1EA' };
+  }
+
+  function applyStyle(btn, active) {
+    var s = pillStyle(active);
+    btn.style.border = s.border;
+    btn.style.background = s.background;
+    btn.style.color = s.color;
+  }
+
+  function render() {
+    botoesCamisa.forEach(function (btn) {
+      var n = parseInt(btn.getAttribute('data-qtd'), 10);
+      applyStyle(btn, n >= 4 ? quantidadeCamisa >= 4 : quantidadeCamisa === n);
+    });
+    botoesBalaclava.forEach(function (btn) {
+      var n = parseInt(btn.getAttribute('data-qtd'), 10);
+      applyStyle(btn, n >= 4 ? quantidadeBalaclava >= 4 : quantidadeBalaclava === n);
+    });
+    var qs = 'item=' + item + '&piloto=' + encodeURIComponent(piloto) + '&nome=' + encodeURIComponent(nome) +
+      '&identificacao=' + encodeURIComponent(identificacao) + '&whatsapp=' + encodeURIComponent(whatsapp) +
+      '&tamanho=' + encodeURIComponent(tamanho) + '&quantidadeCamisa=' + quantidadeCamisa + '&quantidadeBalaclava=' + quantidadeBalaclava;
+    link.href = 'pedido-resumo.html?' + qs;
+  }
+
+  botoesCamisa.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      quantidadeCamisa = parseInt(btn.getAttribute('data-qtd'), 10);
+      render();
+    });
+  });
+
+  // não existe um botão explícito de "nenhuma balaclava" no design, então
+  // tocar de novo numa quantidade já selecionada desmarca ela
+  botoesBalaclava.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var n = parseInt(btn.getAttribute('data-qtd'), 10);
+      quantidadeBalaclava = quantidadeBalaclava === n ? 0 : n;
+      render();
+    });
+  });
+
+  render();
 })();
 </script>
 </body>
