@@ -100,6 +100,33 @@
     return 'https://wa.me/' + digits;
   }
 
+  function contatoEmergenciaHtml(nome, whatsapp, parentesco, numero) {
+    if (!nome && !whatsapp) return '';
+    return (
+      '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #D8D2C7;">' +
+          '<span style="color: #6B655C;">Contato ' + numero + ':</span> ' + escapeHtml(nome) +
+          (parentesco ? ' <span style="color: #6B655C;">(' + escapeHtml(parentesco) + ')</span>' : '') +
+        '</span>' +
+        (whatsapp
+          ? '<a href="' + waLink(whatsapp) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: #FFDB00;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + escapeHtml(whatsapp) + '</a>'
+          : '') +
+      '</div>'
+    );
+  }
+
+  function contatosEmergenciaHtml(c) {
+    var linhas = contatoEmergenciaHtml(c.contato_emergencia_1_nome, c.contato_emergencia_1_whatsapp, c.contato_emergencia_1_parentesco, 1) +
+      contatoEmergenciaHtml(c.contato_emergencia_2_nome, c.contato_emergencia_2_whatsapp, c.contato_emergencia_2_parentesco, 2);
+    if (!linhas) return '';
+    return (
+      '<div style="display: flex; flex-direction: column; gap: 10px;">' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Contatos de emergência</span>' +
+        '<div style="display: flex; flex-direction: column; gap: 8px;">' + linhas + '</div>' +
+      '</div>'
+    );
+  }
+
   function cardHtml(c) {
     var st = statusMap[c.status] || statusMap.pendente;
     var acoes = c.status === 'pendente'
@@ -128,6 +155,8 @@
           '</a>' +
           '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #A89C8E;">' + escapeHtml(c.email) + '</span>' +
         '</div>' +
+        '<div style="height: 1px; background: rgba(245,241,234,0.08);"></div>' +
+        contatosEmergenciaHtml(c) +
         '<div style="height: 1px; background: rgba(245,241,234,0.08);"></div>' +
         '<div style="display: flex; flex-direction: column; gap: 10px;">' +
           '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Perfil profissional</span>' +

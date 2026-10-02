@@ -70,7 +70,7 @@
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label for="cad-nascimento" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Data de nascimento *</label>
-            <input id="cad-nascimento" name="cad-nascimento" type="text" placeholder="DD/MM/AAAA" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+            <input id="cad-nascimento" name="cad-nascimento" type="text" inputmode="numeric" placeholder="DD/MM/AAAA" maxlength="10" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <label for="cad-tipo-sanguineo" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Tipo sanguíneo *</label>
@@ -86,6 +86,62 @@
               <option value="O-">O-</option>
               <option value="Não sei">Não sei</option>
             </select>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px; padding: 18px; background: #171310; border: 1px solid rgba(245,241,234,0.06); border-radius: 14px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B655C;">Contato de emergência 1</span>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="cad-emerg1-nome" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Nome completo *</label>
+            <input id="cad-emerg1-nome" name="cad-emerg1-nome" type="text" placeholder="Nome do contato" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label for="cad-emerg1-whatsapp" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">WhatsApp *</label>
+              <input id="cad-emerg1-whatsapp" name="cad-emerg1-whatsapp" type="tel" inputmode="numeric" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label for="cad-emerg1-parentesco" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Quem é essa pessoa? *</label>
+              <select id="cad-emerg1-parentesco" name="cad-emerg1-parentesco" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+                <option value="">Selecione uma opção</option>
+                <option value="Pai">Pai</option>
+                <option value="Mãe">Mãe</option>
+                <option value="Cônjuge/Companheiro(a)">Cônjuge/Companheiro(a)</option>
+                <option value="Filho(a)">Filho(a)</option>
+                <option value="Irmão(a)">Irmão(a)</option>
+                <option value="Avô/Avó">Avô/Avó</option>
+                <option value="Amigo(a)">Amigo(a)</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px; padding: 18px; background: #171310; border: 1px solid rgba(245,241,234,0.06); border-radius: 14px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B655C;">Contato de emergência 2 <span style="color: #4a453f; font-weight: 500; text-transform: none; letter-spacing: 0;">(opcional)</span></span>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="cad-emerg2-nome" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Nome completo</label>
+            <input id="cad-emerg2-nome" name="cad-emerg2-nome" type="text" placeholder="Nome do contato" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label for="cad-emerg2-whatsapp" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">WhatsApp</label>
+              <input id="cad-emerg2-whatsapp" name="cad-emerg2-whatsapp" type="tel" inputmode="numeric" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label for="cad-emerg2-parentesco" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Quem é essa pessoa?</label>
+              <select id="cad-emerg2-parentesco" name="cad-emerg2-parentesco" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+                <option value="">Selecione uma opção</option>
+                <option value="Pai">Pai</option>
+                <option value="Mãe">Mãe</option>
+                <option value="Cônjuge/Companheiro(a)">Cônjuge/Companheiro(a)</option>
+                <option value="Filho(a)">Filho(a)</option>
+                <option value="Irmão(a)">Irmão(a)</option>
+                <option value="Avô/Avó">Avô/Avó</option>
+                <option value="Amigo(a)">Amigo(a)</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -225,6 +281,8 @@
 
   var state = {
     screen: 1, nome: '', apelido: '', whatsapp: '', email: '', nascimento: '', tipoSanguineo: '',
+    emerg1Nome: '', emerg1Whatsapp: '', emerg1Parentesco: '',
+    emerg2Nome: '', emerg2Whatsapp: '', emerg2Parentesco: '',
     veiculoTipo: '', protecaoVeicular: '', rastreador: '', seguroVida: '', planoSaude: '', mei: '', motoTipo: '',
     rastreadorCarro: '', carroTipo: ''
   };
@@ -247,6 +305,17 @@
     if (d.length <= 2) return '(' + ddd;
     if (rest.length <= 5) return '(' + ddd + ') ' + rest;
     return '(' + ddd + ') ' + rest.slice(0, 5) + '-' + rest.slice(5);
+  }
+
+  function maskDate(raw) {
+    var d = (raw || '').replace(/\D/g, '').slice(0, 8);
+    if (!d.length) return '';
+    var dia = d.slice(0, 2);
+    var mes = d.slice(2, 4);
+    var ano = d.slice(4, 8);
+    if (d.length <= 2) return dia;
+    if (d.length <= 4) return dia + '/' + mes;
+    return dia + '/' + mes + '/' + ano;
   }
 
   var pillButtons = Array.prototype.slice.call(document.querySelectorAll('[data-pill]'));
@@ -294,7 +363,8 @@
     errEl.style.display = showWhatsappError ? '' : 'none';
     errEl.textContent = whatsappErrorText;
 
-    var allFilled = !!(state.nome && whatsappValid && state.email && state.nascimento && state.tipoSanguineo);
+    var allFilled = !!(state.nome && whatsappValid && state.email && state.nascimento && state.tipoSanguineo &&
+      state.emerg1Nome && state.emerg1Whatsapp && state.emerg1Parentesco);
     var btn1 = document.getElementById('btn-continuar1');
     btn1.style.opacity = allFilled ? '1' : '0.45';
     btn1.style.cursor = allFilled ? 'pointer' : 'not-allowed';
@@ -325,8 +395,31 @@
     render();
   });
   document.getElementById('cad-email').addEventListener('input', function (e) { state.email = e.target.value; render(); });
-  document.getElementById('cad-nascimento').addEventListener('input', function (e) { state.nascimento = e.target.value; render(); });
+  document.getElementById('cad-nascimento').addEventListener('input', function (e) {
+    var masked = maskDate(e.target.value);
+    state.nascimento = masked;
+    e.target.value = masked;
+    render();
+  });
   document.getElementById('cad-tipo-sanguineo').addEventListener('change', function (e) { state.tipoSanguineo = e.target.value; render(); });
+
+  document.getElementById('cad-emerg1-nome').addEventListener('input', function (e) { state.emerg1Nome = e.target.value; render(); });
+  document.getElementById('cad-emerg1-whatsapp').addEventListener('input', function (e) {
+    var masked = maskPhone(e.target.value);
+    state.emerg1Whatsapp = masked;
+    e.target.value = masked;
+    render();
+  });
+  document.getElementById('cad-emerg1-parentesco').addEventListener('change', function (e) { state.emerg1Parentesco = e.target.value; render(); });
+
+  document.getElementById('cad-emerg2-nome').addEventListener('input', function (e) { state.emerg2Nome = e.target.value; render(); });
+  document.getElementById('cad-emerg2-whatsapp').addEventListener('input', function (e) {
+    var masked = maskPhone(e.target.value);
+    state.emerg2Whatsapp = masked;
+    e.target.value = masked;
+    render();
+  });
+  document.getElementById('cad-emerg2-parentesco').addEventListener('change', function (e) { state.emerg2Parentesco = e.target.value; render(); });
 
   document.getElementById('btn-continuar1').addEventListener('click', function () {
     if (!window._cadState.allFilled) return;
@@ -359,6 +452,12 @@
       email: state.email,
       nascimento: state.nascimento,
       tipo_sanguineo: state.tipoSanguineo,
+      contato_emergencia_1_nome: state.emerg1Nome,
+      contato_emergencia_1_whatsapp: state.emerg1Whatsapp,
+      contato_emergencia_1_parentesco: state.emerg1Parentesco,
+      contato_emergencia_2_nome: state.emerg2Nome || null,
+      contato_emergencia_2_whatsapp: state.emerg2Whatsapp || null,
+      contato_emergencia_2_parentesco: state.emerg2Parentesco || null,
       veiculo_tipo: state.veiculoTipo,
       rastreador: state.rastreador || null,
       moto_tipo: state.motoTipo || null,
