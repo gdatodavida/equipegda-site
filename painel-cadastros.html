@@ -69,6 +69,50 @@
   var cadastros = [];
   var filtroAtual = 'pendente';
 
+  // Planilha de clientes do GDA Vendas (mesma aba Num/NOME lida pelo backend em
+  // Apps Script já usado no painel de vendas) — usada só pra SUGERIR o próximo
+  // número de piloto disponível; quem decide e confirma continua sendo o suporte.
+  var API_URL_CLIENTES = 'https://script.google.com/macros/s/AKfycbwD_VuIrQK9WusXinCg03e732PUX9jaPRNkOKcCRN181tMh6M8l_La2qq-GPw39t0Hr/exec';
+  var clientesCarregados = false;
+  var clientesOk = false;
+  var maxNumeroClientes = 0;
+
+  function maiorNumero(lista, getter) {
+    var maior = 0;
+    lista.forEach(function (item) {
+      var n = parseInt(getter(item), 10);
+      if (!isNaN(n) && n > maior) maior = n;
+    });
+    return maior;
+  }
+
+  function carregarClientes() {
+    fetch(API_URL_CLIENTES, { method: 'GET' }).then(function (r) { return r.json(); }).then(function (res) {
+      clientesCarregados = true;
+      clientesOk = !!(res && res.ok && !res.customers_error);
+      maxNumeroClientes = clientesOk ? maiorNumero(res.customers || [], function (c) { return c.id; }) : 0;
+      if (res && res.customers_error) console.error('[GDA] planilha de clientes:', res.customers_error);
+      render();
+    }).catch(function (err) {
+      clientesCarregados = true;
+      clientesOk = false;
+      maxNumeroClientes = 0;
+      console.error('[GDA] erro ao consultar planilha de clientes:', err);
+      render();
+    });
+  }
+
+  // Próximo número disponível = o maior já usado (na planilha de clientes OU já
+  // aprovado aqui no painel, pro caso de ainda não ter sido lançado na planilha) + 1.
+  function sugestaoNumeroPiloto() {
+    var maxAprovado = maiorNumero(cadastros.filter(function (c) { return c.status === 'aprovado'; }), function (c) { return c.numero_piloto; });
+    if (!clientesCarregados || !clientesOk) {
+      return { disponivel: false, numero: null, maxAprovado: maxAprovado };
+    }
+    var base = Math.max(maxNumeroClientes, maxAprovado);
+    return { disponivel: true, numero: base + 1, maxAprovado: maxAprovado };
+  }
+
   function pill(texto) {
     return '<span style="padding: 6px 14px; border-radius: 999px; background: #171310; border: 1px solid rgba(245,241,234,0.14); font-family: \'Manrope\', sans-serif; font-size: 13px; color: #D8D2C7;">' + texto + '</span>';
   }
@@ -138,13 +182,18 @@
     );
   }
 
-  function cardHtml(c) {
+  function cardHtml(c, sugestao, valorPreservado) {
     var st = statusMap[c.status] || statusMap.pendente;
+    var valorSugerido = valorPreservado || (sugestao && sugestao.disponivel ? String(sugestao.numero) : '');
+    var notaSugestao = sugestao && sugestao.disponivel
+      ? 'Sugestão automática a partir da sua planilha de clientes — confira antes de aprovar.'
+      : 'Não foi possível consultar a planilha de clientes agora — digite o número manualmente.';
     var acoes = c.status === 'pendente'
       ? '<div class="gda-pending-actions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">' +
           '<div style="display: flex; flex-direction: column; gap: 8px;">' +
             '<label for="piloto-' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de piloto <span style="color: #6B655C; font-weight: 500;">(obrigatório pra aprovar)</span> *</label>' +
-            '<input id="piloto-' + c.id + '" data-piloto-input="' + c.id + '" type="text" inputmode="numeric" placeholder="Ex: 113" style="width: 160px; box-sizing: border-box; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: \'Manrope\', sans-serif; font-size: 14px;">' +
+            '<input id="piloto-' + c.id + '" data-piloto-input="' + c.id + '" type="text" inputmode="numeric" placeholder="Ex: 113" value="' + escapeHtml(valorSugerido) + '" style="width: 160px; box-sizing: border-box; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: \'Manrope\', sans-serif; font-size: 14px;">' +
+            '<span data-piloto-nota="' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-style: italic; font-size: 12px; color: #6B655C;">' + notaSugestao + '</span>' +
             '<span data-piloto-error="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;">Digite o número de piloto antes de aprovar.</span>' +
           '</div>' +
           '<div style="display: flex; gap: 12px;">' +
@@ -186,9 +235,21 @@
     );
   }
 
+  // Preserva o que o suporte já digitou (ou a sugestão que já tinha aparecido)
+  // em cada card antes de reconstruir a lista — carregarClientes() pode resolver
+  // depois do primeiro render e chamar render() de novo; sem isso, um número que
+  // a pessoa já estava digitando seria apagado na hora errada.
+  var pilotoValores = {};
+
   function render() {
     var container = document.getElementById('cards-container');
     var statusMsg = document.getElementById('status-msg');
+
+    Array.prototype.slice.call(container.querySelectorAll('[data-piloto-input]')).forEach(function (input) {
+      var id = input.getAttribute('data-piloto-input');
+      if (input.value) pilotoValores[id] = input.value;
+    });
+
     var lista = filtroAtual === 'todos' ? cadastros : cadastros.filter(function (c) { return c.status === filtroAtual; });
 
     if (!lista.length) {
@@ -198,7 +259,8 @@
       return;
     }
     statusMsg.style.display = 'none';
-    container.innerHTML = lista.map(cardHtml).join('');
+    var sugestao = sugestaoNumeroPiloto();
+    container.innerHTML = lista.map(function (c) { return cardHtml(c, sugestao, pilotoValores[c.id]); }).join('');
 
     document.getElementById('cards-container').querySelectorAll('[data-acao]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -299,6 +361,7 @@
 
   window.gdaRequireAuth(function () {
     carregarCadastros();
+    carregarClientes();
   });
 })();
 </script>
