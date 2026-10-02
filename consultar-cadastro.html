@@ -50,6 +50,7 @@
           <div id="result-icon" style="width: 52px; height: 52px; border-radius: 999px; background: rgba(255,219,0,0.12); border: 1.5px solid #FFDB00; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #FFDB00;">⏳</div>
           <h2 id="result-title" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 20px; color: #F5F1EA;">Cadastro em análise</h2>
           <p id="result-text" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #D8D2C7; max-width: 400px;">Recebemos seus dados e a equipe de suporte está revisando. Assim que for aprovado, você recebe o convite pro grupo oficial no WhatsApp.</p>
+          <a id="link-credenciamento" href="#" style="display: none; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; margin-top: 6px;">Continuar pro credenciamento →</a>
         </div>
       </div>
     </div>
@@ -80,7 +81,7 @@
     },
     aprovado: {
       title: 'Cadastro aprovado!',
-      text: 'Você já faz parte da Equipe GDA. Fique de olho no WhatsApp — o convite pro grupo oficial chega em breve.',
+      text: 'Você já faz parte da Equipe GDA. Agora falta só o credenciamento: pagar o adesivo e receber seu número de piloto.',
       bg: 'rgba(90,200,120,0.12)', color: '#5AC878', icon: '✓'
     },
     recusado: {
@@ -128,16 +129,17 @@
     iconEl.style.borderColor = current.color;
     iconEl.style.color = current.color;
     iconEl.textContent = current.icon;
+
+    var linkCred = document.getElementById('link-credenciamento');
+    if (state.result === 'aprovado') {
+      linkCred.href = 'credenciamento.html?whatsapp=' + encodeURIComponent(state.whatsapp);
+      linkCred.style.display = 'inline-flex';
+    } else {
+      linkCred.style.display = 'none';
+    }
   }
 
-  document.getElementById('consulta-whatsapp').addEventListener('input', function (e) {
-    var masked = maskPhone(e.target.value);
-    state.whatsapp = masked;
-    e.target.value = masked;
-    render();
-  });
-
-  document.getElementById('btn-consultar').addEventListener('click', function () {
+  function consultar() {
     if (!state.whatsapp || state.loading) return;
     if (!window.gdaSupabase) {
       state.showResult = true;
@@ -161,7 +163,29 @@
       }
       render();
     });
+  }
+
+  (function prefillFromQuery() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var whatsapp = params.get('whatsapp');
+      if (whatsapp) {
+        var masked = maskPhone(whatsapp);
+        state.whatsapp = masked;
+        document.getElementById('consulta-whatsapp').value = masked;
+        consultar();
+      }
+    } catch (err) {}
+  })();
+
+  document.getElementById('consulta-whatsapp').addEventListener('input', function (e) {
+    var masked = maskPhone(e.target.value);
+    state.whatsapp = masked;
+    e.target.value = masked;
+    render();
   });
+
+  document.getElementById('btn-consultar').addEventListener('click', consultar);
 
   render();
 })();

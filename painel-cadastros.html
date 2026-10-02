@@ -93,11 +93,15 @@
     return out.join('');
   }
 
-  function waLink(whatsapp) {
+  function waDigits(whatsapp) {
     var digits = String(whatsapp || '').replace(/\D/g, '');
-    if (!digits) return '#';
     if (digits.length <= 11) digits = '55' + digits;
-    return 'https://wa.me/' + digits;
+    return digits;
+  }
+
+  function waLink(whatsapp) {
+    if (!String(whatsapp || '').replace(/\D/g, '')) return '#';
+    return 'https://wa.me/' + waDigits(whatsapp);
   }
 
   function contatoEmergenciaHtml(nome, whatsapp, parentesco, numero) {
@@ -127,15 +131,29 @@
     );
   }
 
+  function documentoHtml(c) {
+    if (!c.documento_cnh_path) return '';
+    return (
+      '<button data-acao="ver-documento" data-id="' + c.id + '" data-doc="' + escapeHtml(c.documento_cnh_path) + '" type="button" style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 8px 16px; border-radius: 999px; background: #171310; border: 1px solid rgba(245,241,234,0.14); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 13px;">📄 Ver documento (CNH)</button>'
+    );
+  }
+
   function cardHtml(c) {
     var st = statusMap[c.status] || statusMap.pendente;
     var acoes = c.status === 'pendente'
-      ? '<div class="gda-pending-actions" style="display: flex; gap: 12px; margin-top: 4px;">' +
-          '<button data-acao="aprovar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px; border: none;">Aprovar</button>' +
-          '<button data-acao="recusar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 14px;">Recusar</button>' +
+      ? '<div class="gda-pending-actions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">' +
+          '<div style="display: flex; flex-direction: column; gap: 8px;">' +
+            '<label for="piloto-' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de piloto <span style="color: #6B655C; font-weight: 500;">(obrigatório pra aprovar)</span> *</label>' +
+            '<input id="piloto-' + c.id + '" data-piloto-input="' + c.id + '" type="text" inputmode="numeric" placeholder="Ex: 113" style="width: 160px; box-sizing: border-box; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: \'Manrope\', sans-serif; font-size: 14px;">' +
+            '<span data-piloto-error="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;">Digite o número de piloto antes de aprovar.</span>' +
+          '</div>' +
+          '<div style="display: flex; gap: 12px;">' +
+            '<button data-acao="aprovar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px; border: none;">Aprovar</button>' +
+            '<button data-acao="recusar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 14px;">Recusar</button>' +
+          '</div>' +
         '</div>'
       : '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; flex-wrap: wrap;">' +
-          '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #6B655C;">Decisão registrada.</span>' +
+          '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #6B655C;">Decisão registrada.' + (c.status === 'aprovado' && c.numero_piloto ? ' Número de piloto: <strong style="color: #D8D2C7;">' + escapeHtml(c.numero_piloto) + '</strong>' : '') + '</span>' +
           '<button data-acao="resetar" data-id="' + c.id + '" type="button" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 13px;">Desfazer</button>' +
         '</div>';
 
@@ -155,6 +173,7 @@
           '</a>' +
           '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #A89C8E;">' + escapeHtml(c.email) + '</span>' +
         '</div>' +
+        documentoHtml(c) +
         '<div style="height: 1px; background: rgba(245,241,234,0.08);"></div>' +
         contatosEmergenciaHtml(c) +
         '<div style="height: 1px; background: rgba(245,241,234,0.08);"></div>' +
@@ -185,7 +204,29 @@
       btn.addEventListener('click', function () {
         var id = btn.getAttribute('data-id');
         var acao = btn.getAttribute('data-acao');
-        var novoStatus = acao === 'aprovar' ? 'aprovado' : (acao === 'recusar' ? 'recusado' : 'pendente');
+
+        if (acao === 'ver-documento') {
+          var win = null;
+          try { win = window.open('', '_blank'); } catch (err) {}
+          verDocumento(btn.getAttribute('data-doc'), win);
+          return;
+        }
+
+        if (acao === 'aprovar') {
+          var input = document.querySelector('[data-piloto-input="' + id + '"]');
+          var numeroPiloto = (input && input.value || '').trim();
+          var erroEl = document.querySelector('[data-piloto-error="' + id + '"]');
+          if (!numeroPiloto) {
+            if (erroEl) erroEl.style.display = '';
+            if (input) input.style.borderColor = '#DC5A5A';
+            return;
+          }
+          var c = cadastros.filter(function (x) { return String(x.id) === String(id); })[0];
+          aprovarCadastro(id, numeroPiloto, c && c.whatsapp, c && (c.apelido || c.nome));
+          return;
+        }
+
+        var novoStatus = acao === 'recusar' ? 'recusado' : 'pendente';
         atualizarStatus(id, novoStatus);
       });
     });
@@ -206,6 +247,37 @@
       }
       cadastros = cadastros.map(function (c) { return c.id === id ? Object.assign({}, c, { status: novoStatus }) : c; });
       render();
+    });
+  }
+
+  function aprovarCadastro(id, numeroPiloto, whatsapp, nome) {
+    var win = null;
+    try { win = window.open('', '_blank'); } catch (err) {}
+
+    window.gdaSupabase.from('cadastros').update({ status: 'aprovado', numero_piloto: numeroPiloto }).eq('id', id).then(function (result) {
+      if (result.error) {
+        console.error('[GDA] erro ao aprovar cadastro:', result.error);
+        if (win) win.close();
+        return;
+      }
+      cadastros = cadastros.map(function (c) { return c.id === id ? Object.assign({}, c, { status: 'aprovado', numero_piloto: numeroPiloto }) : c; });
+      render();
+
+      var link = 'https://equipegda.com.br/credenciamento.html?whatsapp=' + encodeURIComponent(whatsapp || '');
+      var msg = 'Oi ' + (nome || '') + '! Seu cadastro na Equipe GDA foi aprovado 🎉 Seu número de piloto é ' + numeroPiloto + '. Pra finalizar e receber o acesso aos grupos, acesse: ' + link;
+      var waUrl = 'https://wa.me/' + waDigits(whatsapp) + '?text=' + encodeURIComponent(msg);
+      if (win) { win.location.href = waUrl; } else { window.open(waUrl, '_blank'); }
+    });
+  }
+
+  function verDocumento(path, win) {
+    window.gdaSupabase.storage.from('documentos-cadastro').createSignedUrl(path, 120).then(function (result) {
+      if (result.error || !result.data) {
+        console.error('[GDA] erro ao gerar link do documento:', result.error);
+        if (win) win.close();
+        return;
+      }
+      if (win) { win.location.href = result.data.signedUrl; } else { window.open(result.data.signedUrl, '_blank'); }
     });
   }
 
