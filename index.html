@@ -15,12 +15,16 @@
   @media (max-width: 760px) {
     html { overflow-x: hidden; }
     .gda-nav { display: none !important; }
-    .gda-header-inner { padding: 14px 20px !important; gap: 16px !important; justify-content: space-between !important; }
+    .gda-header-inner { padding: 14px 20px !important; gap: 14px !important; justify-content: space-between !important; }
     .gda-pill-cta { width: auto !important; height: auto !important; padding: 8px 14px !important; font-size: 12px !important; white-space: normal !important; text-align: center; line-height: 1.3 !important; }
+    .gda-menu-btn { display: inline-flex !important; }
+    .gda-mobile-menu.open { display: flex !important; }
+    .gda-mobile-slides { display: block !important; }
 
-    #hero { padding: 88px 20px 52px !important; min-height: 0 !important; }
-    #hero h1 { width: auto !important; height: auto !important; font-size: 42px !important; }
-    #hero p { font-size: 16px !important; }
+    #hero { padding: 30px 20px 34px !important; min-height: 0 !important; align-items: flex-start !important; }
+    #hero .gda-hero-content { gap: 13px !important; }
+    #hero h1 { width: auto !important; height: auto !important; font-size: 38px !important; }
+    #hero p { font-size: 15px !important; }
     .gda-hero-ctas { width: auto !important; height: auto !important; font-size: 15px !important; flex-direction: column !important; align-items: stretch !important; }
     .gda-hero-ctas > a { width: 100% !important; height: auto !important; box-sizing: border-box !important; justify-content: center !important; font-size: 16px !important; }
 
@@ -56,6 +60,9 @@
 
   <header style="position: sticky; top: 0; z-index: 50; width: 100%; box-sizing: border-box; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
     <div class="gda-header-inner" style="max-width: 1240px; margin: 0 auto; padding: 16px 40px; box-sizing: border-box; display: flex; align-items: center; gap: 48px;">
+      <button type="button" id="gda-menu-btn" class="gda-menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="gda-mobile-menu" style="display: none; align-items: center; justify-content: center; width: 38px; height: 38px; flex: none; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: transparent; padding: 0; cursor: pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F1EA" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
       <a href="#hero" style="display: flex; align-items: center; gap: 12px;">
         <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block">
       </a>
@@ -67,13 +74,43 @@
 
       </nav><a href="#remessa" class="gda-pill-cta" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px; background-color: rgb(255, 219, 0); color: rgb(20, 17, 15); font-family: Manrope, sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap; width: 202px; height: 32px">3ª Remessa: Camisa Oficial GDA</a>
     </div>
+    <nav id="gda-mobile-menu" class="gda-mobile-menu" style="display: none; flex-direction: column; background: #1A1512; border-top: 1px solid rgba(245,241,234,0.08);">
+      <a href="#sobre" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Quem somos</a>
+      <a href="#frentes" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Nossos Produtos</a>
+      <a href="#galeria" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Galeria</a>
+      <a href="#contato" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7;">Contato</a>
+    </nav>
   </header>
+
+  <div class="gda-mobile-slides" style="display: none; position: relative; width: 100%; overflow: hidden; background: #14110F; border-bottom: 1px solid rgba(245,241,234,0.08);">
+    <div class="gda-mobile-slides-track" style="position: relative; width: 100%; aspect-ratio: 1600 / 912;">
+      <a href="fazer-parte.html" class="gda-mslide" data-slide="0" style="position: absolute; inset: 0; display: block; opacity: 1; transition: opacity .5s ease; background: #0F0C0A;">
+        <img src="img/recrutamento-familia-gda.jpg" alt="Família GDA — GDA toda vida: disciplina, respeito, união" style="width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,17,15,0) 55%, rgba(20,17,15,0.92) 100%);"></div>
+        <div style="position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffdb00;">Recrutamento</span>
+          <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #F5F1EA;">Faça parte da Equipe GDA</span>
+        </div>
+      </a>
+      <a href="https://equipegda.com.br/#remessa" class="gda-mslide" data-slide="1" style="position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
+        <img src="img/3a-remessa-aberta.jpg" alt="3ª Remessa Aberta — Camisa Oficial de Piloto GDA, pedidos até 22/10" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+      </a>
+      <div class="gda-mslide" data-slide="2" style="position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
+        <img src="img/adesivo-identificacao-gda.jpg" alt="Adesivo de Identificação GDA — é identidade, é segurança, é GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+      </div>
+    </div>
+    <div class="gda-mslide-dots" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 7px 0; background: #14110F;">
+      <button type="button" class="gda-mdot" data-dot="0" aria-label="Slide 1" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: #ffdb00;"></button>
+      <button type="button" class="gda-mdot" data-dot="1" aria-label="Slide 2" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
+      <button type="button" class="gda-mdot" data-dot="2" aria-label="Slide 3" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
+    </div>
+  </div>
 
   <section id="hero" style="position: relative; display: flex; align-items: center; min-height: 620px; padding: 110px 40px 90px; box-sizing: border-box; background: #14110F; overflow: hidden">
     <img src="img/4488fa8c5cd0b34b5e0ba45835f489f8.jpg" alt="Equipe GDA reunida" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%">
     <div style="position: absolute; inset: 0; background: linear-gradient(160deg, rgba(29,23,18,0.93) 0%, rgba(20,17,15,0.91) 48%, rgba(16,13,11,0.96) 100%); opacity: 0.87"></div>
     <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
-    <div style="position: relative; max-width: 1240px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 22px;">
+    <div class="gda-hero-content" style="position: relative; max-width: 1240px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 22px;">
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">GDA - TODA VIDA</span>
       <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 78px; line-height: 1.0; color: #ffdb00; max-width: 780px; width: 412px; height: 82px">EQUIPE GDA</h1>
       <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 19px; line-height: 1.55; color: #D8D2C7; max-width: 560px">Portal oficial da Equipe GDA: Recrutamento, Loja oficial, encontros, Informações e muito mais — em um só lugar</p>
@@ -295,5 +332,113 @@
   </footer>
 
 </div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Menu mobile (três linhas no canto superior esquerdo)
+  var menuBtn = document.getElementById('gda-menu-btn');
+  var mobileMenu = document.getElementById('gda-mobile-menu');
+  if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', function () {
+      var isOpen = mobileMenu.classList.contains('open');
+      mobileMenu.classList.toggle('open', !isOpen);
+      menuBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+    Array.prototype.slice.call(mobileMenu.querySelectorAll('a')).forEach(function (a) {
+      a.addEventListener('click', function () {
+        mobileMenu.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (!mobileMenu.classList.contains('open')) return;
+      if (mobileMenu.contains(e.target) || menuBtn.contains(e.target)) return;
+      mobileMenu.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  // Telas de passagem (recrutamento / remessa de camisas / loja GDA)
+  var wrap = document.querySelector('.gda-mobile-slides');
+  if (!wrap) return;
+  var track = wrap.querySelector('.gda-mobile-slides-track');
+  var slides = Array.prototype.slice.call(wrap.querySelectorAll('.gda-mslide'));
+  var dots = Array.prototype.slice.call(wrap.querySelectorAll('.gda-mdot'));
+  if (!slides.length) return;
+
+  var AUTO_MS = 4500;
+  var current = 0;
+  var timer = null;
+
+  function show(idx) {
+    idx = (idx + slides.length) % slides.length;
+    slides.forEach(function (s, i) {
+      s.style.opacity = i === idx ? '1' : '0';
+      s.style.pointerEvents = i === idx ? 'auto' : 'none';
+    });
+    dots.forEach(function (d, i) {
+      d.style.background = i === idx ? '#ffdb00' : 'rgba(245,241,234,0.25)';
+    });
+    current = idx;
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  function restartTimer() {
+    if (timer) clearInterval(timer);
+    timer = setInterval(next, AUTO_MS);
+  }
+
+  dots.forEach(function (d, i) {
+    d.addEventListener('click', function () { show(i); restartTimer(); });
+  });
+
+  var startX = null;
+  track.addEventListener('touchstart', function (e) {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) { next(); } else { prev(); }
+      restartTimer();
+    }
+    startX = null;
+  }, { passive: true });
+
+  show(0);
+  restartTimer();
+
+  // No mobile, estende o herói pra ocupar o resto da primeira tela de
+  // rolagem (cabeçalho + telas de passagem + herói == altura da tela),
+  // assim os cards de "Comunidade de verdade" etc. ficam só depois do scroll.
+  var heroSection = document.getElementById('hero');
+  var isMobile = window.matchMedia('(max-width: 760px)');
+
+  function fitHeroToViewport() {
+    if (!heroSection) return;
+    if (!isMobile.matches) { heroSection.style.removeProperty('min-height'); return; }
+    // "min-height: 0" do CSS mobile usa !important (pra vencer o min-height
+    // inline original de 620px) — por isso o valor calculado aqui também
+    // precisa ser setado como !important, senão a regra do CSS sempre ganha.
+    heroSection.style.setProperty('min-height', '0px', 'important');
+    var top = heroSection.getBoundingClientRect().top;
+    var target = window.innerHeight - top;
+    heroSection.style.setProperty('min-height', (target > 0 ? target : 0) + 'px', 'important');
+  }
+
+  fitHeroToViewport();
+  window.addEventListener('resize', fitHeroToViewport);
+  window.addEventListener('orientationchange', fitHeroToViewport);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitHeroToViewport);
+  }
+})();
+</script>
+
 </body>
 </html>
