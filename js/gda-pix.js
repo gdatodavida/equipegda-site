@@ -9,6 +9,12 @@
 (function () {
   'use strict';
 
+  // Nomes (slugs) reais das funções no Supabase — são os que aparecem na URL .../functions/v1/<slug>
+  var FUNCOES = {
+    criar: 'bright-worker',      // criar-pix
+    verificar: 'dynamic-action'  // verificar-pix
+  };
+
   var MENSAGENS = {
     cadastro_nao_aprovado: 'Seu cadastro ainda não foi aprovado.',
     cadastro_nao_encontrado: 'Não encontramos o seu cadastro.',
@@ -45,7 +51,7 @@
   }
 
   function criar(body) {
-    return invocar('criar-pix', body).then(function (r) {
+    return invocar(FUNCOES.criar, body).then(function (r) {
       if (!r.ok) r.mensagem = mensagemDeErro(r.erro);
       return r;
     });
@@ -216,7 +222,7 @@
       if (parado || finalizado || !window.gdaSupabase) return;
       ciclos++;
       // a cada ~12 s pede ao servidor que confira direto no Mercado Pago (rede de segurança do webhook)
-      if (ciclos % 3 === 0) invocar('verificar-pix', { pagamento_id: pg.pagamento_id });
+      if (ciclos % 3 === 0) invocar(FUNCOES.verificar, { pagamento_id: pg.pagamento_id });
       window.gdaSupabase.rpc('consultar_pagamento', { p_pagamento_id: pg.pagamento_id }).then(function (r) {
         if (parado || finalizado || r.error) return;
         var linha = r.data && r.data[0];
