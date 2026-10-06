@@ -119,6 +119,12 @@
     caixa.appendChild(el('span', 'font-family:' + TITULO + ';font-weight:600;font-size:16px;color:#F5F1EA;', 'Pague com Pix'));
     caixa.appendChild(el('span', 'font-family:' + TITULO + ';font-weight:700;font-size:26px;color:#FFDB00;', brl(pg.valor)));
 
+    if (pg.live_mode === false) {
+      var aviso = el('span', 'font-family:' + FONTE + ';font-size:12px;line-height:1.5;color:#E8806F;text-align:center;border:1px solid rgba(232,128,111,0.5);border-radius:10px;padding:8px 10px;',
+        'ATENÇÃO (administrador): o Mercado Pago está em MODO DE TESTE. Este código não pode ser pago em bancos reais. Troque o Access Token pelo de produção.');
+      caixa.appendChild(aviso);
+    }
+
     if (pg.qr_code_base64) {
       var moldura = el('div', 'background:#fff;padding:10px;border-radius:12px;line-height:0;width:min(230px,100%);box-sizing:border-box;');
       var img = document.createElement('img');
