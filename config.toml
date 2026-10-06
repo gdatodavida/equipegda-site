@@ -1,3 +1,0 @@
-# Só o webhook é público (o Mercado Pago não envia JWT do Supabase; ele é protegido pela assinatura x-signature).
-[functions.webhook-mercadopago]
-verify_jwt = false
