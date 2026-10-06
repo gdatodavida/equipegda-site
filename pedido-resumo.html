@@ -28,8 +28,20 @@
     <div style="max-width: 560px; margin: 60px auto 0; display: flex; flex-direction: column; gap: 28px; padding: 40px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
 
       <div style="display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Passo 6 de 6</span>
-        <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Confira seu pedido</h2>
+        <span id="passo-label" style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Passo 6 de 6</span>
+        <h2 id="titulo-pedido" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Confira seu pedido</h2>
+      </div>
+
+      <div id="retomar-banner" style="display: none; flex-direction: column; gap: 10px; padding: 16px 18px; background: rgba(255,219,0,0.08); border: 1px solid rgba(255,219,0,0.35); border-radius: 14px;">
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #FFDB00;">Você tem um pedido aguardando pagamento</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #D8D2C7;">Se você já começou este pedido, continue de onde parou — o Pix é o mesmo (ou um novo, se o anterior expirou).</span>
+        <a id="retomar-link" href="#" style="display: inline-flex; align-items: center; justify-content: center; padding: 11px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; width: fit-content;">Continuar pagamento →</a>
+      </div>
+
+      <div id="retomada-msg" role="status" style="display: none; flex-direction: column; gap: 10px; padding: 18px 20px; background: #171310; border: 1px solid rgba(245,241,234,0.16); border-radius: 14px;">
+        <span id="retomada-titulo" style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;"></span>
+        <span id="retomada-texto" style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #D8D2C7;"></span>
+        <div id="retomada-acoes" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; background: #171310; border-radius: 14px;">
@@ -57,7 +69,7 @@
         </div>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div id="bloco-pagamento" style="display: flex; flex-direction: column; gap: 10px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Como você quer pagar?</span>
         <button id="btn-vista" type="button" style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 12px; text-align: left; width: 100%; box-sizing: border-box;">
           <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #F5F1EA;">À vista</span>
@@ -65,12 +77,12 @@
         </button>
         <button id="btn-parcelado" type="button" style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 12px; text-align: left; width: 100%; box-sizing: border-box;">
           <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #F5F1EA">Parcelado</span>
-          <span id="parcelado-sub" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E">Entrada de 50% R$ 74,90 + R$ 74,90 até 16/10</span>
+          <span id="parcelado-sub" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E">Entrada de 50% R$ 74,90 + R$ 74,90 até 22/10</span>
         </button>
-        <span id="parcelado-note" style="display: none; font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">A entrada de 50% reserva o seu pedido, que é feito por encomenda. O restante (50%) deve ser pago até 16/10.</span>
+        <span id="parcelado-note" style="display: none; font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">A entrada de 50% é paga agora por Pix (QR Code) e reserva o seu pedido, que é feito por encomenda. O restante (50%) deve ser pago até 22/10 — o suporte combina com você pelo WhatsApp.</span>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div id="bloco-sugestoes" style="display: flex; flex-direction: column; gap: 10px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; color: #F5F1EA;">Aproveite e peça também</span>
         <div style="width: 100%; overflow: hidden;">
           <div class="gda-sugestoes-marquee-track" style="display: flex; gap: 12px; width: max-content; animation: gda-sugestoes-marquee 24s linear infinite;">
@@ -91,9 +103,9 @@
         <span style="font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C;">Camisas Piloto - Manga Curta, Camisa Kids também podem ser adicionados ao seu pedido — Fale com o suporte.</span>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; background: #171310; border-radius: 14px;">
+      <div id="bloco-termo" style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; background: #171310; border-radius: 14px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #ffdb00">Termo de confirmação (leia com atenção)</span>
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #f5f1ea">Nossas camisas são feitas por encomenda: o prazo para pedidos e pagamento completo vai de 01 a 16 de outubro. Se você escolher pagar parcelado, a entrada de 50% reserva o seu pedido e o restante (50%) deve ser pago até 16/10 — o comprovante de cada pagamento só é reconhecido quando enviado direto no WhatsApp do suporte, sem ele o pedido não é validado. Assim que esse prazo se encerrar, Seu pedido segue para a fábrica; existe um prazo de fabricação, e o suporte avisa pelo WhatsApp o rastreio do seu pedido e assim que estiver disponível pra retirada. A partir daí você tem 15 dias pra buscar; depois disso o pedido é expirado,&nbsp;<br>pois não temos espaço pra estoque.</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #f5f1ea">Nossas camisas são feitas por encomenda: o prazo para pedidos e pagamento completo vai de 01 a 22 de outubro. Se você escolher pagar parcelado, a entrada de 50% (paga por Pix, com confirmação automática) reserva o seu pedido e o restante (50%) deve ser pago até 22/10 — o comprovante da 2ª parcela só é reconhecido quando enviado direto no WhatsApp do suporte, sem ele o pedido não é validado. Assim que esse prazo se encerrar, Seu pedido segue para a fábrica; existe um prazo de fabricação, e o suporte avisa pelo WhatsApp o rastreio do seu pedido e assim que estiver disponível pra retirada. A partir daí você tem 15 dias pra buscar; depois disso o pedido é expirado,&nbsp;<br>pois não temos espaço pra estoque.</span>
         <label id="label-concordo" style="display: flex; align-items: center; gap: 10px; margin-top: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #ffdb00; cursor: pointer;">
           <span id="concordo-mark" style="width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid #FFDB00; background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #14110F;"></span>
           Li e concordo
@@ -105,8 +117,8 @@
       <span id="pix-erro" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #E8806F; text-align: center;"></span>
       <div id="pix-pedido" style="display: none;"></div>
       <div id="pix-pago-box" style="display: none; flex-direction: column; gap: 10px; padding: 18px 20px; background: rgba(127,217,154,0.08); border: 1px solid rgba(127,217,154,0.4); border-radius: 14px;">
-        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #7FD99A;">Pagamento confirmado ✓</span>
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #D8D2C7;">Seu pedido está pago e registrado. Não precisa enviar comprovante — a confirmação foi automática. Se quiser, avise o suporte pelo WhatsApp para acompanhar o pedido.</span>
+        <span id="pago-titulo" style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #7FD99A;">Pagamento confirmado ✓</span>
+        <span id="pago-texto" style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #D8D2C7;">Seu pedido está pago e registrado. Não precisa enviar comprovante — a confirmação foi automática. Se quiser, avise o suporte pelo WhatsApp para acompanhar o pedido.</span>
         <a id="pix-pago-whatsapp" href="#" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Avisar o suporte no WhatsApp →</a>
       </div>
       <span id="pix-dinheiro" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C; text-align: center;">Prefere pagar em dinheiro em mãos ou teve algum problema? <a id="pix-dinheiro-link" href="#" target="_blank" rel="noopener" style="color: #D8D2C7; text-decoration: underline;">Fale com o suporte no WhatsApp</a>.</span>
@@ -168,9 +180,60 @@
     pedidoId: null,
     pixAtivo: false,
     pago: false,
-    manual: false
+    manual: false,
+    retomando: false
   };
   var painelPix = null;
+
+  // ----- retomar o pagamento: o número do pedido fica na URL e neste aparelho -----
+  var CHAVE_LOCAL = 'gda_pedido_pendente';
+  var VALIDADE_LOCAL_MS = 48 * 60 * 60 * 1000;
+  function soDigitos(v) { return String(v || '').replace(/\D/g, ''); }
+
+  function marcarPedidoNaUrl() {
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.set('pedido', state.pedidoId);
+      window.history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (err) { /* sem history API: segue sem o link */ }
+  }
+  function guardarPedidoLocal() {
+    try {
+      window.localStorage.setItem(CHAVE_LOCAL, JSON.stringify({ id: state.pedidoId, whatsapp: soDigitos(state.whatsapp), ts: Date.now() }));
+    } catch (err) { /* armazenamento bloqueado: ignora */ }
+  }
+  function limparPedidoLocal() {
+    try { window.localStorage.removeItem(CHAVE_LOCAL); } catch (err) {}
+  }
+  function lerPedidoLocal() {
+    try {
+      var o = JSON.parse(window.localStorage.getItem(CHAVE_LOCAL) || 'null');
+      if (!o || !o.id || !o.ts || (Date.now() - o.ts) > VALIDADE_LOCAL_MS) return null;
+      return o;
+    } catch (err) { return null; }
+  }
+  function linkDeRetomada(id, whatsapp) {
+    var q = '?pedido=' + encodeURIComponent(id) + (whatsapp ? '&whatsapp=' + encodeURIComponent(whatsapp) : '');
+    return window.location.pathname + q;
+  }
+
+  function mostrarMsgRetomada(titulo, texto, acoes) {
+    document.getElementById('retomada-titulo').textContent = titulo;
+    document.getElementById('retomada-texto').textContent = texto;
+    var box = document.getElementById('retomada-acoes');
+    box.innerHTML = '';
+    (acoes || []).forEach(function (a) {
+      var el = document.createElement('a');
+      el.href = a.href;
+      el.textContent = a.texto;
+      if (a.externo) { el.target = '_blank'; el.rel = 'noopener'; }
+      el.setAttribute('style', 'display: inline-flex; align-items: center; justify-content: center; padding: 11px 22px; border-radius: 999px; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px; ' +
+        (a.destaque ? 'background: #FFDB00; color: #14110F;' : 'background: transparent; color: #D8D2C7; border: 1px solid rgba(245,241,234,0.16);'));
+      box.appendChild(el);
+    });
+    document.getElementById('retomada-msg').style.display = 'flex';
+  }
+  function esconderMsgRetomada() { document.getElementById('retomada-msg').style.display = 'none'; }
 
   var CAMISA_PRICE = 109.90;
   var BALACLAVA_PRICE = 39.90;
@@ -210,7 +273,7 @@
     document.getElementById('total-price').textContent = formatCurrency(total);
 
     document.getElementById('vista-sub').textContent = formatCurrency(total) + ' via Pix — confirmação automática';
-    document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(installment) + ' + ' + formatCurrency(installment) + ' até 16/10';
+    document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(installment) + ' via Pix agora + ' + formatCurrency(installment) + ' até 22/10';
 
     document.getElementById('btn-vista').style.background = isVista ? 'rgba(255,219,0,0.1)' : '#171310';
     document.getElementById('btn-vista').style.border = isVista ? '2px solid #FFDB00' : '1px solid rgba(245,241,234,0.16)';
@@ -227,23 +290,41 @@
     btnEnviar.style.opacity = (podeEnviar || state.pedidoEnviado || state.pago) ? '1' : '0.45';
     btnEnviar.style.cursor = podeEnviar ? 'pointer' : 'not-allowed';
     var textoBtn;
-    if (state.pago) textoBtn = 'Pagamento confirmado ✓';
+    if (state.pago) textoBtn = isParcelado ? 'Entrada confirmada ✓' : 'Pagamento confirmado ✓';
     else if (state.pixAtivo) textoBtn = 'Aguardando pagamento…';
     else if (state.pedidoEnviado) textoBtn = 'Pedido enviado ✓';
-    else if (state.enviando) textoBtn = isVista ? 'Gerando Pix…' : 'Enviando…';
-    else textoBtn = isVista ? 'Enviar pedido e pagar com Pix' : 'Enviar pedido';
+    else if (state.enviando) textoBtn = 'Gerando Pix…';
+    else textoBtn = isVista ? 'Enviar pedido e pagar com Pix' : 'Enviar pedido e pagar a entrada com Pix';
     btnEnviar.textContent = textoBtn;
 
     var nota = document.getElementById('nota-enviar');
     nota.style.display = (state.pixAtivo || state.pago) ? 'none' : '';
     nota.textContent = isVista
       ? 'Ao enviar, geramos o seu Pix (QR Code e Pix Copia e Cola). O pagamento é confirmado automaticamente, sem precisar enviar comprovante.'
-      : 'Ao enviar, abrimos o WhatsApp do suporte com seu pedido pronto — depois é só mandar o comprovante de pagamento na mesma conversa.';
+      : 'Ao enviar, geramos o Pix da entrada de 50% (' + formatCurrency(installment) + '), confirmado automaticamente. O restante (' + formatCurrency(installment) + ') o suporte combina com você pelo WhatsApp, até 22/10.';
+
+    // caixa de "pago": texto de entrada (parcelado) ou do pagamento total (à vista)
+    document.getElementById('pago-titulo').textContent = isParcelado ? 'Entrada confirmada ✓' : 'Pagamento confirmado ✓';
+    document.getElementById('pago-texto').textContent = isParcelado
+      ? 'Sua entrada de ' + formatCurrency(installment) + ' está paga e o pedido está reservado. Falta a 2ª parcela de ' + formatCurrency(installment) + ', até 22/10 — o suporte combina com você pelo WhatsApp. Não precisa enviar comprovante da entrada.'
+      : 'Seu pedido está pago e registrado. Não precisa enviar comprovante — a confirmação foi automática. Se quiser, avise o suporte pelo WhatsApp para acompanhar o pedido.';
 
     document.getElementById('pedido-enviado-box').style.display = (state.pedidoEnviado && state.manual) ? 'flex' : 'none';
     document.getElementById('pix-pago-box').style.display = state.pago ? 'flex' : 'none';
     document.getElementById('pix-dinheiro').style.display = (state.pixAtivo && !state.pago) ? '' : 'none';
     document.getElementById('btn-copiar-pix').textContent = state.pixCopiado ? 'Copiado ✓' : 'Copiar chave';
+
+    // Modo "voltei pelo link": só o resumo + o Pix (sem escolher forma de pagamento nem aceitar o termo de novo)
+    var ret = state.retomando;
+    ['bloco-pagamento', 'bloco-sugestoes', 'bloco-termo'].forEach(function (id) {
+      document.getElementById(id).style.display = ret ? 'none' : 'flex';
+    });
+    if (ret) {
+      btnEnviar.style.display = 'none';
+      nota.style.display = 'none';
+      document.getElementById('passo-label').textContent = 'Pagamento do pedido';
+      document.getElementById('titulo-pedido').textContent = 'Pague o seu pedido';
+    }
   }
 
   document.getElementById('btn-vista').addEventListener('click', function () { if (state.pixAtivo || state.pedidoEnviado || state.enviando) return; state.paymentMethod = 'vista'; render(); });
@@ -266,7 +347,7 @@
       ? ((state.nome || '') + (state.piloto ? ' (nº ' + state.piloto + ')' : ''))
       : '[nome/nº de piloto]';
     var paymentLabel = isParcelado
-      ? ('Pix parcelado — entrada ' + formatCurrency(installment) + ' agora + ' + formatCurrency(installment) + ' até 16/10')
+      ? ('Pix parcelado — entrada ' + formatCurrency(installment) + ' agora + ' + formatCurrency(installment) + ' até 22/10')
       : ('À vista — ' + formatCurrency(total));
     var msg = 'Olá! Segue meu pedido da Camisa Oficial GDA:\n\n' +
       'Piloto: ' + pilotoInfo + '\n' +
@@ -291,6 +372,10 @@
   function totalAtual() {
     return CAMISA_PRICE * state.quantidadeCamisa + BALACLAVA_PRICE * state.quantidadeBalaclava;
   }
+  // Valor que o Pix cobra agora: o total (à vista) ou a entrada de 50% (parcelado).
+  function valorPixAtual() {
+    return state.paymentMethod === 'parcelado' ? totalAtual() / 2 : totalAtual();
+  }
 
   function linkSuporte(texto) {
     return 'https://wa.me/557331914501?text=' + encodeURIComponent(texto);
@@ -305,9 +390,13 @@
   function atualizarLinksSuporte() {
     var ref = state.pedidoId ? ('\nRef. do pedido: ' + state.pedidoId) : '';
     document.getElementById('pix-dinheiro-link').href = linkSuporte(
-      'Olá! Fiz o pedido da Camisa Oficial GDA (' + formatCurrency(totalAtual()) + ') e quero falar sobre o pagamento.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() + ref);
+      'Olá! Fiz o pedido da Camisa Oficial GDA (' + formatCurrency(totalAtual()) + (state.paymentMethod === 'parcelado' ? ', parcelado — entrada ' + formatCurrency(valorPixAtual()) : '') + ') e quero falar sobre o pagamento.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() + ref);
+    var parcelado = state.paymentMethod === 'parcelado';
     document.getElementById('pix-pago-whatsapp').href = linkSuporte(
-      'Olá! Acabei de pagar meu pedido da Camisa Oficial GDA via Pix (' + formatCurrency(totalAtual()) + ') — pagamento confirmado automaticamente.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() +
+      (parcelado
+        ? 'Olá! Acabei de pagar a ENTRADA (50%) do meu pedido da Camisa Oficial GDA via Pix (' + formatCurrency(valorPixAtual()) + ') — confirmada automaticamente. Falta a 2ª parcela (' + formatCurrency(totalAtual() - valorPixAtual()) + ').'
+        : 'Olá! Acabei de pagar meu pedido da Camisa Oficial GDA via Pix (' + formatCurrency(totalAtual()) + ') — pagamento confirmado automaticamente.') +
+      '\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() +
       (state.quantidadeBalaclava > 0 ? ('\nBalaclava: ' + balaclavaLabelText()) : '') + ref);
   }
 
@@ -327,6 +416,13 @@
       state.enviando = false;
       if (!r.ok) {
         console.error('[GDA] erro ao gerar Pix:', r);
+        if (state.retomando) {
+          // Quem volta pelo link não deve ter o WhatsApp aberto sozinho: mostra o erro e a saída pelo suporte.
+          mostrarErroPix((r.mensagem || 'Não foi possível gerar o Pix automático.') + ' Tente de novo em instantes ou fale com o suporte.');
+          document.getElementById('pix-dinheiro').style.display = '';
+          atualizarLinksSuporte();
+          return;
+        }
         cairNoManual((r.mensagem || 'Não foi possível gerar o Pix automático.') + ' Seu pedido foi registrado — vamos continuar pelo WhatsApp do suporte.');
         return;
       }
@@ -336,7 +432,9 @@
       box.style.display = '';
       if (painelPix) painelPix.parar();
       painelPix = window.gdaPix.mostrar(box, r.data, {
+        titulo: state.paymentMethod === 'parcelado' ? 'Pague a entrada (50%) com Pix' : null,
         onAprovado: function () {
+          limparPedidoLocal();
           state.pago = true;
           state.pixAtivo = false;
           document.getElementById('pix-pedido').style.display = 'none';
@@ -352,7 +450,7 @@
     });
   }
 
-  function enviarPedidoVista() {
+  function enviarPedidoPix() {
     state.enviando = true;
     render();
     if (state.pedidoId) { gerarPixDoPedido(); return; }
@@ -366,7 +464,7 @@
       p_tamanho: state.tamanho || '',
       p_quantidade_camisa: state.quantidadeCamisa,
       p_quantidade_balaclava: state.quantidadeBalaclava,
-      p_forma_pagamento: 'vista'
+      p_forma_pagamento: state.paymentMethod
     }).then(function (result) {
       if (result.error || !result.data) {
         console.error('[GDA] erro ao registrar pedido (RPC):', result.error);
@@ -375,6 +473,8 @@
         return;
       }
       state.pedidoId = String(result.data);
+      marcarPedidoNaUrl();
+      guardarPedidoLocal();
       gerarPixDoPedido();
     });
   }
@@ -408,18 +508,87 @@
       return;
     }
 
-    if (state.paymentMethod === 'vista' && window.gdaPix) {
-      enviarPedidoVista();
+    // À vista: Pix do total. Parcelado: Pix da ENTRADA de 50% (a 2ª parcela o suporte cobra manualmente).
+    if (window.gdaPix) {
+      enviarPedidoPix();
       return;
     }
 
-    // Parcelado: continua manual, com o suporte (como antes).
     state.enviando = true;
     render();
     gravarDiretoEAbrirWhatsapp();
   });
 
   render();
+
+  // ----- ao abrir a página: voltou pelo link do pedido? -----
+  function retomarPedido(id) {
+    state.retomando = true;
+    render();
+    mostrarMsgRetomada('Carregando o seu pedido…', 'Só um instante.', []);
+    if (!window.gdaSupabase || !window.gdaPix) {
+      mostrarMsgRetomada('Não foi possível conectar', 'Verifique sua internet e tente de novo.', [{ texto: 'Tentar de novo', href: window.location.href, destaque: true }]);
+      return;
+    }
+    window.gdaSupabase.rpc('consultar_pedido_pix', { p_pedido_id: id, p_whatsapp: state.whatsapp || null }).then(function (r) {
+      var suporte = { texto: 'Falar com o suporte', href: linkSuporte('Olá! Preciso de ajuda com o pagamento do meu pedido da Camisa Oficial GDA.\n\nRef. do pedido: ' + id), externo: true };
+      if (r.error) {
+        mostrarMsgRetomada('Não foi possível carregar o pedido', 'Tente de novo em instantes.', [{ texto: 'Tentar de novo', href: window.location.href, destaque: true }, suporte]);
+        return;
+      }
+      var p = r.data;
+      if (!p) {
+        limparPedidoLocal();
+        mostrarMsgRetomada('Não encontramos esse pedido', 'Confira se o link está completo, como o suporte enviou. Se preferir, faça um novo pedido.', [{ texto: 'Fazer um novo pedido', href: 'pedido-camisa.html', destaque: true }, suporte]);
+        return;
+      }
+      state.pedidoId = String(p.id);
+      state.item = p.item === 'feminina' ? 'feminina' : 'masculina';
+      state.tamanho = p.tamanho || '';
+      state.nome = p.nome_estampa || '';
+      state.piloto = p.piloto || '';
+      state.quantidadeCamisa = Math.max(1, Number(p.quantidade_camisa) || 1);
+      state.quantidadeBalaclava = Math.max(0, Number(p.quantidade_balaclava) || 0);
+      state.paymentMethod = p.forma_pagamento === 'parcelado' ? 'parcelado' : 'vista';
+      state.concordo = true;
+
+      if (p.status === 'pago' || p.status === 'entrada_paga') {
+        limparPedidoLocal();
+        state.pago = true;
+        esconderMsgRetomada();
+        atualizarLinksSuporte();
+        render();
+        return;
+      }
+      if (p.status === 'cancelado') {
+        limparPedidoLocal();
+        render();
+        mostrarMsgRetomada('Este pedido foi cancelado', 'Ele ficou muito tempo sem pagamento e foi encerrado. Você pode fazer um novo pedido quando quiser.', [{ texto: 'Fazer um novo pedido', href: 'pedido-camisa.html', destaque: true }, suporte]);
+        return;
+      }
+      if (p.status === 'pendente') {
+        esconderMsgRetomada();
+        atualizarLinksSuporte();
+        render();
+        gerarPixDoPedido();
+        return;
+      }
+      render();
+      mostrarMsgRetomada('Não foi possível abrir este pedido', 'Fale com o suporte pelo WhatsApp para ver como está o seu pedido.', [suporte]);
+    });
+  }
+
+  var pedidoDoLink = get('pedido');
+  if (pedidoDoLink && /^[\w-]{1,64}$/.test(pedidoDoLink)) {
+    retomarPedido(pedidoDoLink);
+  } else {
+    var guardado = lerPedidoLocal();
+    var mesmoContato = guardado && (!soDigitos(state.whatsapp) || guardado.whatsapp === soDigitos(state.whatsapp));
+    if (guardado && mesmoContato) {
+      document.getElementById('retomar-link').href = linkDeRetomada(guardado.id, guardado.whatsapp || state.whatsapp);
+      document.getElementById('retomar-banner').style.display = 'flex';
+    }
+  }
 })();
 </script>
 </body>

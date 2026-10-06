@@ -32,7 +32,7 @@
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
         <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: #F5F1EA;">Pedidos — Camisa Oficial GDA (3ª remessa)</h1>
-        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos à vista com Pix não pago ficam como “Aguardando Pix”: use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho.</p>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos com Pix não pago ficam como “Aguardando Pix” (no parcelado, o Pix é da entrada de 50%): use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho. No parcelado, depois da entrada o pedido fica como “Entrada paga ✓” até você marcar a 2ª parcela como recebida.</p>
       </div>
 
       <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando pedidos…</div>
@@ -96,33 +96,80 @@
     return url.href;
   }
 
+  var PRECO_CAMISA = 109.90;
+  var PRECO_BALACLAVA = 39.90;
+  var pedidosComPix = null; // conjunto de ids de pedidos que já geraram Pix (null = não deu para saber)
+
+  function brl(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+  function totalPedido(p) {
+    return PRECO_CAMISA * (p.quantidade_camisa || 0) + PRECO_BALACLAVA * (p.quantidade_balaclava || 0);
+  }
+
+  // "Aguardando Pix": pedido pendente que gerou Pix (à vista = total, parcelado = entrada).
   function aguardandoPix(p) {
-    return p.status === 'pendente' && p.forma_pagamento === 'vista';
+    if (p.status !== 'pendente') return false;
+    if (p.forma_pagamento !== 'vista' && p.forma_pagamento !== 'parcelado') return false;
+    if (pedidosComPix) return !!pedidosComPix[String(p.id)];
+    return p.forma_pagamento === 'vista'; // sem a tabela de pagamentos: comportamento anterior
   }
 
   var BTN = "padding: 6px 12px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px; width: fit-content; ";
 
+  function badge(texto, cor, fundo) {
+    return '<span style="display: inline-block; width: fit-content; padding: 4px 10px; border-radius: 999px; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px; color: ' + cor + '; background: ' + fundo + ';">' + texto + '</span>';
+  }
+  function marcarPagoBtn(p, texto) {
+    return '<button type="button" data-marcar-pago="' + escapeHtml(String(p.id)) + '" data-texto="' + escapeHtml(texto) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(127,217,154,0.5); color: #7FD99A;">' + escapeHtml(texto) + '</button>';
+  }
+
   function situacaoHtml(p) {
-    var badge = function (texto, cor, fundo) {
-      return '<span style="display: inline-block; width: fit-content; padding: 4px 10px; border-radius: 999px; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px; color: ' + cor + '; background: ' + fundo + ';">' + texto + '</span>';
-    };
+    var total = totalPedido(p);
+    var metade = total / 2;
     if (p.status === 'pago') return badge('Pago ✓', '#7FD99A', 'rgba(127,217,154,0.12)');
     if (p.status === 'cancelado') return badge('Cancelado', '#A89C8E', 'rgba(168,156,142,0.14)');
+    if (p.status === 'entrada_paga') {
+      var wa2 = waLink(p.whatsapp);
+      var msg2 = 'Olá! Sua entrada da Camisa Oficial GDA já está confirmada. Falta a 2ª parcela de ' + brl(metade) + ', com prazo até 22/10. Como prefere pagar?';
+      var cobrar = wa2
+        ? '<a href="' + wa2 + '?text=' + encodeURIComponent(msg2) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Cobrar 2ª parcela no WhatsApp</a>'
+        : '';
+      return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
+        badge('Entrada paga ✓', '#7FD99A', 'rgba(127,217,154,0.12)') +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #D8D2C7;">Falta a 2ª parcela: ' + brl(metade) + '</span>' +
+        marcarPagoBtn(p, 'Marcar 2ª parcela como paga') +
+        cobrar +
+        '</div>';
+    }
     if (aguardandoPix(p)) {
       var link = linkPagamento(p);
       var wa = waLink(p.whatsapp);
-      var msg = 'Olá! Seu pedido da Camisa Oficial GDA está aguardando o pagamento. Para pagar com Pix, é só abrir este link: ' + link;
+      var parc = p.forma_pagamento === 'parcelado';
+      var msg = 'Olá! Seu pedido da Camisa Oficial GDA está aguardando o pagamento' + (parc ? ' da entrada (' + brl(metade) + ')' : '') + '. Para pagar com Pix, é só abrir este link: ' + link;
       var lembrar = wa
         ? '<a href="' + wa + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Lembrar no WhatsApp</a>'
         : '';
       return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
-        badge('Aguardando Pix', '#FFDB00', 'rgba(255,219,0,0.12)') +
+        badge(parc ? 'Aguardando Pix (entrada)' : 'Aguardando Pix', '#FFDB00', 'rgba(255,219,0,0.12)') +
         '<button type="button" data-copiar-link="' + escapeHtml(link) + '" style="' + BTN + 'background: #FFDB00; color: #14110F; border: none;">Copiar link de pagamento</button>' +
         lembrar +
         '</div>';
     }
-    if (p.status === 'pendente') return badge('Pendente (combinar no WhatsApp)', '#D8D2C7', 'rgba(216,210,199,0.10)');
+    if (p.status === 'pendente') {
+      return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
+        badge('Pendente (combinar no WhatsApp)', '#D8D2C7', 'rgba(216,210,199,0.10)') +
+        marcarPagoBtn(p, 'Marcar como pago') +
+        '</div>';
+    }
     return badge(escapeHtml(p.status || '—'), '#D8D2C7', 'rgba(216,210,199,0.10)');
+  }
+
+  function pagamentoHtml(p) {
+    var total = totalPedido(p);
+    if (p.forma_pagamento === 'parcelado') {
+      return 'Parcelado<br><span style="font-size: 12px; color: #A89C8E;">entrada ' + brl(total / 2) + ' + ' + brl(total / 2) + '</span>';
+    }
+    var base = pagamentoLabel[p.forma_pagamento] || escapeHtml(p.forma_pagamento);
+    return base + (total > 0 ? '<br><span style="font-size: 12px; color: #A89C8E;">' + brl(total) + '</span>' : '');
   }
 
   function linhaHtml(p) {
@@ -137,14 +184,25 @@
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + escapeHtml(nomeOuPiloto) + '</span>' +
         waHtml +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + itemHtml(p) + '</span>' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + (pagamentoLabel[p.forma_pagamento] || escapeHtml(p.forma_pagamento)) + '</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + pagamentoHtml(p) + '</span>' +
         situacaoHtml(p) +
       '</div>'
     );
   }
 
   function carregarPedidos() {
-    window.gdaSupabase.from('pedidos').select('*').order('created_at', { ascending: false }).then(function (result) {
+    // Pagamentos (somente leitura para o admin): serve para saber quais pedidos já geraram Pix. Se falhar, segue sem.
+    var pPag = Promise.resolve(window.gdaSupabase.from('pagamentos').select('referencia_id').eq('tipo', 'camisa'))
+      .then(function (r) {
+        pedidosComPix = null;
+        if (r && !r.error && Array.isArray(r.data)) {
+          pedidosComPix = {};
+          r.data.forEach(function (x) { pedidosComPix[String(x.referencia_id)] = true; });
+        }
+      }, function () { pedidosComPix = null; });
+    pPag.then(function () {
+      return window.gdaSupabase.from('pedidos').select('*').order('created_at', { ascending: false });
+    }).then(function (result) {
       var statusMsg = document.getElementById('status-msg');
       var tabelaWrap = document.getElementById('tabela-wrap');
       if (result.error) {
@@ -188,6 +246,35 @@
   }
 
   document.getElementById('linhas-container').addEventListener('click', function (ev) {
+    var pago = ev.target && ev.target.closest ? ev.target.closest('[data-marcar-pago]') : null;
+    if (pago) {
+      // dois toques: o primeiro pede confirmação (evita marcar sem querer)
+      if (pago.getAttribute('data-confirmar') !== '1') {
+        pago.setAttribute('data-confirmar', '1');
+        pago.textContent = 'Toque de novo para confirmar';
+        setTimeout(function () {
+          if (pago.isConnected && pago.getAttribute('data-confirmar') === '1') {
+            pago.removeAttribute('data-confirmar');
+            pago.textContent = pago.getAttribute('data-texto');
+          }
+        }, 4000);
+        return;
+      }
+      pago.disabled = true;
+      pago.textContent = 'Salvando…';
+      Promise.resolve(window.gdaSupabase.rpc('marcar_pedido_pago', { p_pedido_id: pago.getAttribute('data-marcar-pago') })).then(function (r) {
+        if (r && !r.error && r.data) { carregarPedidos(); return; }
+        pago.disabled = false;
+        pago.removeAttribute('data-confirmar');
+        pago.textContent = 'Não foi possível salvar — tente de novo';
+        setTimeout(function () { if (pago.isConnected) pago.textContent = pago.getAttribute('data-texto'); }, 3500);
+      }, function () {
+        pago.disabled = false;
+        pago.removeAttribute('data-confirmar');
+        pago.textContent = 'Erro — tente de novo';
+      });
+      return;
+    }
     var btn = ev.target && ev.target.closest ? ev.target.closest('[data-copiar-link]') : null;
     if (!btn) return;
     var original = 'Copiar link de pagamento';

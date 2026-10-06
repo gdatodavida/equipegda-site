@@ -278,6 +278,7 @@
     var whatsapp = soDigitos(state.whatsapp);
     pedidos.forEach(function (p) {
       var total = CAMISA_PRICE * (p.quantidade_camisa || 1) + BALACLAVA_PRICE * (p.quantidade_balaclava || 0);
+      var parcelado = p.forma_pagamento === 'parcelado';
       var card = document.createElement('div');
       card.setAttribute('style', 'display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: #171310; border-radius: 12px;');
       var l1 = document.createElement('span');
@@ -285,10 +286,11 @@
       l1.textContent = descricaoPedido(p);
       var l2 = document.createElement('span');
       l2.setAttribute('style', "font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;");
-      l2.textContent = brl(total) + (dataCurta(p.created_at) ? ' · pedido de ' + dataCurta(p.created_at) : '');
+      l2.textContent = (parcelado ? 'Entrada de ' + brl(total / 2) + ' (parcelado, total ' + brl(total) + ')' : brl(total)) +
+        (dataCurta(p.created_at) ? ' · pedido de ' + dataCurta(p.created_at) : '');
       var a = document.createElement('a');
       a.href = 'pedido-resumo.html?pedido=' + encodeURIComponent(p.id) + '&whatsapp=' + encodeURIComponent(whatsapp);
-      a.textContent = 'Pagar este pedido com Pix →';
+      a.textContent = parcelado ? 'Pagar a entrada com Pix →' : 'Pagar este pedido com Pix →';
       a.setAttribute('style', "display: inline-flex; align-items: center; justify-content: center; margin-top: 6px; padding: 12px 20px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;");
       card.appendChild(l1); card.appendChild(l2); card.appendChild(a);
       lista.appendChild(card);
