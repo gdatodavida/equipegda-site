@@ -303,6 +303,21 @@
 
 </div>
 
+<div id="lembrete-overlay" style="display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; background: rgba(10,8,6,0.82);">
+  <div role="dialog" aria-modal="true" aria-labelledby="lembrete-titulo" style="width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 28px 26px; background: #211B17; border: 1px solid rgba(255,219,0,0.4); border-radius: 18px; box-sizing: border-box;">
+    <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Lembrete</span>
+    <h2 id="lembrete-titulo" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; line-height: 1.25; color: #F5F1EA;">Seu cadastro já foi aprovado</h2>
+    <span id="lembrete-texto" style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #D8D2C7;"></span>
+    <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: #171310; border-radius: 12px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;">Adesivo de Identificação Oficial</span>
+      <span id="lembrete-detalhe" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">R$ 19,90 · aguardando pagamento</span>
+      <a id="lembrete-pagar" href="credenciamento.html" style="display: inline-flex; align-items: center; justify-content: center; margin-top: 6px; padding: 12px 20px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Pagar o adesivo com Pix →</a>
+    </div>
+    <button id="lembrete-novo" type="button" style="padding: 13px 22px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.2); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Fazer um novo cadastro mesmo assim</button>
+    <button id="lembrete-fechar" type="button" style="padding: 6px; background: transparent; border: none; color: #A89C8E; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; text-decoration: underline;">Voltar</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script>
@@ -460,11 +475,74 @@
   });
   document.getElementById('cad-emerg2-parentesco').addEventListener('change', function (e) { state.emerg2Parentesco = e.target.value; render(); });
 
-  document.getElementById('btn-continuar1').addEventListener('click', function () {
-    if (!window._cadState.allFilled) return;
+  // ----- lembrete: cadastro aprovado com este WhatsApp que ainda não pagou o adesivo -----
+  var lembreteVistoPara = null; // WhatsApp (só dígitos) para o qual o lembrete já foi mostrado e dispensado
+  var verificando = false;
+
+  function soDigitos(v) { return String(v || '').replace(/\D/g, ''); }
+
+  function irParaPasso2() {
     scrollToTop();
     state.screen = 2;
     render();
+  }
+
+  function fecharLembrete() {
+    document.getElementById('lembrete-overlay').style.display = 'none';
+    var b = document.getElementById('btn-continuar1');
+    if (b) b.focus();
+  }
+
+  function mostrarLembrete(cad) {
+    var primeiro = String(cad.nome || state.nome || '').trim().split(/\s+/)[0];
+    document.getElementById('lembrete-texto').textContent = (primeiro ? primeiro + ', ' : '') +
+      'já existe um cadastro aprovado com este WhatsApp e falta só pagar o adesivo. ' +
+      'Você pode pagar agora, sem refazer o cadastro — o Pix é gerado de novo se o anterior expirou.';
+    document.getElementById('lembrete-detalhe').textContent = 'R$ 19,90' +
+      (cad.numero_piloto ? ' · Nº de piloto ' + cad.numero_piloto : '') + ' · aguardando pagamento';
+    document.getElementById('lembrete-pagar').href = 'credenciamento.html?whatsapp=' + encodeURIComponent(soDigitos(state.whatsapp));
+    document.getElementById('lembrete-overlay').style.display = 'flex';
+    document.getElementById('lembrete-pagar').focus();
+  }
+
+  // Nunca trava o cadastro: se algo falhar ou demorar, segue para o passo 2 normalmente.
+  function verificarPendenteEAvancar() {
+    var whatsapp = soDigitos(state.whatsapp);
+    if (verificando) return;
+    if (whatsapp.length < 8 || lembreteVistoPara === whatsapp || !window.gdaSupabase) { irParaPasso2(); return; }
+
+    verificando = true;
+    var btn = document.getElementById('btn-continuar1');
+    var textoOriginal = btn.textContent;
+    btn.textContent = 'Verificando…';
+    var concluido = false;
+    function terminar(cad) {
+      if (concluido) return;
+      concluido = true;
+      verificando = false;
+      btn.textContent = textoOriginal;
+      if (cad && cad.status === 'aprovado' && !cad.adesivo_pago) { mostrarLembrete(cad); } else { irParaPasso2(); }
+    }
+    var limite = setTimeout(function () { terminar(null); }, 4000);
+    try {
+      Promise.resolve(window.gdaSupabase.rpc('consultar_credenciamento_pix', { p_whatsapp: whatsapp })).then(function (r) {
+        clearTimeout(limite);
+        terminar(r && !r.error && r.data && typeof r.data === 'object' ? r.data : null);
+      }, function () { clearTimeout(limite); terminar(null); });
+    } catch (err) { clearTimeout(limite); terminar(null); }
+  }
+
+  document.getElementById('lembrete-novo').addEventListener('click', function () {
+    lembreteVistoPara = soDigitos(state.whatsapp);
+    fecharLembrete();
+    irParaPasso2();
+  });
+  document.getElementById('lembrete-fechar').addEventListener('click', fecharLembrete);
+  document.getElementById('lembrete-overlay').addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharLembrete(); });
+
+  document.getElementById('btn-continuar1').addEventListener('click', function () {
+    if (!window._cadState.allFilled) return;
+    verificarPendenteEAvancar();
   });
   document.getElementById('btn-continuar2').addEventListener('click', function () {
     if (!window._cadState.allFilled2) return;
