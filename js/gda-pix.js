@@ -3,7 +3,7 @@
 //
 //   gdaPix.criar({ tipo: 'adesivo', cadastro_id })          → Promise<{ ok, data | erro }>
 //   gdaPix.criar({ tipo: 'camisa',  pedido_id })            → idem
-//   gdaPix.mostrar(container, pagamento, { onAprovado, onFalha, onNovoCodigo }) → { parar() }
+//   gdaPix.mostrar(container, pagamento, { titulo, onAprovado, onFalha, onNovoCodigo }) → { parar() }
 //
 // O valor NUNCA é enviado pelo site: o servidor calcula a partir do banco.
 (function () {
@@ -116,7 +116,7 @@
     }
 
     var caixa = el('div', 'display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 18px;background:#171310;border:1px solid rgba(255,219,0,0.35);border-radius:14px;');
-    caixa.appendChild(el('span', 'font-family:' + TITULO + ';font-weight:600;font-size:16px;color:#F5F1EA;', 'Pague com Pix'));
+    caixa.appendChild(el('span', 'font-family:' + TITULO + ';font-weight:600;font-size:16px;color:#F5F1EA;text-align:center;', opts.titulo || 'Pague com Pix'));
     caixa.appendChild(el('span', 'font-family:' + TITULO + ';font-weight:700;font-size:26px;color:#FFDB00;', brl(pg.valor)));
 
     if (pg.live_mode === false) {
