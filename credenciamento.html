@@ -59,7 +59,9 @@
         </div>
 
         <button id="btn-pagar-adesivo" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Pagar com Pix →</button>
-        <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C; text-align: center; margin-top: -10px;">[pré-visualização — o pagamento automático via Mercado Pago ainda vai ser conectado aqui; por enquanto este botão só avança a tela pra você ver como fica]</span>
+        <span id="pix-erro" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #E8806F; text-align: center;"></span>
+        <div id="pix-adesivo" style="display: none;"></div>
+        <span id="pix-suporte" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C; text-align: center;">Problemas com o pagamento? <a href="https://wa.me/557331914501" target="_blank" rel="noopener" style="color: #D8D2C7; text-decoration: underline;">Fale com o suporte no WhatsApp</a>.</span>
       </div>
     </section>
   </div>
@@ -101,6 +103,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/gda-pix.js"></script>
 <script>
 (function () {
   'use strict';
@@ -134,39 +137,111 @@
   }
 
   var whatsapp = getWhatsappFromQuery();
+  var cadastroId = null;
+
+  function aplicarLinha(linha) {
+    if (!linha) {
+      mostrarBloqueado('Cadastro não encontrado', 'Não encontramos um cadastro com esse WhatsApp. Confira o link ou refaça seu cadastro.');
+      return;
+    }
+    if (linha.status !== 'aprovado') {
+      mostrarBloqueado('Ainda não liberado', 'Seu cadastro ainda está em análise pela nossa equipe. Assim que for aprovado, você recebe o link de credenciamento no WhatsApp.');
+      return;
+    }
+    cadastroId = linha.id || null;
+    mostrarAprovado(linha.numero_piloto);
+    // Adesivo já pago antes? Vai direto para a tela de boas-vindas.
+    if (linha.adesivo_pago) {
+      document.getElementById('screen-1').style.display = 'none';
+      document.getElementById('screen-2').style.display = '';
+    }
+  }
+
+  function erroVerificar() {
+    mostrarBloqueado('Não foi possível verificar', 'Verifique sua internet e tente de novo em alguns instantes.');
+  }
+
+  function consultarAntiga() {
+    window.gdaSupabase.rpc('consultar_credenciamento', { p_whatsapp: whatsapp }).then(function (result) {
+      if (result.error) {
+        console.error('[GDA] erro ao consultar credenciamento:', result.error);
+        erroVerificar();
+        return;
+      }
+      aplicarLinha((result.data && result.data[0]) || null);
+    });
+  }
 
   if (!whatsapp) {
     mostrarBloqueado('Link incompleto', 'Acesse esta página pelo link que a equipe de suporte te enviou no WhatsApp após a aprovação do seu cadastro.');
   } else if (!window.gdaSupabase) {
-    mostrarBloqueado('Não foi possível verificar', 'Verifique sua internet e tente de novo em alguns instantes.');
+    erroVerificar();
   } else {
-    window.gdaSupabase.rpc('consultar_credenciamento', { p_whatsapp: whatsapp }).then(function (result) {
+    // Função nova (traz o id do cadastro e se o adesivo já foi pago). Se ainda não existir no banco, usa a antiga.
+    window.gdaSupabase.rpc('consultar_credenciamento_pix', { p_whatsapp: whatsapp }).then(function (result) {
       if (result.error) {
-        console.error('[GDA] erro ao consultar credenciamento:', result.error);
-        mostrarBloqueado('Não foi possível verificar', 'Verifique sua internet e tente de novo em alguns instantes.');
+        console.warn('[GDA] consultar_credenciamento_pix indisponível, usando a consulta antiga:', result.error);
+        consultarAntiga();
         return;
       }
-      var linha = (result.data && result.data[0]) || null;
-      if (!linha) {
-        mostrarBloqueado('Cadastro não encontrado', 'Não encontramos um cadastro com esse WhatsApp. Confira o link ou refaça seu cadastro.');
+      aplicarLinha(result.data || null);
+    });
+  }
+
+  var painelPix = null;
+
+  function irParaBoasVindas() {
+    scrollToTop();
+    document.getElementById('screen-1').style.display = 'none';
+    document.getElementById('screen-2').style.display = '';
+  }
+
+  function mostrarErroPix(msg) {
+    var e = document.getElementById('pix-erro');
+    e.textContent = msg || '';
+    e.style.display = msg ? '' : 'none';
+    document.getElementById('pix-suporte').style.display = msg ? '' : 'none';
+  }
+
+  function gerarPixAdesivo() {
+    var btn = document.getElementById('btn-pagar-adesivo');
+    mostrarErroPix('');
+    if (!cadastroId) {
+      mostrarErroPix('Não foi possível iniciar o pagamento. Atualize a página ou fale com o suporte.');
+      document.getElementById('pix-suporte').style.display = '';
+      return;
+    }
+    if (!window.gdaPix) {
+      mostrarErroPix('O pagamento não carregou. Atualize a página e tente de novo.');
+      return;
+    }
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.textContent = 'Gerando Pix…';
+
+    window.gdaPix.criar({ tipo: 'adesivo', cadastro_id: cadastroId }).then(function (r) {
+      if (!r.ok) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.textContent = 'Pagar com Pix →';
+        if (r.erro === 'adesivo_ja_pago') { irParaBoasVindas(); return; }
+        mostrarErroPix(r.mensagem);
         return;
       }
-      if (linha.status !== 'aprovado') {
-        mostrarBloqueado('Ainda não liberado', 'Seu cadastro ainda está em análise pela nossa equipe. Assim que for aprovado, você recebe o link de credenciamento no WhatsApp.');
-        return;
-      }
-      mostrarAprovado(linha.numero_piloto);
+      btn.style.display = 'none';
+      var box = document.getElementById('pix-adesivo');
+      box.style.display = '';
+      document.getElementById('pix-suporte').style.display = '';
+      if (painelPix) painelPix.parar();
+      painelPix = window.gdaPix.mostrar(box, r.data, {
+        onAprovado: function () { setTimeout(irParaBoasVindas, 1600); },
+        onNovoCodigo: gerarPixAdesivo
+      });
     });
   }
 
   var btnPagar = document.getElementById('btn-pagar-adesivo');
-  if (btnPagar) {
-    btnPagar.addEventListener('click', function () {
-      scrollToTop();
-      document.getElementById('screen-1').style.display = 'none';
-      document.getElementById('screen-2').style.display = '';
-    });
-  }
+  if (btnPagar) btnPagar.addEventListener('click', gerarPixAdesivo);
 })();
 </script>
 </body>

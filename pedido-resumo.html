@@ -101,7 +101,15 @@
       </div>
 
       <button id="btn-enviar" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none; width: 100%; box-sizing: border-box; opacity: 0.45; cursor: not-allowed;">Enviar pedido</button>
-      <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #d8d2c7; text-align: center">Ao enviar, abrimos o WhatsApp do suporte com seu pedido pronto — depois é só mandar o comprovante de pagamento na mesma conversa.</span>
+      <span id="nota-enviar" style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #d8d2c7; text-align: center">Ao enviar, abrimos o WhatsApp do suporte com seu pedido pronto — depois é só mandar o comprovante de pagamento na mesma conversa.</span>
+      <span id="pix-erro" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #E8806F; text-align: center;"></span>
+      <div id="pix-pedido" style="display: none;"></div>
+      <div id="pix-pago-box" style="display: none; flex-direction: column; gap: 10px; padding: 18px 20px; background: rgba(127,217,154,0.08); border: 1px solid rgba(127,217,154,0.4); border-radius: 14px;">
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #7FD99A;">Pagamento confirmado ✓</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #D8D2C7;">Seu pedido está pago e registrado. Não precisa enviar comprovante — a confirmação foi automática. Se quiser, avise o suporte pelo WhatsApp para acompanhar o pedido.</span>
+        <a id="pix-pago-whatsapp" href="#" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Avisar o suporte no WhatsApp →</a>
+      </div>
+      <span id="pix-dinheiro" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C; text-align: center;">Prefere pagar em dinheiro em mãos ou teve algum problema? <a id="pix-dinheiro-link" href="#" target="_blank" rel="noopener" style="color: #D8D2C7; text-decoration: underline;">Fale com o suporte no WhatsApp</a>.</span>
 
       <div id="pedido-enviado-box" style="display: none; flex-direction: column; gap: 10px; padding: 18px 20px; background: rgba(255,219,0,0.08); border: 1px solid rgba(255,219,0,0.35); border-radius: 14px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #FFDB00;">Pedido enviado — pague quando quiser</span>
@@ -129,6 +137,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/gda-pix.js"></script>
 <script>
 (function () {
   'use strict';
@@ -155,8 +164,13 @@
     concordo: false,
     pedidoEnviado: false,
     pixCopiado: false,
-    enviando: false
+    enviando: false,
+    pedidoId: null,
+    pixAtivo: false,
+    pago: false,
+    manual: false
   };
+  var painelPix = null;
 
   var CAMISA_PRICE = 109.90;
   var BALACLAVA_PRICE = 39.90;
@@ -195,7 +209,7 @@
     document.getElementById('balaclava-row-wrap').style.display = state.quantidadeBalaclava > 0 ? 'flex' : 'none';
     document.getElementById('total-price').textContent = formatCurrency(total);
 
-    document.getElementById('vista-sub').textContent = formatCurrency(total) + ' via Pix ou Dinheiro em mãos';
+    document.getElementById('vista-sub').textContent = formatCurrency(total) + ' via Pix — confirmação automática';
     document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(installment) + ' + ' + formatCurrency(installment) + ' até 16/10';
 
     document.getElementById('btn-vista').style.background = isVista ? 'rgba(255,219,0,0.1)' : '#171310';
@@ -208,17 +222,32 @@
     document.getElementById('concordo-mark').textContent = state.concordo ? '✓' : '';
 
     var btnEnviar = document.getElementById('btn-enviar');
-    var podeEnviar = state.concordo && !state.enviando;
-    btnEnviar.style.opacity = podeEnviar || state.pedidoEnviado ? '1' : '0.45';
+    var bloqueado = state.enviando || state.pixAtivo || state.pedidoEnviado || state.pago;
+    var podeEnviar = state.concordo && !bloqueado;
+    btnEnviar.style.opacity = (podeEnviar || state.pedidoEnviado || state.pago) ? '1' : '0.45';
     btnEnviar.style.cursor = podeEnviar ? 'pointer' : 'not-allowed';
-    btnEnviar.textContent = state.pedidoEnviado ? 'Pedido enviado ✓' : (state.enviando ? 'Enviando…' : 'Enviar pedido');
+    var textoBtn;
+    if (state.pago) textoBtn = 'Pagamento confirmado ✓';
+    else if (state.pixAtivo) textoBtn = 'Aguardando pagamento…';
+    else if (state.pedidoEnviado) textoBtn = 'Pedido enviado ✓';
+    else if (state.enviando) textoBtn = isVista ? 'Gerando Pix…' : 'Enviando…';
+    else textoBtn = isVista ? 'Enviar pedido e pagar com Pix' : 'Enviar pedido';
+    btnEnviar.textContent = textoBtn;
 
-    document.getElementById('pedido-enviado-box').style.display = state.pedidoEnviado ? 'flex' : 'none';
+    var nota = document.getElementById('nota-enviar');
+    nota.style.display = (state.pixAtivo || state.pago) ? 'none' : '';
+    nota.textContent = isVista
+      ? 'Ao enviar, geramos o seu Pix (QR Code e Pix Copia e Cola). O pagamento é confirmado automaticamente, sem precisar enviar comprovante.'
+      : 'Ao enviar, abrimos o WhatsApp do suporte com seu pedido pronto — depois é só mandar o comprovante de pagamento na mesma conversa.';
+
+    document.getElementById('pedido-enviado-box').style.display = (state.pedidoEnviado && state.manual) ? 'flex' : 'none';
+    document.getElementById('pix-pago-box').style.display = state.pago ? 'flex' : 'none';
+    document.getElementById('pix-dinheiro').style.display = (state.pixAtivo && !state.pago) ? '' : 'none';
     document.getElementById('btn-copiar-pix').textContent = state.pixCopiado ? 'Copiado ✓' : 'Copiar chave';
   }
 
-  document.getElementById('btn-vista').addEventListener('click', function () { state.paymentMethod = 'vista'; render(); });
-  document.getElementById('btn-parcelado').addEventListener('click', function () { state.paymentMethod = 'parcelado'; render(); });
+  document.getElementById('btn-vista').addEventListener('click', function () { if (state.pixAtivo || state.pedidoEnviado || state.enviando) return; state.paymentMethod = 'vista'; render(); });
+  document.getElementById('btn-parcelado').addEventListener('click', function () { if (state.pixAtivo || state.pedidoEnviado || state.enviando) return; state.paymentMethod = 'parcelado'; render(); });
   document.getElementById('label-concordo').addEventListener('click', function () { state.concordo = !state.concordo; render(); });
 
   document.getElementById('btn-copiar-pix').addEventListener('click', function () {
@@ -253,17 +282,105 @@
     render();
   }
 
-  document.getElementById('btn-enviar').addEventListener('click', function () {
-    if (!state.concordo || state.enviando || state.pedidoEnviado) return;
+  function mostrarErroPix(msg) {
+    var e = document.getElementById('pix-erro');
+    e.textContent = msg || '';
+    e.style.display = msg ? '' : 'none';
+  }
 
-    if (!window.gdaSupabase) {
-      abrirWhatsappEMarcarEnviado();
-      return;
-    }
+  function totalAtual() {
+    return CAMISA_PRICE * state.quantidadeCamisa + BALACLAVA_PRICE * state.quantidadeBalaclava;
+  }
 
+  function linkSuporte(texto) {
+    return 'https://wa.me/557331914501?text=' + encodeURIComponent(texto);
+  }
+
+  function pilotoInfoTexto() {
+    return (state.nome || state.piloto)
+      ? ((state.nome || '') + (state.piloto ? ' (nº ' + state.piloto + ')' : ''))
+      : '[nome/nº de piloto]';
+  }
+
+  function atualizarLinksSuporte() {
+    var ref = state.pedidoId ? ('\nRef. do pedido: ' + state.pedidoId) : '';
+    document.getElementById('pix-dinheiro-link').href = linkSuporte(
+      'Olá! Fiz o pedido da Camisa Oficial GDA (' + formatCurrency(totalAtual()) + ') e quero falar sobre o pagamento.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() + ref);
+    document.getElementById('pix-pago-whatsapp').href = linkSuporte(
+      'Olá! Acabei de pagar meu pedido da Camisa Oficial GDA via Pix (' + formatCurrency(totalAtual()) + ') — pagamento confirmado automaticamente.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() +
+      (state.quantidadeBalaclava > 0 ? ('\nBalaclava: ' + balaclavaLabelText()) : '') + ref);
+  }
+
+  // Pedido gravado, mas o Pix automático não deu certo: cai no atendimento manual (como antes).
+  function cairNoManual(msg) {
+    mostrarErroPix(msg);
+    state.manual = true;
+    state.pixAtivo = false;
+    abrirWhatsappEMarcarEnviado();
+  }
+
+  function gerarPixDoPedido() {
+    mostrarErroPix('');
     state.enviando = true;
     render();
+    window.gdaPix.criar({ tipo: 'camisa', pedido_id: state.pedidoId }).then(function (r) {
+      state.enviando = false;
+      if (!r.ok) {
+        console.error('[GDA] erro ao gerar Pix:', r);
+        cairNoManual((r.mensagem || 'Não foi possível gerar o Pix automático.') + ' Seu pedido foi registrado — vamos continuar pelo WhatsApp do suporte.');
+        return;
+      }
+      state.pixAtivo = true;
+      atualizarLinksSuporte();
+      var box = document.getElementById('pix-pedido');
+      box.style.display = '';
+      if (painelPix) painelPix.parar();
+      painelPix = window.gdaPix.mostrar(box, r.data, {
+        onAprovado: function () {
+          state.pago = true;
+          state.pixAtivo = false;
+          document.getElementById('pix-pedido').style.display = 'none';
+          atualizarLinksSuporte();
+          render();
+        },
+        onNovoCodigo: function () {
+          state.pixAtivo = false;
+          gerarPixDoPedido();
+        }
+      });
+      render();
+    });
+  }
 
+  function enviarPedidoVista() {
+    state.enviando = true;
+    render();
+    if (state.pedidoId) { gerarPixDoPedido(); return; }
+
+    window.gdaSupabase.rpc('registrar_pedido_camisa', {
+      p_identificacao: state.identificacao || '',
+      p_piloto: state.piloto || '',
+      p_whatsapp: state.whatsapp || '',
+      p_item: state.item,
+      p_nome_estampa: state.nome || '',
+      p_tamanho: state.tamanho || '',
+      p_quantidade_camisa: state.quantidadeCamisa,
+      p_quantidade_balaclava: state.quantidadeBalaclava,
+      p_forma_pagamento: 'vista'
+    }).then(function (result) {
+      if (result.error || !result.data) {
+        console.error('[GDA] erro ao registrar pedido (RPC):', result.error);
+        // Sem a função nova no banco (ou erro): usa o fluxo antigo — grava direto e abre o WhatsApp.
+        gravarDiretoEAbrirWhatsapp();
+        return;
+      }
+      state.pedidoId = String(result.data);
+      gerarPixDoPedido();
+    });
+  }
+
+  function gravarDiretoEAbrirWhatsapp() {
+    state.manual = true;
     window.gdaSupabase.from('pedidos').insert({
       identificacao: state.identificacao || null,
       piloto: state.piloto || null,
@@ -280,6 +397,26 @@
       }
       abrirWhatsappEMarcarEnviado();
     });
+  }
+
+  document.getElementById('btn-enviar').addEventListener('click', function () {
+    if (!state.concordo || state.enviando || state.pedidoEnviado || state.pixAtivo || state.pago) return;
+
+    if (!window.gdaSupabase) {
+      state.manual = true;
+      abrirWhatsappEMarcarEnviado();
+      return;
+    }
+
+    if (state.paymentMethod === 'vista' && window.gdaPix) {
+      enviarPedidoVista();
+      return;
+    }
+
+    // Parcelado: continua manual, com o suporte (como antes).
+    state.enviando = true;
+    render();
+    gravarDiretoEAbrirWhatsapp();
   });
 
   render();
