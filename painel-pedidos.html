@@ -27,22 +27,23 @@
   </header>
 
   <section style="padding: 60px 40px; box-sizing: border-box; flex: 1;">
-    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
+    <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
         <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: #F5F1EA;">Pedidos — Camisa Oficial GDA (3ª remessa)</h1>
-        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa.</p>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos à vista com Pix não pago ficam como “Aguardando Pix”: use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho.</p>
       </div>
 
       <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando pedidos…</div>
 
       <div id="tabela-wrap" style="background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px; overflow: hidden; display: none;">
-        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.8fr 0.9fr; padding: 14px 22px; background: #171310; border-bottom: 1px solid rgba(245,241,234,0.08);">
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.9fr 0.6fr 1.2fr; padding: 14px 22px; background: #171310; border-bottom: 1px solid rgba(245,241,234,0.08);">
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Nome / piloto</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">WhatsApp</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Item</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Pagamento</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Situação</span>
         </div>
         <div id="linhas-container"></div>
       </div>
@@ -84,6 +85,46 @@
     return texto;
   }
 
+  // Link que leva a pessoa direto ao Pix do pedido (a página pedido-resumo reabre o pagamento)
+  function linkPagamento(p) {
+    var digits = String(p.whatsapp || '').replace(/\D/g, '');
+    var url = new URL('pedido-resumo.html', window.location.href);
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('pedido', String(p.id));
+    if (digits) url.searchParams.set('whatsapp', digits);
+    return url.href;
+  }
+
+  function aguardandoPix(p) {
+    return p.status === 'pendente' && p.forma_pagamento === 'vista';
+  }
+
+  var BTN = "padding: 6px 12px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px; width: fit-content; ";
+
+  function situacaoHtml(p) {
+    var badge = function (texto, cor, fundo) {
+      return '<span style="display: inline-block; width: fit-content; padding: 4px 10px; border-radius: 999px; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px; color: ' + cor + '; background: ' + fundo + ';">' + texto + '</span>';
+    };
+    if (p.status === 'pago') return badge('Pago ✓', '#7FD99A', 'rgba(127,217,154,0.12)');
+    if (p.status === 'cancelado') return badge('Cancelado', '#A89C8E', 'rgba(168,156,142,0.14)');
+    if (aguardandoPix(p)) {
+      var link = linkPagamento(p);
+      var wa = waLink(p.whatsapp);
+      var msg = 'Olá! Seu pedido da Camisa Oficial GDA está aguardando o pagamento. Para pagar com Pix, é só abrir este link: ' + link;
+      var lembrar = wa
+        ? '<a href="' + wa + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Lembrar no WhatsApp</a>'
+        : '';
+      return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
+        badge('Aguardando Pix', '#FFDB00', 'rgba(255,219,0,0.12)') +
+        '<button type="button" data-copiar-link="' + escapeHtml(link) + '" style="' + BTN + 'background: #FFDB00; color: #14110F; border: none;">Copiar link de pagamento</button>' +
+        lembrar +
+        '</div>';
+    }
+    if (p.status === 'pendente') return badge('Pendente (combinar no WhatsApp)', '#D8D2C7', 'rgba(216,210,199,0.10)');
+    return badge(escapeHtml(p.status || '—'), '#D8D2C7', 'rgba(216,210,199,0.10)');
+  }
+
   function linhaHtml(p) {
     var nomeOuPiloto = p.identificacao || (p.piloto ? ('Piloto nº ' + p.piloto) : '—') + (p.nome_estampa ? (' — estampa: ' + p.nome_estampa) : '');
     var link = waLink(p.whatsapp);
@@ -92,11 +133,12 @@
       : '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #6B655C;">—</span>';
 
     return (
-      '<div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.8fr 0.9fr; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(245,241,234,0.06);">' +
+      '<div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.9fr 0.6fr 1.2fr; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(245,241,234,0.06);">' +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + escapeHtml(nomeOuPiloto) + '</span>' +
         waHtml +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + itemHtml(p) + '</span>' +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + (pagamentoLabel[p.forma_pagamento] || escapeHtml(p.forma_pagamento)) + '</span>' +
+        situacaoHtml(p) +
       '</div>'
     );
   }
@@ -122,8 +164,43 @@
     });
   }
 
+  function copiarTexto(texto) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(texto).then(function () { return true; }, function () { return copiarFallback(texto); });
+      }
+    } catch (err) { /* cai no fallback */ }
+    return Promise.resolve(copiarFallback(texto));
+  }
+  function copiarFallback(texto) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = texto;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return !!ok;
+    } catch (err) { return false; }
+  }
+
+  document.getElementById('linhas-container').addEventListener('click', function (ev) {
+    var btn = ev.target && ev.target.closest ? ev.target.closest('[data-copiar-link]') : null;
+    if (!btn) return;
+    var original = 'Copiar link de pagamento';
+    copiarTexto(btn.getAttribute('data-copiar-link')).then(function (ok) {
+      btn.textContent = ok ? 'Link copiado ✓' : 'Não deu para copiar';
+      setTimeout(function () { btn.textContent = original; }, 2500);
+    });
+  });
+
   window.gdaRequireAuth(function () {
-    carregarPedidos();
+    // Cancela pedidos à vista com Pix que ninguém pagou em 48 h (se a função ainda não existir no banco, ignora).
+    var limpeza = window.gdaSupabase.rpc('cancelar_pedidos_pix_antigos', { p_horas: 48 });
+    Promise.resolve(limpeza).catch(function () {}).then(function () { carregarPedidos(); });
   });
 })();
 </script>
