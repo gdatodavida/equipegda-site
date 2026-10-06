@@ -138,6 +138,19 @@
 
 </div>
 
+<div id="lembrete-overlay" style="display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; background: rgba(10,8,6,0.82);">
+  <div role="dialog" aria-modal="true" aria-labelledby="lembrete-titulo" style="width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 28px 26px; background: #211B17; border: 1px solid rgba(255,219,0,0.4); border-radius: 18px; box-sizing: border-box;">
+    <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Lembrete</span>
+    <h2 id="lembrete-titulo" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; line-height: 1.25; color: #F5F1EA;">Você tem pedido aguardando pagamento</h2>
+    <span id="lembrete-texto" style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #D8D2C7;"></span>
+    <div id="lembrete-lista" style="display: flex; flex-direction: column; gap: 12px;"></div>
+    <button id="lembrete-novo" type="button" style="padding: 13px 22px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.2); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Fazer um novo pedido mesmo assim</button>
+    <button id="lembrete-fechar" type="button" style="padding: 6px; background: transparent; border: none; color: #A89C8E; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; text-decoration: underline;">Voltar</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script>
 (function () {
   'use strict';
@@ -216,7 +229,111 @@
   document.getElementById('wa-camisa').addEventListener('input', function (e) { state.whatsapp = e.target.value; });
   document.getElementById('nome-camisa').addEventListener('input', function (e) { state.nome = e.target.value; render(); });
 
-  document.getElementById('btn-go-2').addEventListener('click', function () { scrollToTop(); state.screen = 2; render(); });
+  // ----- lembrete: pedidos desse WhatsApp que ainda aguardam pagamento -----
+  var CAMISA_PRICE = 109.90;
+  var BALACLAVA_PRICE = 39.90;
+  var lembreteVistoPara = null; // WhatsApp (só dígitos) para o qual o lembrete já foi mostrado e dispensado
+  var verificando = false;
+
+  function soDigitos(v) { return String(v || '').replace(/\D/g, ''); }
+  function brl(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+
+  function irParaPasso2() { scrollToTop(); state.screen = 2; render(); }
+
+  function fecharLembrete() {
+    document.getElementById('lembrete-overlay').style.display = 'none';
+    var b = document.getElementById('btn-go-2');
+    if (b) b.focus();
+  }
+
+  function descricaoPedido(p) {
+    var t = 'Camisa ' + (p.item === 'feminina' ? 'Feminina' : 'Masculina');
+    if (p.tamanho) t += ' — tam. ' + p.tamanho;
+    if (p.quantidade_camisa > 1) t += ' (x' + p.quantidade_camisa + ')';
+    if (p.quantidade_balaclava > 0) t += ' + Balaclava' + (p.quantidade_balaclava > 1 ? ' (x' + p.quantidade_balaclava + ')' : '');
+    return t;
+  }
+
+  function dataCurta(iso) {
+    try {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      var dd = ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2);
+      var hh = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      return dd + ' às ' + hh;
+    } catch (err) { return ''; }
+  }
+
+  function mostrarLembrete(pedidos) {
+    var plural = pedidos.length > 1;
+    var primeiro = (state.identificacao || '').trim().split(/\s+/)[0];
+    document.getElementById('lembrete-titulo').textContent = plural
+      ? 'Você tem ' + pedidos.length + ' pedidos aguardando pagamento'
+      : 'Você tem um pedido aguardando pagamento';
+    document.getElementById('lembrete-texto').textContent = (primeiro ? primeiro + ', ' : '') +
+      (plural ? 'estes pedidos foram feitos com este WhatsApp e ainda não foram pagos.' : 'este pedido foi feito com este WhatsApp e ainda não foi pago.') +
+      ' Você pode pagar agora, sem refazer nada — o Pix é gerado de novo se o anterior expirou.';
+    var lista = document.getElementById('lembrete-lista');
+    lista.innerHTML = '';
+    var whatsapp = soDigitos(state.whatsapp);
+    pedidos.forEach(function (p) {
+      var total = CAMISA_PRICE * (p.quantidade_camisa || 1) + BALACLAVA_PRICE * (p.quantidade_balaclava || 0);
+      var card = document.createElement('div');
+      card.setAttribute('style', 'display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: #171310; border-radius: 12px;');
+      var l1 = document.createElement('span');
+      l1.setAttribute('style', "font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;");
+      l1.textContent = descricaoPedido(p);
+      var l2 = document.createElement('span');
+      l2.setAttribute('style', "font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;");
+      l2.textContent = brl(total) + (dataCurta(p.created_at) ? ' · pedido de ' + dataCurta(p.created_at) : '');
+      var a = document.createElement('a');
+      a.href = 'pedido-resumo.html?pedido=' + encodeURIComponent(p.id) + '&whatsapp=' + encodeURIComponent(whatsapp);
+      a.textContent = 'Pagar este pedido com Pix →';
+      a.setAttribute('style', "display: inline-flex; align-items: center; justify-content: center; margin-top: 6px; padding: 12px 20px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;");
+      card.appendChild(l1); card.appendChild(l2); card.appendChild(a);
+      lista.appendChild(card);
+    });
+    document.getElementById('lembrete-overlay').style.display = 'flex';
+    var primeiroLink = lista.querySelector('a');
+    if (primeiroLink) primeiroLink.focus();
+  }
+
+  // Nunca trava o pedido: se algo falhar ou demorar, segue para o passo 2 normalmente.
+  function verificarPendentesEAvancar() {
+    var whatsapp = soDigitos(state.whatsapp);
+    if (verificando) return;
+    if (whatsapp.length < 8 || lembreteVistoPara === whatsapp || !window.gdaSupabase) { irParaPasso2(); return; }
+
+    verificando = true;
+    var btn = document.getElementById('btn-go-2');
+    var textoOriginal = btn.textContent;
+    btn.textContent = 'Verificando…';
+    var concluido = false;
+    function terminar(pedidos) {
+      if (concluido) return;
+      concluido = true;
+      verificando = false;
+      btn.textContent = textoOriginal;
+      if (pedidos && pedidos.length) { mostrarLembrete(pedidos); } else { irParaPasso2(); }
+    }
+    var limite = setTimeout(function () { terminar(null); }, 4000);
+    try {
+      Promise.resolve(window.gdaSupabase.rpc('consultar_pedidos_pendentes', { p_whatsapp: whatsapp })).then(function (r) {
+        clearTimeout(limite);
+        terminar(r && !r.error && Array.isArray(r.data) ? r.data : null);
+      }, function () { clearTimeout(limite); terminar(null); });
+    } catch (err) { clearTimeout(limite); terminar(null); }
+  }
+
+  document.getElementById('lembrete-novo').addEventListener('click', function () {
+    lembreteVistoPara = soDigitos(state.whatsapp);
+    fecharLembrete();
+    irParaPasso2();
+  });
+  document.getElementById('lembrete-fechar').addEventListener('click', fecharLembrete);
+  document.getElementById('lembrete-overlay').addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharLembrete(); });
+
+  document.getElementById('btn-go-2').addEventListener('click', verificarPendentesEAvancar);
   document.getElementById('btn-back-1').addEventListener('click', function () { scrollToTop(); state.screen = 1; render(); });
   document.getElementById('header-back-2').addEventListener('click', function () { scrollToTop(); state.screen = 1; render(); });
   document.getElementById('btn-back-2').addEventListener('click', function () { scrollToTop(); state.screen = 2; render(); });
