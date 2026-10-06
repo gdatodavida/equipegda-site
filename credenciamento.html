@@ -72,6 +72,12 @@
         <div style="width: 56px; height: 56px; border-radius: 999px; background: rgba(255,219,0,0.12); border: 1.5px solid #FFDB00; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 24px; color: #FFDB00;">✓</div>
         <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; color: #F5F1EA;">Bem-vindo à Equipe GDA!</h2>
         <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 17px; line-height: 1.5; color: #FFDB00; font-weight: 700;">Seu adesivo está pronto pra retirada.</p>
+        <div style="width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px; background: rgba(255,219,0,0.08); border: 1.5px solid #FFDB00; border-radius: 16px;">
+          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.3; color: #F5F1EA;">Agende agora a retirada do seu adesivo</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.5; color: #D8D2C7;">Fale direto com o nosso suporte no WhatsApp para combinar o local e o horário.</span>
+          <a id="btn-suporte-retirada" href="https://wa.me/557331914501" target="_blank" rel="noopener" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16px; box-shadow: 0 6px 24px rgba(255,219,0,0.25);">Falar com o suporte no WhatsApp →</a>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #A89C8E;">(73) 3191-4501</span>
+        </div>
         <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: #D8D2C7;">Agora é só entrar nos grupos e aproveitar os benefícios de piloto credenciado.</p>
 
         <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 20px; background: #171310; border-radius: 12px;">
@@ -130,6 +136,24 @@
     document.getElementById('screen-bloqueado').style.display = '';
   }
 
+  var SUPORTE_WHATSAPP = '557331914501';
+  function primeiroNome(nome) {
+    var p = String(nome || '').trim().split(/\s+/)[0] || '';
+    return p ? p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : '';
+  }
+  function montarMensagemRetirada(nome, numero) {
+    var n = primeiroNome(nome);
+    var num = String(numero || '').trim();
+    var quem = '';
+    if (n && num) quem = 'sou ' + n + ', Piloto ' + num + ' e ';
+    else if (n) quem = 'sou ' + n + ' e ';
+    else if (num) quem = 'sou o Piloto ' + num + ' e ';
+    return 'Olá, ' + quem + 'acabei de pagar meu Adesivo de Identificação Oficial GDA. Quero saber onde retirar meu adesivo.';
+  }
+  function atualizarLinkSuporte(nome, numero) {
+    var a = document.getElementById('btn-suporte-retirada');
+    if (a) a.href = 'https://wa.me/' + SUPORTE_WHATSAPP + '?text=' + encodeURIComponent(montarMensagemRetirada(nome, numero));
+  }
   function mostrarAprovado(numeroPiloto) {
     document.getElementById('screen-carregando').style.display = 'none';
     document.getElementById('numero-piloto').textContent = numeroPiloto ? ('Nº ' + numeroPiloto) : '—';
@@ -149,6 +173,7 @@
       return;
     }
     cadastroId = linha.id || null;
+    atualizarLinkSuporte(linha.nome, linha.numero_piloto);
     mostrarAprovado(linha.numero_piloto);
     // Adesivo já pago antes? Vai direto para a tela de boas-vindas.
     if (linha.adesivo_pago) {
