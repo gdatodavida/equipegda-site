@@ -12,7 +12,38 @@
   @keyframes gda-remessa-marquee{from{transform:translateX(-1584px);}to{transform:translateX(0);}}
   @media (prefers-reduced-motion: reduce){.gda-marquee-track{animation:none !important;}}
 
+  /* ===== Topo da home (celular e computador usam o mesmo layout) =====
+     No computador o banner ocupa a largura toda da tela, no formato 1600x912
+     das imagens (sem cortar nada); o texto do herói vem logo abaixo. */
+  .gda-nav { height: auto !important; }
+
+  .gda-mobile-slides { display: block; padding: 0 !important; }
+  .gda-mobile-slides-track { width: 100%; }
+  .gda-mslide-dots { position: absolute !important; left: 50% !important; top: min(calc(100vh - 140px), calc(100% - 56px)) !important; bottom: auto !important; transform: translateX(-50%); width: max-content !important; padding: 8px 14px !important; border-radius: 999px; background: rgba(20,17,15,0.55) !important; z-index: 3; gap: 10px !important; }
+  .gda-mslide-dots .gda-mdot { width: 10px !important; height: 10px !important; cursor: pointer; }
+  .gda-mslide-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 52px; height: 52px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.28); background: rgba(20,17,15,0.55); color: #F5F1EA; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .gda-mslide-arrow:hover { background: rgba(20,17,15,0.8); }
+  .gda-mslide-arrow[data-dir="-1"] { left: 28px; }
+  .gda-mslide-arrow[data-dir="1"] { right: 28px; }
+  .gda-mslide-cap { left: max(40px, 5vw) !important; right: 40px !important; top: min(calc(100vh - 290px), calc(100% - 160px)) !important; bottom: auto !important; gap: 10px !important; }
+  .gda-mslide-cap .gda-mslide-cap-k { font-size: 14px !important; }
+  .gda-mslide-cap .gda-mslide-cap-t { font-size: clamp(28px, 3.2vw, 52px) !important; }
+
+  #hero { padding: 72px 40px 80px !important; min-height: 0 !important; align-items: center !important; }
+  #hero .gda-hero-content { gap: 20px !important; max-width: 1240px !important; }
+  #hero h1 { width: auto !important; height: auto !important; font-size: 68px !important; }
+  #hero p { font-size: 18px !important; max-width: 640px !important; }
+  .gda-hero-ctas { width: auto !important; height: auto !important; font-size: 15px !important; margin-top: 8px !important; }
+  .gda-hero-ctas > a { width: auto !important; height: auto !important; box-sizing: border-box !important; justify-content: center !important; font-size: 16px !important; }
+
   @media (max-width: 760px) {
+    .gda-mobile-slides { border-bottom: 1px solid rgba(245,241,234,0.08); }
+    .gda-mslide-dots { position: static !important; transform: none !important; left: auto !important; top: auto !important; bottom: auto !important; width: auto !important; border-radius: 0 !important; background: #14110F !important; padding: 7px 0 !important; gap: 8px !important; }
+    .gda-mslide-dots .gda-mdot { width: 8px !important; height: 8px !important; }
+    .gda-mslide-arrow { display: none !important; }
+    .gda-mslide-cap { left: 20px !important; right: 20px !important; top: auto !important; bottom: 20px !important; gap: 6px !important; }
+    .gda-mslide-cap .gda-mslide-cap-k { font-size: 12px !important; }
+    .gda-mslide-cap .gda-mslide-cap-t { font-size: 22px !important; }
     html { overflow-x: hidden; }
     .gda-nav { display: none !important; }
     .gda-header-inner { padding: 14px 20px !important; gap: 14px !important; justify-content: space-between !important; }
@@ -25,7 +56,7 @@
     #hero .gda-hero-content { gap: 18px !important; }
     #hero h1 { width: auto !important; height: auto !important; font-size: 38px !important; }
     #hero p { font-size: 15px !important; }
-    .gda-hero-ctas { width: auto !important; height: auto !important; font-size: 15px !important; flex-direction: column !important; align-items: stretch !important; }
+    .gda-hero-ctas { width: auto !important; height: auto !important; font-size: 15px !important; margin-top: 8px !important; flex-direction: column !important; align-items: stretch !important; }
     .gda-hero-ctas > a { width: 100% !important; height: auto !important; box-sizing: border-box !important; justify-content: center !important; font-size: 16px !important; }
 
     #destaques { padding: 40px 20px !important; }
@@ -82,14 +113,14 @@
     </nav>
   </header>
 
-  <div class="gda-mobile-slides" style="display: none; position: relative; width: 100%; overflow: hidden; background: #14110F; border-bottom: 1px solid rgba(245,241,234,0.08);">
+  <div class="gda-mobile-slides" style="position: relative; width: 100%; overflow: hidden; background: #14110F;">
     <div class="gda-mobile-slides-track" style="position: relative; width: 100%; aspect-ratio: 1600 / 912;">
       <a href="fazer-parte.html" class="gda-mslide" data-slide="0" style="position: absolute; inset: 0; display: block; opacity: 1; transition: opacity .5s ease; background: #0F0C0A;">
         <img src="img/recrutamento-familia-gda.jpg" alt="Família GDA — GDA toda vida: disciplina, respeito, união" style="width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block;">
         <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,17,15,0) 55%, rgba(20,17,15,0.92) 100%);"></div>
-        <div style="position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 6px;">
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffdb00;">Recrutamento</span>
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #F5F1EA;">Faça parte da Equipe GDA</span>
+        <div class="gda-mslide-cap" style="position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <span class="gda-mslide-cap-k" style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffdb00;">Recrutamento</span>
+          <span class="gda-mslide-cap-t" style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #F5F1EA;">Faça parte da Equipe GDA</span>
         </div>
       </a>
       <a href="https://equipegda.com.br/#remessa" class="gda-mslide" data-slide="1" style="position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
@@ -99,6 +130,8 @@
         <img src="img/adesivo-identificacao-gda.jpg" alt="Adesivo de Identificação GDA — é identidade, é segurança, é GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </div>
     </div>
+    <button type="button" class="gda-mslide-arrow" data-dir="-1" aria-label="Tela anterior"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"></polyline></svg></button>
+    <button type="button" class="gda-mslide-arrow" data-dir="1" aria-label="Próxima tela"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"></polyline></svg></button>
     <div class="gda-mslide-dots" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 7px 0; background: #14110F;">
       <button type="button" class="gda-mdot" data-dot="0" aria-label="Slide 1" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: #ffdb00;"></button>
       <button type="button" class="gda-mdot" data-dot="1" aria-label="Slide 2" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
@@ -396,6 +429,13 @@
     d.addEventListener('click', function () { show(i); restartTimer(); });
   });
 
+  Array.prototype.slice.call(wrap.querySelectorAll('.gda-mslide-arrow')).forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      show(current + parseInt(btn.getAttribute('data-dir'), 10));
+      restartTimer();
+    });
+  });
+
   var startX = null;
   track.addEventListener('touchstart', function (e) {
     startX = e.touches[0].clientX;
@@ -413,32 +453,47 @@
   show(0);
   restartTimer();
 
-  // No mobile, estende o herói pra ocupar o resto da primeira tela de
-  // rolagem (cabeçalho + telas de passagem + herói == altura da tela),
-  // assim os cards de "Comunidade de verdade" etc. ficam só depois do scroll.
+  // Pausa a troca automática enquanto o mouse está em cima (computador)
+  wrap.addEventListener('mouseenter', function () { if (timer) { clearInterval(timer); timer = null; } });
+  wrap.addEventListener('mouseleave', restartTimer);
+
+  // No celular, estende o herói pra ocupar o resto da primeira tela de
+  // rolagem (cabeçalho + telas de passagem + herói == altura da tela), assim
+  // os cards de "Comunidade de verdade" etc. ficam só depois do scroll.
+  // No computador o banner (largura total) já ocupa a primeira tela.
   var heroSection = document.getElementById('hero');
   var isMobile = window.matchMedia('(max-width: 760px)');
 
-  function fitHeroToViewport() {
-    if (!heroSection) return;
-    if (!isMobile.matches) { heroSection.style.removeProperty('min-height'); return; }
-    // "min-height: 0" do CSS mobile usa !important (pra vencer o min-height
-    // inline original de 620px) — por isso o valor calculado aqui também
-    // precisa ser setado como !important, senão a regra do CSS sempre ganha.
-    heroSection.style.setProperty('min-height', '0px', 'important');
-    var top = heroSection.getBoundingClientRect().top;
-    var target = window.innerHeight - top;
-    heroSection.style.setProperty('min-height', (target > 0 ? target : 0) + 'px', 'important');
+  function setHeroMinHeight(px) {
+    // O CSS usa "min-height: 0 !important" (pra vencer o min-height inline
+    // original do herói) — por isso o valor calculado aqui também precisa
+    // ser !important, senão a regra do CSS sempre ganha.
+    heroSection.style.setProperty('min-height', px + 'px', 'important');
   }
 
-  fitHeroToViewport();
-  window.addEventListener('resize', fitHeroToViewport);
-  window.addEventListener('orientationchange', fitHeroToViewport);
+  function layoutTop() {
+    if (!heroSection) return;
+    if (!isMobile.matches) {
+      // computador: o banner já ocupa a primeira tela; o herói segue o fluxo normal
+      heroSection.style.removeProperty('min-height');
+      return;
+    }
+    setHeroMinHeight(0);
+    var top = heroSection.getBoundingClientRect().top;
+    var target = window.innerHeight - top;
+    setHeroMinHeight(target > 0 ? target : 0);
+  }
+
+  layoutTop();
+  window.addEventListener('resize', layoutTop);
+  window.addEventListener('orientationchange', layoutTop);
+  window.addEventListener('load', layoutTop);
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(fitHeroToViewport);
+    document.fonts.ready.then(layoutTop);
   }
 })();
 </script>
 
 </body>
 </html>
+
