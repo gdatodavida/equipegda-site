@@ -12,6 +12,8 @@
   input{outline:none;}
   input:focus{border-color:#FFDB00;}
   button{cursor:pointer;}
+  input.gda-invalid{border-color:#FF8A7A !important;}
+  .gda-req{color:#FFDB00;}
 </style>
 </head>
 <body>
@@ -44,20 +46,23 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <label for="identificacao" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Seu Nome Completo</label>
-          <input id="identificacao" name="identificacao" type="text" placeholder="Digite seu nome" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <label for="identificacao" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Seu Nome Completo <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="identificacao" name="identificacao" type="text" required minlength="7" autocomplete="name" aria-describedby="err-identificacao" placeholder="Digite seu nome" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <span id="err-identificacao" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; color: #FF8A7A;"></span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <label for="piloto" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de piloto</label>
-          <input id="piloto" name="piloto" type="text" list="pilotos-lista" placeholder="Digite seu número de piloto" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <label for="piloto" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de piloto <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="piloto" name="piloto" type="text" required inputmode="numeric" aria-describedby="err-piloto" list="pilotos-lista" placeholder="Digite seu número de piloto" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
           <datalist id="pilotos-lista"></datalist>
+          <span id="err-piloto" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; color: #FF8A7A;"></span>
           <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">[Se não tem número de piloto, Fale com o suporte agora mesmo.]</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <label for="wa-camisa" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de WhatsApp</label>
-          <input id="wa-camisa" name="wa-camisa" type="tel" placeholder="(11) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <label for="wa-camisa" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de WhatsApp <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="wa-camisa" name="wa-camisa" type="tel" required inputmode="numeric" autocomplete="tel-national" maxlength="15" aria-describedby="err-wa-camisa" placeholder="(73) 91234-5678" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <span id="err-wa-camisa" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; color: #FF8A7A;"></span>
         </div>
 
         <button id="btn-go-2" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Continuar →</button>
@@ -117,8 +122,9 @@
         <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C; text-align: center; margin-top: -14px;">[pré-visualização aproximada — a estampa final é feita pela gráfica]</span>
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <label for="nome-camisa" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Nome pra estampar</label>
-          <input id="nome-camisa" name="nome-camisa" type="text" placeholder="Digite o nome" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <label for="nome-camisa" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Nome pra estampar <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="nome-camisa" name="nome-camisa" type="text" required aria-describedby="err-nome-camisa" placeholder="Digite o nome" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
+          <span id="err-nome-camisa" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; color: #FF8A7A;"></span>
         </div>
 
         <div style="display: flex; align-items: center; gap: 12px;">
@@ -131,7 +137,7 @@
 
   <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
     <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #56504A;">© 2026 Equipe GDA — GDA toda vida.</span>
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">2024 © Equipe GDA. Todos os direitos reservados.</span>
       <a href="index.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
     </div>
   </footer>
@@ -224,10 +230,88 @@
     document.getElementById('link-continuar-tamanho').href = 'pedido-tamanho.html?item=' + state.item + '&piloto=' + pilotoParam + '&nome=' + nomeParam + '&identificacao=' + identificacaoParam + '&whatsapp=' + whatsappParam;
   }
 
-  document.getElementById('identificacao').addEventListener('input', function (e) { state.identificacao = e.target.value; });
-  document.getElementById('piloto').addEventListener('input', function (e) { state.piloto = e.target.value; });
-  document.getElementById('wa-camisa').addEventListener('input', function (e) { state.whatsapp = e.target.value; });
-  document.getElementById('nome-camisa').addEventListener('input', function (e) { state.nome = e.target.value; render(); });
+  // ----- validação dos campos obrigatórios (passo 1 e passo 3) -----
+  function setErro(id, msg) {
+    var input = document.getElementById(id);
+    var err = document.getElementById('err-' + id);
+    if (msg) {
+      input.classList.add('gda-invalid');
+      input.setAttribute('aria-invalid', 'true');
+      err.textContent = msg;
+      err.style.display = 'block';
+    } else {
+      input.classList.remove('gda-invalid');
+      input.removeAttribute('aria-invalid');
+      err.textContent = '';
+      err.style.display = 'none';
+    }
+  }
+
+  function formatarWhatsapp(v) {
+    var d = String(v || '').replace(/\D/g, '').slice(0, 11);
+    if (d.length === 0) return '';
+    if (d.length <= 2) return '(' + d;
+    if (d.length <= 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+    if (d.length <= 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+  }
+
+  function erroNome(v) {
+    v = String(v || '').trim();
+    if (!v) return 'Digite seu nome.';
+    if (v.replace(/\s+/g, ' ').length < 7) return 'Nome muito curto — digite seu nome completo (mínimo 7 caracteres).';
+    return '';
+  }
+  function erroPiloto(v) {
+    v = String(v || '').trim();
+    if (!v) return 'Digite seu número de piloto.';
+    return '';
+  }
+  function erroWhatsapp(v) {
+    var d = String(v || '').replace(/\D/g, '');
+    if (!d) return 'Digite seu número de WhatsApp.';
+    if (d.length < 11) return 'Número incompleto — falta DDD ou dígitos';
+    if (d.charAt(2) !== '9') return 'Confira o número — depois do DDD deve começar com 9';
+    return '';
+  }
+  function erroNomeCamisa(v) {
+    v = String(v || '').trim();
+    if (!v) return 'Digite o nome que vai estampado na camisa.';
+    return '';
+  }
+
+  function validarPasso1() {
+    var e1 = erroNome(state.identificacao), e2 = erroPiloto(state.piloto), e3 = erroWhatsapp(state.whatsapp);
+    setErro('identificacao', e1); setErro('piloto', e2); setErro('wa-camisa', e3);
+    var primeiro = e1 ? 'identificacao' : e2 ? 'piloto' : e3 ? 'wa-camisa' : null;
+    if (primeiro) { document.getElementById(primeiro).focus(); return false; }
+    return true;
+  }
+
+  document.getElementById('identificacao').addEventListener('input', function (e) {
+    state.identificacao = e.target.value;
+    if (e.target.classList.contains('gda-invalid')) setErro('identificacao', erroNome(state.identificacao));
+  });
+  document.getElementById('piloto').addEventListener('input', function (e) {
+    state.piloto = e.target.value;
+    if (e.target.classList.contains('gda-invalid')) setErro('piloto', erroPiloto(state.piloto));
+  });
+  document.getElementById('wa-camisa').addEventListener('input', function (e) {
+    var f = formatarWhatsapp(e.target.value);
+    if (e.target.value !== f) e.target.value = f;
+    state.whatsapp = f;
+    if (e.target.classList.contains('gda-invalid')) setErro('wa-camisa', erroWhatsapp(state.whatsapp));
+  });
+  document.getElementById('nome-camisa').addEventListener('input', function (e) {
+    state.nome = e.target.value;
+    if (e.target.classList.contains('gda-invalid')) setErro('nome-camisa', erroNomeCamisa(state.nome));
+    render();
+  });
+  document.getElementById('link-continuar-tamanho').addEventListener('click', function (e) {
+    var erro = erroNomeCamisa(state.nome);
+    setErro('nome-camisa', erro);
+    if (erro) { e.preventDefault(); document.getElementById('nome-camisa').focus(); }
+  });
 
   // ----- lembrete: pedidos desse WhatsApp que ainda aguardam pagamento -----
   var CAMISA_PRICE = 109.90;
@@ -304,6 +388,7 @@
   function verificarPendentesEAvancar() {
     var whatsapp = soDigitos(state.whatsapp);
     if (verificando) return;
+    if (!validarPasso1()) return;
     if (whatsapp.length < 8 || lembreteVistoPara === whatsapp || !window.gdaSupabase) { irParaPasso2(); return; }
 
     verificando = true;
