@@ -69,6 +69,105 @@
   var cadastros = [];
   var filtroAtual = 'pendente';
 
+  // ----- adesivo: pagamento e retirada -----
+  // Pago: usa a coluna adesivo_pago do cadastro; se ela não existir, consulta a tabela de pagamentos (Pix do adesivo).
+  var adesivosPagos = null; // { idDoCadastro: true } vindo da tabela pagamentos (null = não deu para consultar)
+  var STATUS_PAGO = { approved: 1, aprovado: 1, pago: 1, paid: 1 };
+
+  function adesivoPago(c) {
+    if (c.adesivo_pago === true) return true;
+    if (adesivosPagos && adesivosPagos[String(c.id)]) return true;
+    if (c.adesivo_pago === false) return false;
+    return adesivosPagos ? false : null; // null = não foi possível saber
+  }
+
+  function carregarPagamentosAdesivo() {
+    return Promise.resolve(window.gdaSupabase.from('pagamentos').select('*').eq('tipo', 'adesivo')).then(function (r) {
+      adesivosPagos = null;
+      if (r && !r.error && Array.isArray(r.data)) {
+        adesivosPagos = {};
+        r.data.forEach(function (x) {
+          var st = String(x.status || '').toLowerCase();
+          if (STATUS_PAGO[st] || x.pago === true) adesivosPagos[String(x.referencia_id)] = true;
+        });
+      }
+    }, function () { adesivosPagos = null; });
+  }
+
+  function dataHoraCurta(iso) {
+    try {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + ' às ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    } catch (err) { return ''; }
+  }
+
+  function badgeAdesivo(texto, cor, fundo) {
+    return '<span style="padding: 5px 12px; border-radius: 999px; background: ' + fundo + '; color: ' + cor + '; font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700;">' + texto + '</span>';
+  }
+
+  function adesivoHtml(c) {
+    if (c.status !== 'aprovado') return '';
+    var pago = adesivoPago(c);
+    var BTN = "display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; ";
+    var pagamento, retirada = '';
+    if (pago === true) pagamento = badgeAdesivo('Adesivo pago ✓', '#5AC878', 'rgba(90,200,120,0.14)');
+    else if (pago === false) pagamento = badgeAdesivo('Aguardando pagamento do adesivo', '#FFDB00', 'rgba(255,219,0,0.14)');
+    else pagamento = badgeAdesivo('Pagamento: não foi possível verificar', '#A89C8E', 'rgba(168,156,142,0.14)');
+
+    if (c.adesivo_retirado) {
+      var quando = c.adesivo_retirado_em ? ' em ' + dataHoraCurta(c.adesivo_retirado_em) : '';
+      retirada = badgeAdesivo('Adesivo retirado ✓' + quando, '#5AC878', 'rgba(90,200,120,0.14)') +
+        '<button data-acao="desfazer-retirada" data-id="' + c.id + '" type="button" style="padding: 4px 8px; background: transparent; border: none; color: #7A7369; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px; text-decoration: underline;">Desfazer</button>';
+    } else if (pago === true) {
+      retirada = '<button data-acao="marcar-retirado" data-id="' + c.id + '" type="button" style="' + BTN + 'background: #FFDB00; color: #14110F; border: none;">Marcar adesivo como retirado</button>';
+    } else {
+      retirada = '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #6B655C;">A retirada é liberada depois do pagamento.</span>';
+    }
+
+    return (
+      '<div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; background: #171310; border: 1px solid rgba(245,241,234,0.08); border-radius: 12px;">' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Adesivo de Identificação</span>' +
+        '<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">' + pagamento + retirada + '</div>' +
+        '<span data-retirada-erro="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;"></span>' +
+      '</div>'
+    );
+  }
+
+  function marcarRetirada(btn, id, retirado) {
+    var erro = document.querySelector('[data-retirada-erro="' + id + '"]');
+    if (retirado && btn.getAttribute('data-confirmar') !== '1') {
+      // dois toques: o primeiro pede confirmação
+      btn.setAttribute('data-confirmar', '1');
+      btn.textContent = 'Toque de novo para confirmar a retirada';
+      setTimeout(function () {
+        if (btn.isConnected && btn.getAttribute('data-confirmar') === '1') {
+          btn.removeAttribute('data-confirmar');
+          btn.textContent = 'Marcar adesivo como retirado';
+        }
+      }, 4000);
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Salvando…';
+    var dados = { adesivo_retirado: retirado, adesivo_retirado_em: retirado ? new Date().toISOString() : null };
+    window.gdaSupabase.from('cadastros').update(dados).eq('id', id).then(function (result) {
+      if (result.error) {
+        console.error('[GDA] erro ao salvar retirada do adesivo:', result.error);
+        btn.disabled = false;
+        btn.removeAttribute('data-confirmar');
+        btn.textContent = retirado ? 'Marcar adesivo como retirado' : 'Desfazer';
+        if (erro) {
+          erro.textContent = 'Não foi possível salvar. Confira se as colunas adesivo_retirado e adesivo_retirado_em já foram criadas no Supabase.';
+          erro.style.display = '';
+        }
+        return;
+      }
+      cadastros = cadastros.map(function (c) { return String(c.id) === String(id) ? Object.assign({}, c, dados) : c; });
+      render();
+    });
+  }
+
   // Planilha de clientes do GDA Vendas (mesma aba Num/NOME lida pelo backend em
   // Apps Script já usado no painel de vendas) — usada só pra SUGERIR o próximo
   // número de piloto disponível; quem decide e confirma continua sendo o suporte.
@@ -230,6 +329,7 @@
           '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Perfil profissional</span>' +
           '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' + perfilPills(c) + '</div>' +
         '</div>' +
+        adesivoHtml(c) +
         acoes +
       '</div>'
     );
@@ -273,6 +373,9 @@
           verDocumento(btn.getAttribute('data-doc'), win);
           return;
         }
+
+        if (acao === 'marcar-retirado') { marcarRetirada(btn, id, true); return; }
+        if (acao === 'desfazer-retirada') { marcarRetirada(btn, id, false); return; }
 
         if (acao === 'aprovar') {
           var input = document.querySelector('[data-piloto-input="' + id + '"]');
@@ -344,7 +447,9 @@
   }
 
   function carregarCadastros() {
-    window.gdaSupabase.from('cadastros').select('*').order('created_at', { ascending: false }).then(function (result) {
+    carregarPagamentosAdesivo().then(function () {
+      return window.gdaSupabase.from('cadastros').select('*').order('created_at', { ascending: false });
+    }).then(function (result) {
       if (result.error) {
         document.getElementById('status-msg').textContent = 'Não foi possível carregar os cadastros agora.';
         console.error('[GDA] erro ao carregar cadastros:', result.error);

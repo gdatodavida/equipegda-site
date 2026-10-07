@@ -27,7 +27,7 @@
   </header>
 
   <section style="padding: 60px 40px; box-sizing: border-box; flex: 1;">
-    <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
+    <div style="max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
@@ -37,15 +37,20 @@
 
       <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando pedidos…</div>
 
-      <div id="tabela-wrap" style="background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px; overflow: hidden; display: none;">
-        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.9fr 0.6fr 1.2fr; padding: 14px 22px; background: #171310; border-bottom: 1px solid rgba(245,241,234,0.08);">
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Nome / piloto</span>
+      <div id="tabela-wrap" style="background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px; overflow-x: auto; display: none;">
+        <div style="min-width: 1080px;">
+        <div style="display: grid; grid-template-columns: 1.2fr 0.5fr 1fr 1fr 0.55fr 0.6fr 0.8fr 1.3fr; gap: 12px; padding: 14px 22px; background: #171310; border-bottom: 1px solid rgba(245,241,234,0.08);">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Nome</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Piloto</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">WhatsApp</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Item</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Camisas</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Balaclavas</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Pagamento</span>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Situação</span>
         </div>
         <div id="linhas-container"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -78,10 +83,6 @@
   function itemHtml(p) {
     var texto = (itemLabel[p.item] || escapeHtml(p.item));
     if (p.tamanho) texto += ' — tam. ' + escapeHtml(p.tamanho);
-    if (p.quantidade_camisa && p.quantidade_camisa > 1) texto += ' (x' + p.quantidade_camisa + ')';
-    if (p.quantidade_balaclava && p.quantidade_balaclava > 0) {
-      texto += ' + Balaclava' + (p.quantidade_balaclava > 1 ? (' (x' + p.quantidade_balaclava + ')') : '');
-    }
     return texto;
   }
 
@@ -122,6 +123,12 @@
     return '<button type="button" data-marcar-pago="' + escapeHtml(String(p.id)) + '" data-texto="' + escapeHtml(texto) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(127,217,154,0.5); color: #7FD99A;">' + escapeHtml(texto) + '</button>';
   }
 
+  // Excluir: só para pedidos que ainda aguardam pagamento (status "pendente").
+  function excluirBtn(p) {
+    if (p.status !== 'pendente') return '';
+    return '<button type="button" data-excluir="' + escapeHtml(String(p.id)) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(232,128,111,0.5); color: #E8806F;">Excluir pedido</button>';
+  }
+
   function situacaoHtml(p) {
     var total = totalPedido(p);
     var metade = total / 2;
@@ -152,12 +159,14 @@
         badge(parc ? 'Aguardando Pix (entrada)' : 'Aguardando Pix', '#FFDB00', 'rgba(255,219,0,0.12)') +
         '<button type="button" data-copiar-link="' + escapeHtml(link) + '" style="' + BTN + 'background: #FFDB00; color: #14110F; border: none;">Copiar link de pagamento</button>' +
         lembrar +
+        excluirBtn(p) +
         '</div>';
     }
     if (p.status === 'pendente') {
       return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
         badge('Pendente (combinar no WhatsApp)', '#D8D2C7', 'rgba(216,210,199,0.10)') +
         marcarPagoBtn(p, 'Marcar como pago') +
+        excluirBtn(p) +
         '</div>';
     }
     return badge(escapeHtml(p.status || '—'), '#D8D2C7', 'rgba(216,210,199,0.10)');
@@ -172,18 +181,27 @@
     return base + (total > 0 ? '<br><span style="font-size: 12px; color: #A89C8E;">' + brl(total) + '</span>' : '');
   }
 
+  function qtdHtml(n) {
+    n = Number(n) || 0;
+    return '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 17px; color: ' + (n > 0 ? '#F5F1EA' : '#56504A') + ';">' + n + '</span>';
+  }
+
   function linhaHtml(p) {
-    var nomeOuPiloto = p.identificacao || (p.piloto ? ('Piloto nº ' + p.piloto) : '—') + (p.nome_estampa ? (' — estampa: ' + p.nome_estampa) : '');
+    var nome = p.identificacao || '—';
+    var estampa = p.nome_estampa ? '<br><span style="font-size: 12px; color: #A89C8E;">Estampa: ' + escapeHtml(p.nome_estampa) + '</span>' : '';
     var link = waLink(p.whatsapp);
     var waHtml = link
       ? '<a href="' + link + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-family: \'Manrope\', sans-serif; font-size: 14px; font-weight: 600; color: #FFDB00;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + escapeHtml(p.whatsapp) + '</a>'
       : '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #6B655C;">—</span>';
 
     return (
-      '<div style="display: grid; grid-template-columns: 1.1fr 0.9fr 0.9fr 0.6fr 1.2fr; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(245,241,234,0.06);">' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + escapeHtml(nomeOuPiloto) + '</span>' +
+      '<div style="display: grid; grid-template-columns: 1.2fr 0.5fr 1fr 1fr 0.55fr 0.6fr 0.8fr 1.3fr; gap: 12px; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(245,241,234,0.06);">' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + escapeHtml(nome) + estampa + '</span>' +
+        '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 16px; color: #FFDB00;">' + (p.piloto ? escapeHtml(p.piloto) : '<span style="color: #56504A;">—</span>') + '</span>' +
         waHtml +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + itemHtml(p) + '</span>' +
+        qtdHtml(p.quantidade_camisa) +
+        qtdHtml(p.quantidade_balaclava) +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + pagamentoHtml(p) + '</span>' +
         situacaoHtml(p) +
       '</div>'
@@ -246,6 +264,38 @@
   }
 
   document.getElementById('linhas-container').addEventListener('click', function (ev) {
+    var exc = ev.target && ev.target.closest ? ev.target.closest('[data-excluir]') : null;
+    if (exc) {
+      // dois toques: o primeiro pede confirmação (evita excluir sem querer)
+      if (exc.getAttribute('data-confirmar') !== '1') {
+        exc.setAttribute('data-confirmar', '1');
+        exc.textContent = 'Toque de novo para excluir';
+        setTimeout(function () {
+          if (exc.isConnected && exc.getAttribute('data-confirmar') === '1') {
+            exc.removeAttribute('data-confirmar');
+            exc.textContent = 'Excluir pedido';
+          }
+        }, 4000);
+        return;
+      }
+      exc.disabled = true;
+      exc.textContent = 'Excluindo…';
+      // Só apaga se o pedido AINDA estiver aguardando pagamento (se foi pago nesse meio tempo, não apaga).
+      Promise.resolve(window.gdaSupabase.from('pedidos').delete().eq('id', exc.getAttribute('data-excluir')).eq('status', 'pendente').select('id')).then(function (r) {
+        if (r && !r.error && Array.isArray(r.data) && r.data.length) { carregarPedidos(); return; }
+        if (r && r.error) console.error('[GDA] erro ao excluir pedido:', r.error);
+        exc.disabled = false;
+        exc.removeAttribute('data-confirmar');
+        exc.textContent = (r && !r.error) ? 'Não excluído (já foi pago ou sem permissão)' : 'Não foi possível excluir';
+        setTimeout(function () { if (exc.isConnected) exc.textContent = 'Excluir pedido'; }, 3500);
+        if (r && !r.error) carregarPedidos();
+      }, function () {
+        exc.disabled = false;
+        exc.removeAttribute('data-confirmar');
+        exc.textContent = 'Erro — tente de novo';
+      });
+      return;
+    }
     var pago = ev.target && ev.target.closest ? ev.target.closest('[data-marcar-pago]') : null;
     if (pago) {
       // dois toques: o primeiro pede confirmação (evita marcar sem querer)
