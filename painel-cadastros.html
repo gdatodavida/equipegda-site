@@ -94,6 +94,52 @@
     }, function () { adesivosPagos = null; });
   }
 
+  // ----- regras dos grupos: quem já aceitou (tabela aceites_regras) -----
+  var REGRAS_VERSAO = '2026-10-v1'; // mesma versão usada em credenciamento.html
+  var GRUPOS_REGRAS = [['instagram', 'Instagram'], ['oficial', 'Oficial'], ['passageiros', 'Passageiros'], ['sos', 'SOS']];
+  var aceitesPorCadastro = null; // { idDoCadastro: { grupo: dataISO } } (null = não deu para consultar)
+
+  function carregarAceites() {
+    return Promise.resolve(window.gdaSupabase.from('aceites_regras').select('*').eq('versao', REGRAS_VERSAO)).then(function (r) {
+      aceitesPorCadastro = null;
+      if (r && !r.error && Array.isArray(r.data)) {
+        aceitesPorCadastro = {};
+        r.data.forEach(function (x) {
+          var k = String(x.cadastro_id);
+          (aceitesPorCadastro[k] = aceitesPorCadastro[k] || {})[x.grupo] = x.aceito_em;
+          if (x.grupo === 'instagram' && x.instagram_usuario) aceitesPorCadastro[k].instagramUsuario = x.instagram_usuario;
+        });
+      }
+    }, function () { aceitesPorCadastro = null; });
+  }
+
+  function regrasHtml(c) {
+    if (c.status !== 'aprovado') return '';
+    var conteudo;
+    if (!aceitesPorCadastro) {
+      conteudo = '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #6B655C;">Não foi possível consultar os aceites.</span>';
+    } else {
+      var meus = aceitesPorCadastro[String(c.id)] || {};
+      conteudo = GRUPOS_REGRAS.map(function (g) {
+        var quando = meus[g[0]];
+        if (g[0] === 'instagram') {
+          if (!quando) return badgeAdesivo('Instagram — não confirmou', '#A89C8E', 'rgba(168,156,142,0.14)');
+          var u = meus.instagramUsuario ? String(meus.instagramUsuario) : '';
+          return u
+            ? '<a href="https://www.instagram.com/' + encodeURIComponent(u) + '/" target="_blank" rel="noopener" style="padding: 5px 12px; border-radius: 999px; background: rgba(90,200,120,0.14); color: #5AC878; font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; text-decoration: underline;">Instagram ✓ @' + escapeHtml(u) + '</a>'
+            : badgeAdesivo('Instagram ✓', '#5AC878', 'rgba(90,200,120,0.14)');
+        }
+        return quando
+          ? badgeAdesivo(g[1] + ' ✓ ' + dataHoraCurta(quando), '#5AC878', 'rgba(90,200,120,0.14)')
+          : badgeAdesivo(g[1] + ' — não aceitou', '#A89C8E', 'rgba(168,156,142,0.14)');
+      }).join('');
+    }
+    return '<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">' +
+      '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Instagram e regras dos grupos</span>' +
+      '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">' + conteudo + '</div>' +
+    '</div>';
+  }
+
   function dataHoraCurta(iso) {
     try {
       var d = new Date(iso);
@@ -129,6 +175,7 @@
       '<div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; background: #171310; border: 1px solid rgba(245,241,234,0.08); border-radius: 12px;">' +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Adesivo de Identificação</span>' +
         '<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">' + pagamento + retirada + '</div>' +
+        regrasHtml(c) +
         '<span data-retirada-erro="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;"></span>' +
       '</div>'
     );
@@ -447,7 +494,7 @@
   }
 
   function carregarCadastros() {
-    carregarPagamentosAdesivo().then(function () {
+    Promise.all([carregarPagamentosAdesivo(), carregarAceites()]).then(function () {
       return window.gdaSupabase.from('cadastros').select('*').order('created_at', { ascending: false });
     }).then(function (result) {
       if (result.error) {

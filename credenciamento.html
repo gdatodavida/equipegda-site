@@ -10,6 +10,12 @@
   a{text-decoration:none;}
   a:hover{opacity:0.85;}
   button{cursor:pointer;}
+  .gda-grupo{width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px 14px 20px;border-radius:14px;text-align:left;font:inherit;}
+  .gda-grupo-bloq{background:#171310;border:1.5px solid rgba(245,241,234,0.18);color:inherit;}
+  .gda-grupo-ok{background:rgba(255,219,0,0.10);border:1.5px solid #FFDB00;box-shadow:0 4px 18px rgba(255,219,0,0.12);}
+  .gda-regras-lista{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;}
+  .gda-regras-lista li{font-family:'Manrope',sans-serif;font-size:14px;line-height:1.55;color:#E9E3D8;padding-left:4px;}
+  .gda-regras-lista li::marker{color:#FFDB00;font-weight:700;}
 </style>
 </head>
 <body>
@@ -87,18 +93,32 @@
 
         <div style="width: 100%; display: flex; flex-direction: column; gap: 12px;">
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Entre nos grupos</span>
-          <a href="https://chat.whatsapp.com/GVGLo6ywjHnCYqemghzLGn" target="_blank" rel="noopener" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px 14px 20px; border-radius: 14px; background: rgba(255,219,0,0.10); border: 1.5px solid #FFDB00; box-shadow: 0 4px 18px rgba(255,219,0,0.12); text-align: left;">
-            <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.2; color: #F5F1EA;">Grupo Oficial GDA</span></span>
-            <span style="flex: none; width: 38px; height: 38px; border-radius: 999px; background: #FFDB00; display: inline-flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14110F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a href="https://chat.whatsapp.com/EBJ8ogMd2o5ENIdD8QnUmt" target="_blank" rel="noopener" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px 14px 20px; border-radius: 14px; background: rgba(255,219,0,0.10); border: 1.5px solid #FFDB00; box-shadow: 0 4px 18px rgba(255,219,0,0.12); text-align: left;">
-            <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.2; color: #F5F1EA;">Grupo de Passageiros GDA</span></span>
-            <span style="flex: none; width: 38px; height: 38px; border-radius: 999px; background: #FFDB00; display: inline-flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14110F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
-          <a href="https://chat.whatsapp.com/GLhZTijawDUGnQlsquUvRd" target="_blank" rel="noopener" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px 14px 20px; border-radius: 14px; background: rgba(255,219,0,0.10); border: 1.5px solid #FFDB00; box-shadow: 0 4px 18px rgba(255,219,0,0.12); text-align: left;">
-            <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.2; color: #F5F1EA;">Grupo SOS GDA</span></span>
-            <span style="flex: none; width: 38px; height: 38px; border-radius: 999px; background: #FFDB00; display: inline-flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14110F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </a>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #A89C8E; text-align: left;">Primeiro, siga a equipe no Instagram. Depois, leia e concorde com as regras de cada grupo para liberar a entrada.</span>
+
+          <div id="insta-card" style="display: flex; flex-direction: column; gap: 14px; padding: 18px 18px 18px 20px; border-radius: 14px; background: #171310; border: 1.5px solid #FFDB00; text-align: left;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="flex: none; width: 38px; height: 38px; border-radius: 10px; background: rgba(255,219,0,0.12); display: inline-flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="0.8" fill="#FFDB00" stroke="none"></circle></svg></span>
+              <span style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.2; color: #F5F1EA;">Siga a Equipe GDA no Instagram</span>
+                <span id="insta-sub" style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: #FFDB00;">Obrigatório para liberar os grupos</span>
+              </span>
+            </div>
+            <div id="insta-passos" style="display: flex; flex-direction: column; gap: 12px;">
+              <a id="insta-abrir" href="https://www.instagram.com/gdaoficial01/" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 20px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15px;">1. Abrir @gdaoficial01 e seguir →</a>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label for="insta-usuario" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">2. Seu @ no Instagram</label>
+                <input id="insta-usuario" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="@seuusuario" style="width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #211B17; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px; outline: none;">
+              </div>
+              <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                <input id="insta-check" type="checkbox" style="width: 20px; height: 20px; margin: 0; flex: none; accent-color: #FFDB00; cursor: pointer;">
+                <span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; line-height: 1.4; color: #FFDB00;">3. Já estou seguindo a @gdaoficial01</span>
+              </label>
+              <span id="insta-erro" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.4; color: #E8806F;"></span>
+              <button id="insta-confirmar" type="button" style="padding: 12px 20px; border-radius: 999px; background: transparent; border: 1.5px solid #FFDB00; color: #FFDB00; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 14px;">Confirmar e liberar os grupos</button>
+            </div>
+          </div>
+
+          <div id="grupos-lista" style="display: flex; flex-direction: column; gap: 12px;"></div>
           <span style="margin-top: 8px; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Aplicativo</span>
           <a href="https://www.life360.com/pt-br/download" target="_blank" rel="noopener" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px 14px 20px; border-radius: 14px; background: #171310; border: 1.5px solid rgba(255,219,0,0.45);  text-align: left;">
             <span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.2; color: #F5F1EA;">Baixar o Life360</span></span>
@@ -119,6 +139,27 @@
     </div>
   </footer>
 
+</div>
+
+<div id="regras-overlay" style="display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; background: rgba(10,8,6,0.85);">
+  <div role="dialog" aria-modal="true" aria-labelledby="regras-titulo" style="width: 100%; max-width: 500px; max-height: 92vh; display: flex; flex-direction: column; background: #211B17; border: 1px solid rgba(255,219,0,0.4); border-radius: 18px; box-sizing: border-box; overflow: hidden;">
+    <div style="display: flex; flex-direction: column; gap: 6px; padding: 24px 24px 14px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Termo de concordância</span>
+      <h2 id="regras-titulo" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; line-height: 1.25; color: #F5F1EA;"></h2>
+    </div>
+    <div style="flex: 1; overflow-y: auto; padding: 4px 24px 18px; display: flex; flex-direction: column; gap: 14px;">
+      <span id="regras-intro" style="font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.55; color: #D8D2C7;"></span>
+      <ol id="regras-lista" class="gda-regras-lista"></ol>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px 24px 22px; border-top: 1px solid rgba(245,241,234,0.08); background: #1C1713;">
+      <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+        <input id="regras-check" type="checkbox" style="width: 22px; height: 22px; margin: 0; flex: none; accent-color: #FFDB00; cursor: pointer;">
+        <span id="regras-check-texto" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; line-height: 1.45; color: #FFDB00;"></span>
+      </label>
+      <button id="regras-confirmar" type="button" disabled style="padding: 14px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; border: none; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15px; opacity: 0.4; cursor: not-allowed;">Concordo e quero entrar no grupo →</button>
+      <button id="regras-fechar" type="button" style="padding: 6px; background: transparent; border: none; color: #A89C8E; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; text-decoration: underline;">Voltar</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -187,6 +228,7 @@
       return;
     }
     cadastroId = linha.id || null;
+    carregarAceitesBanco();
     atualizarLinkSuporte(linha.nome, linha.numero_piloto);
     mostrarAprovado(linha.numero_piloto);
     // Adesivo já pago antes? Vai direto para a tela de boas-vindas.
@@ -226,6 +268,235 @@
       aplicarLinha(result.data || null);
     });
   }
+
+  // ===== Regras dos grupos (termo de concordância) =====
+  // Ao mudar o texto de alguma regra, troque a VERSAO: todo mundo precisa aceitar de novo.
+  var REGRAS_VERSAO = '2026-10-v1';
+  var GRUPOS = [
+    {
+      id: 'oficial',
+      nome: 'Grupo Oficial GDA',
+      link: 'https://chat.whatsapp.com/GVGLo6ywjHnCYqemghzLGn',
+      intro: 'Para participar do Grupo Oficial da Equipe GDA, você se compromete a seguir estas regras:',
+      regras: [
+        'Proibido enviar figurinhas explícitas (pornografia, nudes).',
+        'Não desrespeitar os colegas.',
+        'Não enviar links de jogos de azar.',
+        'Não enviar foto ou vídeo de operação policial, nem fornecer a localização.'
+      ],
+      concordo: 'Li e concordo com as regras do Grupo Oficial GDA.'
+    },
+    {
+      id: 'passageiros',
+      nome: 'Grupo de Passageiros GDA',
+      link: 'https://chat.whatsapp.com/EBJ8ogMd2o5ENIdD8QnUmt',
+      intro: 'O grupo de Passageiros é só para corridas. Para participar, você se compromete a seguir estas regras:',
+      regras: [
+        'Proibido conversas paralelas de qualquer natureza.',
+        'Faz a corrida o piloto que responder primeiro "EU" na mensagem de solicitação de corrida.',
+        'Proibido precificar corridas fora do valor de tabela.',
+        'Se o passageiro der bom dia/boa tarde/boa noite no grupo, não responda: só curta a mensagem, para ele saber quantos motocas temos disponíveis.',
+        'Proibido aceitar solicitação de corrida que já foi aceita.',
+        'Proibido fazer publicidade sem autorização da direção.',
+        'Proibido enviar figurinhas, áudio, foto ou vídeo.',
+        'Proibido chamar passageiros no PV.',
+        'Proibido questionar ou debater com passageiros.',
+        'Proibido ofender ou tirar sarro de qualquer passageiro.',
+        'Proibido aceitar corrida com mais de 10 minutos de solicitada.'
+      ],
+      concordo: 'Li e concordo com as regras do Grupo de Passageiros GDA.'
+    },
+    {
+      id: 'sos',
+      nome: 'Grupo SOS GDA',
+      link: 'https://chat.whatsapp.com/GLhZTijawDUGnQlsquUvRd',
+      intro: 'O SOS GDA é o grupo de emergência da equipe. Acione o grupo somente quando houver:',
+      regras: [
+        'Sinistro de qualquer natureza.',
+        'Acidente com você ou com qualquer membro da equipe.',
+        'Passageiro que não quer pagar a corrida.',
+        'Pneu furado.',
+        'Problemas de ignição da moto.',
+        'Outros problemas com a moto.'
+      ],
+      concordo: 'Li e concordo em usar o Grupo SOS GDA somente nessas situações.'
+    }
+  ];
+
+  var aceites = {}; // { grupoId: true }
+  var grupoAberto = null;
+  var ultimoBotao = null;
+
+  function chaveLocal() { return 'gda_regras_' + REGRAS_VERSAO + '_' + String(whatsapp || '').replace(/\D/g, ''); }
+  function lerAceitesLocal() {
+    try { var o = JSON.parse(window.localStorage.getItem(chaveLocal()) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (err) { return {}; }
+  }
+  function salvarAceitesLocal() {
+    try { window.localStorage.setItem(chaveLocal(), JSON.stringify(aceites)); } catch (err) {}
+  }
+
+  var SETA = '<span style="flex: none; width: 38px; height: 38px; border-radius: 999px; background: #FFDB00; display: inline-flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14110F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>';
+  var CADEADO = '<span style="flex: none; width: 38px; height: 38px; border-radius: 999px; border: 1.5px solid rgba(245,241,234,0.3); display: inline-flex; align-items: center; justify-content: center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D8D2C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>';
+
+  function renderGrupos() {
+    var box = document.getElementById('grupos-lista');
+    if (!box) return;
+    box.innerHTML = '';
+    var instaOk = !!aceites.instagram;
+    GRUPOS.forEach(function (g) {
+      var ok = instaOk && !!aceites[g.id];
+      var el = document.createElement(ok ? 'a' : 'button');
+      if (ok) { el.href = g.link; el.target = '_blank'; el.rel = 'noopener'; el.className = 'gda-grupo gda-grupo-ok'; }
+      else { el.type = 'button'; el.className = 'gda-grupo gda-grupo-bloq'; el.setAttribute('data-grupo', g.id); }
+      var textos = document.createElement('span');
+      textos.setAttribute('style', 'display: flex; flex-direction: column; gap: 3px;');
+      var t = document.createElement('span');
+      t.setAttribute('style', "font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.2; color: #F5F1EA;");
+      t.textContent = g.nome;
+      var sub = document.createElement('span');
+      sub.setAttribute('style', "font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; color: " + (ok ? '#7FD99A' : '#FFDB00') + ';');
+      sub.textContent = ok ? 'Regras aceitas ✓ · Toque para entrar' : (!instaOk ? 'Siga o Instagram primeiro ↑' : (aceites[g.id] ? 'Regras aceitas ✓ · Toque para entrar' : 'Ler as regras para liberar →'));
+      textos.appendChild(t); textos.appendChild(sub);
+      el.appendChild(textos);
+      el.insertAdjacentHTML('beforeend', ok ? SETA : CADEADO);
+      if (!ok) el.addEventListener('click', function () {
+        if (!aceites.instagram) { irParaInstagram(); return; }
+        abrirRegras(g.id, el);
+      });
+      box.appendChild(el);
+    });
+  }
+
+  function grupoPorId(id) { return GRUPOS.filter(function (g) { return g.id === id; })[0]; }
+
+  function atualizarBotaoConfirmar() {
+    var marcado = document.getElementById('regras-check').checked;
+    var b = document.getElementById('regras-confirmar');
+    b.disabled = !marcado;
+    b.style.opacity = marcado ? '1' : '0.4';
+    b.style.cursor = marcado ? 'pointer' : 'not-allowed';
+  }
+
+  function abrirRegras(id, botao) {
+    var g = grupoPorId(id);
+    if (!g) return;
+    grupoAberto = g;
+    ultimoBotao = botao || null;
+    document.getElementById('regras-titulo').textContent = 'Regras — ' + g.nome;
+    document.getElementById('regras-intro').textContent = g.intro;
+    var ol = document.getElementById('regras-lista');
+    ol.innerHTML = '';
+    g.regras.forEach(function (r) { var li = document.createElement('li'); li.textContent = r; ol.appendChild(li); });
+    document.getElementById('regras-check-texto').textContent = g.concordo;
+    document.getElementById('regras-check').checked = false;
+    atualizarBotaoConfirmar();
+    document.getElementById('regras-overlay').style.display = 'flex';
+    document.getElementById('regras-check').focus();
+  }
+
+  function fecharRegras() {
+    document.getElementById('regras-overlay').style.display = 'none';
+    grupoAberto = null;
+    if (ultimoBotao && ultimoBotao.isConnected) ultimoBotao.focus();
+  }
+
+  // Registra o aceite no banco. Nunca trava o piloto: se falhar, ele entra no grupo do mesmo jeito.
+  function registrarAceite(g) {
+    if (!window.gdaSupabase || !cadastroId) return;
+    try {
+      Promise.resolve(window.gdaSupabase.rpc('registrar_aceite_regras', {
+        p_cadastro_id: String(cadastroId), p_grupo: g.id, p_versao: REGRAS_VERSAO, p_instagram: null
+      })).then(function (r) {
+        if (r && r.error) console.warn('[GDA] aceite das regras não registrado:', r.error);
+      }, function () {});
+    } catch (err) {}
+  }
+
+  function carregarAceitesBanco() {
+    if (!window.gdaSupabase || !cadastroId) return;
+    try {
+      Promise.resolve(window.gdaSupabase.rpc('consultar_aceites_regras', { p_cadastro_id: String(cadastroId), p_versao: REGRAS_VERSAO })).then(function (r) {
+        if (!r || r.error || !Array.isArray(r.data)) return;
+        var mudou = false;
+        r.data.forEach(function (x) {
+          var gid = x.grupo || x;
+          if (!gid || aceites[gid]) return;
+          aceites[gid] = gid === 'instagram' ? (x.instagram_usuario || true) : true;
+          mudou = true;
+        });
+        if (mudou) { salvarAceitesLocal(); renderInstagram(); renderGrupos(); }
+      }, function () {});
+    } catch (err) {}
+  }
+
+  // ===== Requisito: seguir o Instagram da equipe =====
+  var instaAberto = false;
+
+  function limparUsuarioInsta(v) {
+    v = String(v || '').trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/[\/?#].*$/, '').replace(/^@+/, '');
+    return v;
+  }
+
+  function renderInstagram() {
+    var feito = !!aceites.instagram;
+    document.getElementById('insta-passos').style.display = feito ? 'none' : 'flex';
+    var sub = document.getElementById('insta-sub');
+    sub.textContent = feito ? ('Seguindo ✓' + (typeof aceites.instagram === 'string' ? ' · @' + aceites.instagram : '')) : 'Obrigatório para liberar os grupos';
+    sub.style.color = feito ? '#7FD99A' : '#FFDB00';
+    var card = document.getElementById('insta-card');
+    card.style.borderColor = feito ? 'rgba(127,217,154,0.45)' : '#FFDB00';
+  }
+
+  function irParaInstagram() {
+    var card = document.getElementById('insta-card');
+    try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) { card.scrollIntoView(); }
+    mostrarErroInsta('Siga o Instagram da equipe primeiro para liberar os grupos.');
+  }
+
+  function mostrarErroInsta(msg) {
+    var e = document.getElementById('insta-erro');
+    e.textContent = msg || '';
+    e.style.display = msg ? '' : 'none';
+  }
+
+  document.getElementById('insta-abrir').addEventListener('click', function () { instaAberto = true; mostrarErroInsta(''); });
+  document.getElementById('insta-confirmar').addEventListener('click', function () {
+    var usuario = limparUsuarioInsta(document.getElementById('insta-usuario').value);
+    if (!instaAberto) { mostrarErroInsta('Toque em "Abrir @gdaoficial01 e seguir" primeiro.'); return; }
+    if (!/^[A-Za-z0-9._]{2,30}$/.test(usuario)) { mostrarErroInsta('Digite o seu @ do Instagram (ex.: @joaosilva).'); document.getElementById('insta-usuario').focus(); return; }
+    if (!document.getElementById('insta-check').checked) { mostrarErroInsta('Marque "Já estou seguindo a @gdaoficial01".'); return; }
+    mostrarErroInsta('');
+    aceites.instagram = usuario;
+    salvarAceitesLocal();
+    if (window.gdaSupabase && cadastroId) {
+      try {
+        Promise.resolve(window.gdaSupabase.rpc('registrar_aceite_regras', {
+          p_cadastro_id: String(cadastroId), p_grupo: 'instagram', p_versao: REGRAS_VERSAO, p_instagram: usuario
+        })).then(function (r) { if (r && r.error) console.warn('[GDA] Instagram não registrado:', r.error); }, function () {});
+      } catch (err) {}
+    }
+    renderInstagram();
+    renderGrupos();
+  });
+
+  document.getElementById('regras-check').addEventListener('change', atualizarBotaoConfirmar);
+  document.getElementById('regras-fechar').addEventListener('click', fecharRegras);
+  document.getElementById('regras-overlay').addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharRegras(); });
+  document.getElementById('regras-confirmar').addEventListener('click', function () {
+    var g = grupoAberto;
+    if (!g || !document.getElementById('regras-check').checked) return;
+    aceites[g.id] = true;
+    salvarAceitesLocal();
+    registrarAceite(g);
+    // abre o grupo na hora (ainda dentro do toque, para o celular não bloquear)
+    try { window.open(g.link, '_blank', 'noopener'); } catch (err) {}
+    fecharRegras();
+    renderGrupos();
+  });
+
+  aceites = lerAceitesLocal();
+  renderInstagram();
+  renderGrupos();
 
   var painelPix = null;
 
