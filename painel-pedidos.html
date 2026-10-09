@@ -21,6 +21,7 @@
     </a>
     <div style="display: flex; align-items: center; gap: 20px;">
       <a href="painel-cadastros.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Painel de cadastros</a>
+      <a href="painel-adesivos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Adesivos de reposição</a>
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Área restrita</span>
       <button id="btn-logout" type="button" style="padding: 8px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Sair</button>
     </div>
@@ -33,6 +34,14 @@
         <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
         <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: #F5F1EA;">Pedidos — Camisa Oficial GDA (3ª remessa)</h1>
         <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos com Pix não pago ficam como “Aguardando Pix” (no parcelado, o Pix é da entrada de 50%): use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho. No parcelado, depois da entrada o pedido fica como “Entrada paga ✓” até você marcar a 2ª parcela como recebida.</p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 14px 18px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 240px;">
+          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">GDA Vendas</span>
+          <span id="sync-resumo" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">Pedidos pagos e entradas pagas entram como venda no GDA Vendas (camisa e balaclava separadas).</span>
+        </div>
+        <button id="btn-sync" type="button" style="padding: 11px 20px; border-radius: 999px; background: #FFDB00; color: #14110F; border: none; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">Lançar vendas no GDA Vendas</button>
       </div>
 
       <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando pedidos…</div>
@@ -129,10 +138,17 @@
     return '<button type="button" data-excluir="' + escapeHtml(String(p.id)) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(232,128,111,0.5); color: #E8806F;">Excluir pedido</button>';
   }
 
+  function gdaVendasHtml(p) {
+    if (p.status !== 'pago' && p.status !== 'entrada_paga') return '';
+    var ok = p.gda_vendas_status === p.status;
+    return '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: ' + (ok ? '#7A7369' : '#E8806F') + ';">' +
+      (ok ? 'Lançado no GDA Vendas ✓' : 'Ainda não lançado no GDA Vendas') + '</span>';
+  }
+
   function situacaoHtml(p) {
     var total = totalPedido(p);
     var metade = total / 2;
-    if (p.status === 'pago') return badge('Pago ✓', '#7FD99A', 'rgba(127,217,154,0.12)');
+    if (p.status === 'pago') return '<div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">' + badge('Pago ✓', '#7FD99A', 'rgba(127,217,154,0.12)') + gdaVendasHtml(p) + '</div>';
     if (p.status === 'cancelado') return badge('Cancelado', '#A89C8E', 'rgba(168,156,142,0.14)');
     if (p.status === 'entrada_paga') {
       var wa2 = waLink(p.whatsapp);
@@ -142,6 +158,7 @@
         : '';
       return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
         badge('Entrada paga ✓', '#7FD99A', 'rgba(127,217,154,0.12)') +
+        gdaVendasHtml(p) +
         '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #D8D2C7;">Falta a 2ª parcela: ' + brl(metade) + '</span>' +
         marcarPagoBtn(p, 'Marcar 2ª parcela como paga') +
         cobrar +
@@ -229,6 +246,7 @@
         return;
       }
       var pedidos = result.data || [];
+      atualizarResumoSync(pedidos);
       if (!pedidos.length) {
         statusMsg.textContent = 'Nenhum pedido recebido ainda.';
         tabelaWrap.style.display = 'none';
@@ -313,7 +331,11 @@
       pago.disabled = true;
       pago.textContent = 'Salvando…';
       Promise.resolve(window.gdaSupabase.rpc('marcar_pedido_pago', { p_pedido_id: pago.getAttribute('data-marcar-pago') })).then(function (r) {
-        if (r && !r.error && r.data) { carregarPedidos(); return; }
+        if (r && !r.error && r.data) {
+          // lança (ou atualiza) a venda desse pedido no GDA Vendas
+          sincronizarVendas(pago.getAttribute('data-marcar-pago')).then(carregarPedidos, carregarPedidos);
+          return;
+        }
         pago.disabled = false;
         pago.removeAttribute('data-confirmar');
         pago.textContent = 'Não foi possível salvar — tente de novo';
@@ -331,6 +353,47 @@
     copiarTexto(btn.getAttribute('data-copiar-link')).then(function (ok) {
       btn.textContent = ok ? 'Link copiado ✓' : 'Não deu para copiar';
       setTimeout(function () { btn.textContent = original; }, 2500);
+    });
+  });
+
+  // ----- GDA Vendas -----
+  function atualizarResumoSync(pedidos) {
+    var pagos = pedidos.filter(function (p) { return p.status === 'pago' || p.status === 'entrada_paga'; });
+    var faltam = pagos.filter(function (p) { return p.gda_vendas_status !== p.status; }).length;
+    var el = document.getElementById('sync-resumo');
+    if (!pagos.length) { el.textContent = 'Nenhum pedido pago ainda.'; return; }
+    el.textContent = faltam
+      ? (faltam + ' de ' + pagos.length + ' pedido(s) pago(s) ainda não lançado(s) no GDA Vendas.')
+      : ('Todos os ' + pagos.length + ' pedido(s) pago(s) já estão no GDA Vendas ✓');
+    el.style.color = faltam ? '#FFDB00' : '#7FD99A';
+  }
+
+  // Chama a função do Supabase (verificar-pix) que manda os pedidos para o GDA Vendas.
+  function sincronizarVendas(pedidoId) {
+    var body = { acao: 'sincronizar_camisas' };
+    if (pedidoId) body.pedido_id = pedidoId;
+    return window.gdaSupabase.functions.invoke('dynamic-action', { body: body }).then(function (r) {
+      if (r.error) throw r.error;
+      return r.data;
+    });
+  }
+
+  document.getElementById('btn-sync').addEventListener('click', function () {
+    var btn = this;
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.textContent = 'Lançando… (pode levar até 1 minuto)';
+    sincronizarVendas(null).then(function (d) {
+      btn.textContent = d && d.total
+        ? ('Pronto: ' + d.lancados + ' de ' + d.total + ' pedido(s) lançado(s)' + (d.falhas && d.falhas.length ? ' — ' + d.falhas.length + ' com erro' : ' ✓'))
+        : 'Nenhum pedido pago para lançar';
+    }, function (err) {
+      console.error('[GDA] lançar vendas:', err);
+      btn.textContent = 'Não foi possível lançar — tente de novo';
+    }).then(function () {
+      carregarPedidos();
+      setTimeout(function () { btn.disabled = false; btn.style.opacity = '1'; btn.textContent = 'Lançar vendas no GDA Vendas'; }, 6000);
     });
   });
 
