@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loja GDA — Equipe GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  body{margin:0;background:#14110F;}
+  a{text-decoration:none;}
+  .gda-produtos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;}
+  .gda-card{display:flex;flex-direction:column;background:#211B17;border:1px solid rgba(245,241,234,0.08);border-radius:20px;overflow:hidden;transition:transform .2s ease,border-color .2s ease;}
+  .gda-card:hover{transform:translateY(-3px);border-color:rgba(255,219,0,0.45);}
+  .gda-card:focus-visible{outline:2px solid #FFDB00;outline-offset:3px;}
+  .gda-card-img{width:100%;aspect-ratio:1600/912;object-fit:cover;display:block;background:#171310;}
+  .gda-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:999px;background:#FFDB00;color:#14110F;font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;}
+  @media (prefers-reduced-motion: reduce){.gda-card{transition:none;}.gda-card:hover{transform:none;}}
+  @media (max-width: 760px){
+    .gda-header{padding:14px 20px !important;}
+    .gda-sec{padding:28px 20px 72px !important;}
+    .gda-hero{padding:44px 20px 28px !important;}
+    .gda-hero h1{font-size:36px !important;}
+    .gda-produtos{grid-template-columns:1fr;gap:20px;}
+  }
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+
+  <header class="gda-header" style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block;">
+    </a>
+    <a href="index.html" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">← Voltar ao portal</a>
+  </header>
+
+  <section class="gda-hero" style="position: relative; padding: 64px 40px 36px; box-sizing: border-box; background: linear-gradient(160deg, #1D1712 0%, #14110F 48%, #100D0B 100%); overflow: hidden;">
+    <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
+    <div style="position: relative; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Produtos oficiais</span>
+      <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 48px; line-height: 1.05; color: #F5F1EA;">Loja GDA</h1>
+      <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 520px;">Produtos exclusivos para membros com Número de Piloto. Escolha o que você quer pedir.</p>
+    </div>
+  </section>
+
+  <section class="gda-sec" style="padding: 36px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+    <div class="gda-produtos" style="max-width: 1040px; margin: 0 auto;">
+
+      <a class="gda-card" href="pedido-camisa.html" aria-label="Camisa Oficial de Piloto GDA — 3ª remessa: fazer pedido">
+        <img class="gda-card-img" src="img/3a-remessa-aberta.jpg" alt="3ª Remessa aberta — Camisa Oficial de Piloto GDA">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 24px 24px 26px; flex: 1;">
+          <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: rgba(255,219,0,0.14); color: #FFDB00; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px;">3ª remessa · pedidos até 22/10</span>
+          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; line-height: 1.2; color: #F5F1EA;">Camisa Oficial de Piloto GDA</h2>
+          <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Feita sob encomenda, com o seu nome e número de piloto. Masculina e feminina, manga longa. Balaclava opcional.</p>
+          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 4px;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">a partir de</span>
+            <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 26px; color: #FFDB00;">R$ 109,90</span>
+          </div>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C; margin-bottom: 8px;">À vista no Pix ou parcelado em 2x (entrada + restante até 22/10)</span>
+          <span class="gda-btn" style="margin-top: auto;">Fazer meu pedido →</span>
+        </div>
+      </a>
+
+      <a class="gda-card" href="pedido-adesivo.html" aria-label="Adesivo de Identificação Oficial — reposição: fazer pedido">
+        <img class="gda-card-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação Oficial GDA">
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 24px 24px 26px; flex: 1;">
+          <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: rgba(127,217,154,0.12); color: #7FD99A; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px;">Disponível</span>
+          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; line-height: 1.2; color: #F5F1EA;">Adesivo de Identificação Oficial — reposição</h2>
+          <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Perdeu ou estragou o seu adesivo? Peça um novo com o seu número de piloto e combine a retirada com o suporte.</p>
+          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 4px;">
+            <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 26px; color: #FFDB00;">R$ 19,90</span>
+          </div>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C; margin-bottom: 8px;">Pix com confirmação automática</span>
+          <span class="gda-btn" style="margin-top: auto;">Pedir meu adesivo →</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">2024 © Equipe GDA. Todos os direitos reservados.</span>
+      <a href="index.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
