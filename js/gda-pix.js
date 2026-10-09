@@ -3,6 +3,7 @@
 //
 //   gdaPix.criar({ tipo: 'adesivo', cadastro_id })          → Promise<{ ok, data | erro }>
 //   gdaPix.criar({ tipo: 'camisa',  pedido_id })            → idem
+//   gdaPix.criar({ tipo: 'adesivo_reposicao', pedido_adesivo_id }) → idem (adesivo de reposição)
 //   gdaPix.mostrar(container, pagamento, { titulo, onAprovado, onFalha, onNovoCodigo }) → { parar() }
 //
 // O valor NUNCA é enviado pelo site: o servidor calcula a partir do banco.
@@ -21,6 +22,8 @@
     adesivo_ja_pago: 'O adesivo deste cadastro já está pago.',
     pedido_nao_encontrado: 'Não encontramos o seu pedido.',
     pedido_nao_pendente: 'Este pedido não está mais aguardando pagamento.',
+    pedido_invalido: 'Não encontramos o seu pedido. Atualize a página e tente de novo.',
+    tipo_invalido: 'Não foi possível gerar o Pix agora. Tente de novo ou fale com o suporte.',
     pix_apenas_a_vista: 'O Pix automático é só para pedidos à vista.',
     pedido_sem_itens: 'O pedido não tem itens.',
     quantidades_invalidas: 'As quantidades do pedido são inválidas.',

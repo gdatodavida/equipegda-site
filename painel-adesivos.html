@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel de Adesivos de Reposição — Equipe GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  body{margin:0;background:#14110F;}
+  a{text-decoration:none;}
+  a:hover{opacity:0.85;}
+  button{cursor:pointer;}
+  .gda-th{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7A7369;}
+  .gda-linha,.gda-cab{display:grid;grid-template-columns:1.3fr 0.5fr 1fr 0.8fr 1.6fr;gap:12px;align-items:center;padding:16px 22px;}
+  .gda-cab{padding:14px 22px;background:#171310;border-bottom:1px solid rgba(245,241,234,0.08);}
+  .gda-linha{border-top:1px solid rgba(245,241,234,0.06);}
+  .gda-btn{padding:6px 12px;border-radius:999px;font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;width:fit-content;}
+  .gda-filtro{padding:8px 16px;border-radius:999px;border:1px solid rgba(245,241,234,0.16);font-family:'Manrope',sans-serif;font-weight:600;font-size:13px;background:#171310;color:#D8D2C7;}
+  .gda-filtro.ativo{background:#FFDB00;color:#14110F;border-color:#FFDB00;}
+  @media (max-width: 760px){
+    .gda-header-inner{padding:14px 16px !important;flex-wrap:wrap;}
+    .gda-sec{padding:36px 14px !important;}
+  }
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+
+  <header class="gda-header-inner" style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block;">
+    </a>
+    <div style="display: flex; align-items: center; gap: 12px 20px; flex-wrap: wrap;">
+      <a href="painel-cadastros.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Painel de cadastros</a>
+      <a href="painel-pedidos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Painel de pedidos</a>
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Área restrita</span>
+      <button id="btn-logout" type="button" style="padding: 8px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Sair</button>
+    </div>
+  </header>
+
+  <section class="gda-sec" style="padding: 60px 40px; box-sizing: border-box; flex: 1;">
+    <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: #F5F1EA;">Adesivos de reposição</h1>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Pedidos feitos em "Peça aqui o seu adesivo de reposição" (R$ 19,90 no Pix). Quando o Pix é confirmado, o pedido vira "Pago" sozinho e a venda entra no GDA Vendas. Depois que o piloto retirar, toque em "Marcar como entregue".</p>
+      </div>
+
+      <div id="contadores" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="gda-filtro" data-filtro="pago" type="button">Pagos (a entregar)</button>
+        <button class="gda-filtro" data-filtro="pendente" type="button">Aguardando pagamento</button>
+        <button class="gda-filtro" data-filtro="entregue" type="button">Entregues</button>
+        <button class="gda-filtro" data-filtro="todos" type="button">Todos</button>
+      </div>
+
+      <input id="busca" type="search" placeholder="Buscar por nome, número ou WhatsApp" style="width: 100%; max-width: 420px; box-sizing: border-box; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 14px; outline: none;">
+
+      <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando pedidos…</div>
+
+      <div id="tabela-wrap" style="display: none; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px; overflow-x: auto;">
+        <div style="min-width: 900px;">
+          <div class="gda-cab">
+            <span class="gda-th">Nome</span>
+            <span class="gda-th">Piloto</span>
+            <span class="gda-th">WhatsApp</span>
+            <span class="gda-th">Pedido em</span>
+            <span class="gda-th">Situação</span>
+          </div>
+          <div id="linhas"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/auth-guard.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var PRECO = 19.90;
+  var pedidos = [];
+  var pixPorPedido = {};   // { idPedido: { gerou: true, sincronizado: bool } }
+  var filtro = 'pago';
+  var busca = '';
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function waDigits(w) { var d = String(w || '').replace(/\D/g, ''); return d.length <= 11 ? '55' + d : d; }
+  function waLink(w, texto) { return 'https://wa.me/' + waDigits(w) + (texto ? '?text=' + encodeURIComponent(texto) : ''); }
+  function dataHora(iso) {
+    try {
+      var d = new Date(iso); if (isNaN(d.getTime())) return '—';
+      return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + ' às ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    } catch (e) { return '—'; }
+  }
+  function primeiroNome(n) { var p = String(n || '').trim().split(/\s+/)[0] || ''; return p ? p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : ''; }
+  function badge(t, cor, fundo) {
+    return '<span style="display: inline-block; width: fit-content; padding: 4px 10px; border-radius: 999px; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px; color: ' + cor + '; background: ' + fundo + ';">' + t + '</span>';
+  }
+
+  function situacaoHtml(p) {
+    var out = [];
+    var pix = pixPorPedido[String(p.id)];
+    if (p.status === 'pago') {
+      out.push(badge('Pago ✓ ' + esc(dataHora(p.pago_em)), '#7FD99A', 'rgba(127,217,154,0.12)'));
+      if (pix) out.push('<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: ' + (pix.sincronizado ? '#7A7369' : '#E8806F') + ';">' + (pix.sincronizado ? 'Venda lançada no GDA Vendas ✓' : 'Venda ainda não entrou no GDA Vendas') + '</span>');
+      out.push('<button type="button" class="gda-btn" data-entregue="' + esc(p.id) + '" style="background: #FFDB00; color: #14110F; border: none;">Marcar como entregue</button>');
+      out.push('<a class="gda-btn" target="_blank" rel="noopener" href="' + waLink(p.whatsapp, 'Oi ' + primeiroNome(p.nome) + '! Aqui é o suporte da Equipe GDA. Recebemos o pagamento do seu Adesivo de Identificação Oficial de reposição (Piloto ' + p.numero_piloto + '). Vamos combinar o local e o horário da retirada?') + '" style="border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Combinar retirada no WhatsApp</a>');
+    } else if (p.status === 'entregue') {
+      out.push(badge('Entregue ✓ ' + esc(dataHora(p.entregue_em)), '#7FD99A', 'rgba(127,217,154,0.12)'));
+      out.push('<button type="button" class="gda-btn" data-desfazer="' + esc(p.id) + '" style="background: transparent; border: none; color: #7A7369; text-decoration: underline; padding: 2px 0;">Desfazer entrega</button>');
+    } else if (p.status === 'cancelado') {
+      out.push(badge('Cancelado', '#A89C8E', 'rgba(168,156,142,0.14)'));
+    } else {
+      out.push(badge(pix ? 'Aguardando Pix' : 'Pedido sem Pix gerado', '#FFDB00', 'rgba(255,219,0,0.12)'));
+      var link = 'https://equipegda.com.br/pedido-adesivo.html';
+      out.push('<a class="gda-btn" target="_blank" rel="noopener" href="' + waLink(p.whatsapp, 'Oi ' + primeiroNome(p.nome) + '! Aqui é o suporte da Equipe GDA. Seu pedido do Adesivo de Identificação Oficial de reposição (Piloto ' + p.numero_piloto + ', R$ 19,90) ainda está aguardando o pagamento. Para pagar com Pix, é só acessar: ' + link) + '" style="border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Lembrar no WhatsApp</a>');
+      out.push('<button type="button" class="gda-btn" data-excluir="' + esc(p.id) + '" style="background: transparent; border: 1px solid rgba(232,128,111,0.5); color: #E8806F;">Excluir pedido</button>');
+    }
+    return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' + out.join('') + '</div>';
+  }
+
+  function linhaHtml(p) {
+    return '<div class="gda-linha">' +
+      '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + esc(p.nome) + '</span>' +
+      '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 17px; color: #FFDB00;">' + esc(p.numero_piloto) + '</span>' +
+      '<a href="' + waLink(p.whatsapp) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-family: \'Manrope\', sans-serif; font-size: 14px; font-weight: 600; color: #FFDB00;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + esc(p.whatsapp) + '</a>' +
+      '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #A89C8E;">' + esc(dataHora(p.created_at)) + '</span>' +
+      situacaoHtml(p) +
+    '</div>';
+  }
+
+  function contadores() {
+    var c = { pago: 0, pendente: 0, entregue: 0 };
+    pedidos.forEach(function (p) { if (c[p.status] != null) c[p.status]++; });
+    var recebido = (c.pago + c.entregue) * PRECO;
+    function chip(rot, n, cor) {
+      return '<div style="display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border-radius: 12px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); min-width: 120px;">' +
+        '<span style="font-family: \'Oswald\', sans-serif; font-weight: 700; font-size: 22px; color: ' + cor + ';">' + n + '</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #A89C8E;">' + rot + '</span></div>';
+    }
+    document.getElementById('contadores').innerHTML =
+      chip('A entregar', c.pago, '#FFDB00') + chip('Aguardando pagamento', c.pendente, '#D8D2C7') +
+      chip('Entregues', c.entregue, '#7FD99A') + chip('Recebido no Pix', 'R$ ' + recebido.toFixed(2).replace('.', ','), '#F5F1EA');
+  }
+
+  function render() {
+    Array.prototype.slice.call(document.querySelectorAll('.gda-filtro')).forEach(function (b) {
+      b.classList.toggle('ativo', b.getAttribute('data-filtro') === filtro);
+    });
+    contadores();
+    var q = busca.trim().toLowerCase();
+    var qd = q.replace(/\D/g, '');
+    var lista = pedidos.filter(function (p) {
+      if (filtro !== 'todos' && p.status !== filtro) return false;
+      if (!q) return true;
+      return String(p.nome || '').toLowerCase().indexOf(q) > -1 ||
+        (qd && (String(p.numero_piloto) === qd || String(p.whatsapp || '').replace(/\D/g, '').indexOf(qd) > -1));
+    });
+    var msg = document.getElementById('status-msg');
+    var wrap = document.getElementById('tabela-wrap');
+    if (!lista.length) {
+      msg.style.display = '';
+      msg.textContent = pedidos.length ? 'Nenhum pedido nessa categoria.' : 'Nenhum pedido de reposição ainda.';
+      wrap.style.display = 'none';
+      return;
+    }
+    msg.style.display = 'none';
+    wrap.style.display = '';
+    document.getElementById('linhas').innerHTML = lista.map(linhaHtml).join('');
+  }
+
+  function carregar() {
+    var pPix = Promise.resolve(window.gdaSupabase.from('pagamentos').select('referencia_id,sincronizado,status').eq('tipo', 'adesivo_reposicao')).then(function (r) {
+      pixPorPedido = {};
+      if (r && !r.error && Array.isArray(r.data)) r.data.forEach(function (x) {
+        var k = String(x.referencia_id);
+        var atual = pixPorPedido[k] || { gerou: true, sincronizado: false };
+        if (x.status === 'aprovado') atual.sincronizado = atual.sincronizado || !!x.sincronizado;
+        pixPorPedido[k] = atual;
+      });
+    }, function () {});
+    pPix.then(function () {
+      return window.gdaSupabase.from('pedidos_adesivo').select('*').order('created_at', { ascending: false });
+    }).then(function (r) {
+      if (r.error) {
+        document.getElementById('status-msg').textContent = 'Não foi possível carregar os pedidos. Confira se o SQL do adesivo de reposição já foi rodado no Supabase.';
+        console.error('[GDA] pedidos_adesivo:', r.error);
+        return;
+      }
+      pedidos = r.data || [];
+      render();
+    });
+  }
+
+  function doisToques(btn, textoConfirmar, acao) {
+    if (btn.getAttribute('data-confirmar') !== '1') {
+      var original = btn.textContent;
+      btn.setAttribute('data-confirmar', '1');
+      btn.textContent = textoConfirmar;
+      setTimeout(function () { if (btn.isConnected && btn.getAttribute('data-confirmar') === '1') { btn.removeAttribute('data-confirmar'); btn.textContent = original; } }, 4000);
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Salvando…';
+    acao();
+  }
+
+  function falhou(btn, r) {
+    console.error('[GDA] painel adesivos:', r && r.error);
+    btn.disabled = false;
+    btn.removeAttribute('data-confirmar');
+    btn.textContent = 'Não foi possível salvar — tente de novo';
+  }
+
+  document.getElementById('linhas').addEventListener('click', function (ev) {
+    var t = ev.target.closest ? ev.target : null;
+    if (!t) return;
+    var b;
+    if ((b = t.closest('[data-entregue]'))) {
+      doisToques(b, 'Toque de novo para confirmar a entrega', function () {
+        window.gdaSupabase.from('pedidos_adesivo').update({ status: 'entregue', entregue_em: new Date().toISOString() })
+          .eq('id', b.getAttribute('data-entregue')).eq('status', 'pago').then(function (r) { if (r.error) falhou(b, r); else carregar(); });
+      });
+    } else if ((b = t.closest('[data-desfazer]'))) {
+      b.disabled = true;
+      window.gdaSupabase.from('pedidos_adesivo').update({ status: 'pago', entregue_em: null })
+        .eq('id', b.getAttribute('data-desfazer')).eq('status', 'entregue').then(function (r) { if (r.error) falhou(b, r); else carregar(); });
+    } else if ((b = t.closest('[data-excluir]'))) {
+      doisToques(b, 'Toque de novo para excluir', function () {
+        window.gdaSupabase.from('pedidos_adesivo').delete().eq('id', b.getAttribute('data-excluir')).eq('status', 'pendente').select('id')
+          .then(function (r) {
+            if (!r.error && r.data && r.data.length) { carregar(); return; }
+            falhou(b, r);
+            if (!r.error) { b.textContent = 'Não excluído (já foi pago?)'; carregar(); }
+          });
+      });
+    }
+  });
+
+  Array.prototype.slice.call(document.querySelectorAll('.gda-filtro')).forEach(function (b) {
+    b.addEventListener('click', function () { filtro = b.getAttribute('data-filtro'); render(); });
+  });
+  document.getElementById('busca').addEventListener('input', function (e) { busca = e.target.value; render(); });
+
+  window.gdaRequireAuth(function () { carregar(); });
+})();
+</script>
+</body>
+</html>

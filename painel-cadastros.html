@@ -21,6 +21,7 @@
     <div style="display: flex; align-items: center; gap: 20px;">
       <a href="credenciamento.html?previa=1" target="_blank" rel="noopener" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #FFDB00;">Prévia do credenciamento</a>
       <a href="painel-pedidos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Painel de pedidos</a>
+      <a href="painel-adesivos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Adesivos de reposição</a>
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Área restrita</span>
       <button id="btn-logout" type="button" style="padding: 8px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Sair</button>
     </div>
@@ -39,6 +40,7 @@
         <button data-filtro="pendente" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Pendentes</button>
         <button data-filtro="aprovado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Aprovados</button>
         <button data-filtro="recusado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Recusados</button>
+        <button data-filtro="incompletos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Credenciamento incompleto</button>
         <button data-filtro="todos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Todos</button>
       </div>
 
@@ -153,6 +155,64 @@
     return '<span style="padding: 5px 12px; border-radius: 999px; background: ' + fundo + '; color: ' + cor + '; font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700;">' + texto + '</span>';
   }
 
+  // ----- pendências do credenciamento + lembrete no WhatsApp -----
+  var NOMES_GRUPOS = { oficial: 'Grupo Oficial GDA', passageiros: 'Grupo de Passageiros GDA', sos: 'Grupo SOS GDA' };
+
+  // Lista do que falta para o piloto aprovado concluir o credenciamento.
+  function pendencias(c) {
+    if (c.status !== 'aprovado') return [];
+    var out = [];
+    var pago = adesivoPago(c);
+    if (pago !== true) out.push({ chave: 'pagamento', curto: 'Pagamento do adesivo', msg: 'Pagar o Adesivo de Identificação Oficial (R$ 19,90) pelo Pix' });
+    if (aceitesPorCadastro) {
+      var meus = aceitesPorCadastro[String(c.id)] || {};
+      if (!meus.instagram) out.push({ chave: 'instagram', curto: 'Seguir o Instagram', msg: 'Seguir o Instagram da equipe (@gdaoficial01)' });
+      var faltam = ['oficial', 'passageiros', 'sos'].filter(function (g) { return !meus[g]; });
+      if (faltam.length) out.push({ chave: 'regras', curto: 'Regras: ' + faltam.map(function (g) { return { oficial: 'Oficial', passageiros: 'Passageiros', sos: 'SOS' }[g]; }).join(', '), msg: 'Ler e aceitar as regras para entrar no ' + faltam.map(function (g) { return NOMES_GRUPOS[g]; }).join(', ') });
+    }
+    if (!c.adesivo_retirado) out.push({ chave: 'retirada', curto: 'Retirada do adesivo', msg: 'Falar com o suporte para combinar a retirada do seu adesivo' });
+    return out;
+  }
+
+  function linkCredenciamento(c) {
+    // só os dígitos: o link fica limpo e clicável no WhatsApp (mesmo formato do lembrete da página de cadastro)
+    return 'https://equipegda.com.br/credenciamento.html?whatsapp=' + String(c.whatsapp || '').replace(/\D/g, '');
+  }
+
+  function mensagemLembrete(c, pend) {
+    var nome = String(c.apelido || c.nome || '').trim().split(/\s+/)[0] || '';
+    var soRetirada = pend.length === 1 && pend[0].chave === 'retirada';
+    if (soRetirada) {
+      return 'Oi ' + nome + '! Aqui é o suporte da Equipe GDA. Seu Adesivo de Identificação Oficial já está pago e pronto para retirada' +
+        (c.numero_piloto ? ' (Piloto ' + c.numero_piloto + ')' : '') + '. Responda esta mensagem para combinarmos o local e o horário.\n\n' +
+        'Se ainda não entrou nos grupos, é só acessar: ' + linkCredenciamento(c);
+    }
+    return 'Oi ' + nome + '! Aqui é o suporte da Equipe GDA. Seu cadastro foi aprovado' +
+      (c.numero_piloto ? ' (Piloto ' + c.numero_piloto + ')' : '') + ', mas o seu credenciamento ainda não foi concluído. Falta:\n' +
+      pend.map(function (p) { return '• ' + p.msg; }).join('\n') +
+      '\n\nPara continuar de onde parou, é só acessar: ' + linkCredenciamento(c);
+  }
+
+  function pendenciasHtml(c) {
+    if (c.status !== 'aprovado') return '';
+    var pend = pendencias(c);
+    if (!pend.length) {
+      return '<div style="margin-top: 4px;">' + badgeAdesivo('Credenciamento completo ✓', '#5AC878', 'rgba(90,200,120,0.14)') + '</div>';
+    }
+    var wa = String(c.whatsapp || '').replace(/\D/g, '');
+    var botao = wa
+      ? '<a href="https://wa.me/' + waDigits(c.whatsapp) + '?text=' + encodeURIComponent(mensagemLembrete(c, pend)) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 10px 18px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 800; font-size: 13px;">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#14110F" stroke-width="2"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>Lembrar no WhatsApp</a>'
+      : '';
+    return '<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(245,241,234,0.08);">' +
+      '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #FFDB00;">Falta concluir</span>' +
+      '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' + pend.map(function (p) { return badgeAdesivo(p.curto, '#FFDB00', 'rgba(255,219,0,0.12)'); }).join('') + '</div>' +
+      '<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">' + botao +
+        '<button type="button" data-copiar-cred="' + escapeHtml(linkCredenciamento(c)) + '" style="padding: 9px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.2); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px;">Copiar link do credenciamento</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   function adesivoHtml(c) {
     if (c.status !== 'aprovado') return '';
     var pago = adesivoPago(c);
@@ -174,9 +234,10 @@
 
     return (
       '<div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; background: #171310; border: 1px solid rgba(245,241,234,0.08); border-radius: 12px;">' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Adesivo de Identificação</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Credenciamento</span>' +
         '<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">' + pagamento + retirada + '</div>' +
         regrasHtml(c) +
+        pendenciasHtml(c) +
         '<span data-retirada-erro="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;"></span>' +
       '</div>'
     );
@@ -398,7 +459,9 @@
       if (input.value) pilotoValores[id] = input.value;
     });
 
-    var lista = filtroAtual === 'todos' ? cadastros : cadastros.filter(function (c) { return c.status === filtroAtual; });
+    var lista = filtroAtual === 'todos' ? cadastros
+      : filtroAtual === 'incompletos' ? cadastros.filter(function (c) { return c.status === 'aprovado' && pendencias(c).length > 0; })
+      : cadastros.filter(function (c) { return c.status === filtroAtual; });
 
     if (!lista.length) {
       statusMsg.style.display = '';
@@ -510,6 +573,19 @@
 
   Array.prototype.slice.call(document.querySelectorAll('.gda-filtro-btn')).forEach(function (b) {
     b.addEventListener('click', function () { filtroAtual = b.getAttribute('data-filtro'); render(); });
+  });
+
+  document.getElementById('cards-container').addEventListener('click', function (ev) {
+    var b = ev.target && ev.target.closest ? ev.target.closest('[data-copiar-cred]') : null;
+    if (!b) return;
+    var texto = b.getAttribute('data-copiar-cred');
+    var ok = false;
+    function fim() { b.textContent = ok ? 'Link copiado ✓' : 'Não deu para copiar'; setTimeout(function () { if (b.isConnected) b.textContent = 'Copiar link do credenciamento'; }, 2500); }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(texto).then(function () { ok = true; fim(); }, fim); return; }
+    } catch (err) {}
+    try { var ta = document.createElement('textarea'); ta.value = texto; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); document.body.removeChild(ta); } catch (err) {}
+    fim();
   });
 
   window.gdaRequireAuth(function () {

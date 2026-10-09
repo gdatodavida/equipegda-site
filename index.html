@@ -155,10 +155,10 @@
         <img class="gda-mslide-bg" src="img/3a-remessa-aberta.jpg" alt="" aria-hidden="true">
         <img class="gda-mslide-img" src="img/3a-remessa-aberta.jpg" alt="3ª Remessa Aberta — Camisa Oficial de Piloto GDA, pedidos até 22/10" style="width: 100%; height: 100%; object-fit: cover; display: block;">
       </a>
-      <div class="gda-mslide" data-slide="2" style="position: absolute; inset: 0; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
-        <img class="gda-mslide-bg" src="img/adesivo-identificacao-gda.jpg" alt="" aria-hidden="true">
-        <img class="gda-mslide-img" src="img/adesivo-identificacao-gda.jpg" alt="Adesivo de Identificação GDA — é identidade, é segurança, é GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-      </div>
+      <a href="pedido-adesivo.html" class="gda-mslide" data-slide="2" style="position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
+        <img class="gda-mslide-bg" src="img/adesivo-reposicao-gda.jpg" alt="" aria-hidden="true">
+        <img class="gda-mslide-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+      </a>
     </div>
     <button type="button" class="gda-mslide-arrow" data-dir="-1" aria-label="Tela anterior"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"></polyline></svg></button>
     <button type="button" class="gda-mslide-arrow" data-dir="1" aria-label="Próxima tela"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 5 16 12 9 19"></polyline></svg></button>
@@ -323,7 +323,7 @@
     <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px;">
       <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
         <div style="display: flex; flex-direction: column; gap: 12px; max-width: 260px;">
-          <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 30px; width: auto; display: block;">
+          <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block; align-self: flex-start; flex: none;">
           <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">GDA toda vida.</span>
           <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
             <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffdb00;">Suporte GDA</span>
@@ -391,7 +391,7 @@
   var dots = Array.prototype.slice.call(wrap.querySelectorAll('.gda-mdot'));
   if (!slides.length) return;
 
-  var AUTO_MS = 4500;
+  var AUTO_MS = 3000;
   var current = 0;
   var timer = null;
 
