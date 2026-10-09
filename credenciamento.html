@@ -28,6 +28,15 @@
     <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Credenciamento</span>
   </header>
 
+  <div id="previa-barra" style="display: none; position: sticky; top: 65px; z-index: 40; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 12px; padding: 10px 16px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif;">
+    <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;">Modo prévia (admin) · nada é salvo nem cobrado</span>
+    <span style="display: flex; gap: 8px;">
+      <button type="button" data-previa-tela="1" style="padding: 6px 12px; border-radius: 999px; border: 1.5px solid #14110F; background: transparent; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 12px;">1 · Pagamento</button>
+      <button type="button" data-previa-tela="2" style="padding: 6px 12px; border-radius: 999px; border: 1.5px solid #14110F; background: transparent; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 12px;">2 · Boas-vindas</button>
+      <button type="button" id="previa-zerar" style="padding: 6px 12px; border-radius: 999px; border: none; background: #14110F; color: #FFDB00; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 12px;">Recomeçar</button>
+    </span>
+  </div>
+
   <div id="screen-carregando">
     <section style="padding: 90px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
       <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; padding: 44px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
@@ -217,6 +226,7 @@
 
   var whatsapp = getWhatsappFromQuery();
   var cadastroId = null;
+  var PREVIA = (function () { try { return new URLSearchParams(window.location.search).has('previa'); } catch (err) { return false; } })();
 
   function aplicarLinha(linha) {
     if (!linha) {
@@ -253,7 +263,51 @@
     });
   }
 
-  if (!whatsapp) {
+  function mostrarTelaPrevia(n) {
+    scrollToTop();
+    document.getElementById('screen-carregando').style.display = 'none';
+    document.getElementById('screen-bloqueado').style.display = 'none';
+    document.getElementById('screen-1').style.display = n === 1 ? '' : 'none';
+    document.getElementById('screen-2').style.display = n === 2 ? '' : 'none';
+    Array.prototype.slice.call(document.querySelectorAll('[data-previa-tela]')).forEach(function (b) {
+      var ativo = b.getAttribute('data-previa-tela') === String(n);
+      b.style.background = ativo ? '#14110F' : 'transparent';
+      b.style.color = ativo ? '#FFDB00' : '#14110F';
+    });
+  }
+
+  function iniciarPrevia() {
+    document.getElementById('previa-barra').style.display = 'flex';
+    document.getElementById('numero-piloto').textContent = 'Nº 000';
+    atualizarLinkSuporte('Piloto', '000');
+    Array.prototype.slice.call(document.querySelectorAll('[data-previa-tela]')).forEach(function (b) {
+      b.addEventListener('click', function () { mostrarTelaPrevia(parseInt(b.getAttribute('data-previa-tela'), 10)); });
+    });
+    document.getElementById('previa-zerar').addEventListener('click', function () {
+      aceites = {};
+      document.getElementById('insta-usuario').value = '';
+      document.getElementById('insta-check').checked = false;
+      renderInstagram();
+      renderGrupos();
+      mostrarTelaPrevia(2);
+    });
+    mostrarTelaPrevia(1);
+  }
+
+  if (PREVIA) {
+    // Só para quem está logado no painel administrativo (mesmo navegador).
+    var auth = window.gdaSupabase && window.gdaSupabase.auth;
+    if (!auth) {
+      mostrarBloqueado('Prévia indisponível', 'Não foi possível verificar o seu login agora. Atualize a página.');
+    } else {
+      Promise.resolve(auth.getSession()).then(function (r) {
+        if (r && r.data && r.data.session) { iniciarPrevia(); }
+        else { mostrarBloqueado('Prévia restrita', 'A prévia é só para a equipe. Entre no painel administrativo neste navegador e abra este link de novo.'); }
+      }, function () {
+        mostrarBloqueado('Prévia indisponível', 'Não foi possível verificar o seu login agora. Atualize a página.');
+      });
+    }
+  } else if (!whatsapp) {
     mostrarBloqueado('Link incompleto', 'Acesse esta página pelo link que a equipe de suporte te enviou no WhatsApp após a aprovação do seu cadastro.');
   } else if (!window.gdaSupabase) {
     erroVerificar();
@@ -329,9 +383,11 @@
 
   function chaveLocal() { return 'gda_regras_' + REGRAS_VERSAO + '_' + String(whatsapp || '').replace(/\D/g, ''); }
   function lerAceitesLocal() {
+    if (PREVIA) return {};
     try { var o = JSON.parse(window.localStorage.getItem(chaveLocal()) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (err) { return {}; }
   }
   function salvarAceitesLocal() {
+    if (PREVIA) return;
     try { window.localStorage.setItem(chaveLocal(), JSON.stringify(aceites)); } catch (err) {}
   }
 
@@ -514,6 +570,7 @@
   }
 
   function gerarPixAdesivo() {
+    if (PREVIA) { mostrarTelaPrevia(2); return; }
     var btn = document.getElementById('btn-pagar-adesivo');
     mostrarErroPix('');
     if (!cadastroId) {
