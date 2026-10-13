@@ -9,6 +9,11 @@
   a{text-decoration:none;}
   a:hover{opacity:0.85;}
   button{cursor:pointer;}
+  /* links dos painéis: cada um com sua cor, todas claras para destacar no fundo escuro */
+  .gda-nav{display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;color:var(--cor);background:var(--fundo);border:1px solid var(--borda);white-space:nowrap;}
+  .gda-nav:hover{opacity:1;filter:brightness(1.15);}
+  .gda-nav.atual{background:var(--cor);color:#14110F;border-color:var(--cor);}
+  @media (max-width:760px){ header{flex-wrap:wrap;padding:14px 16px !important;} }
 </style>
 </head>
 <body>
@@ -18,13 +23,14 @@
     <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
       <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: auto; display: block;">
     </a>
-    <div style="display: flex; align-items: center; gap: 20px;">
-      <a href="credenciamento.html?previa=1" target="_blank" rel="noopener" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #FFDB00;">Prévia do credenciamento</a>
-      <a href="painel-pedidos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Painel de pedidos</a>
-      <a href="painel-adesivos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Adesivos de reposição</a>
+    <nav style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
+      <a href="credenciamento.html?previa=1" target="_blank" rel="noopener" class="gda-nav" style="--cor: #FFDB00; --fundo: rgba(255,219,0,0.12); --borda: rgba(255,219,0,0.40);">Prévia do credenciamento</a>
+      <a href="painel-pedidos.html" class="gda-nav" style="--cor: #7FD99A; --fundo: rgba(127,217,154,0.12); --borda: rgba(127,217,154,0.40);">Painel de pedidos</a>
+      <a href="painel-adesivos.html" class="gda-nav" style="--cor: #7CC4FF; --fundo: rgba(124,196,255,0.12); --borda: rgba(124,196,255,0.40);">Adesivos de reposição</a>
+      <a href="pilotos-admin.html" class="gda-nav" style="--cor: #FF9E8A; --fundo: rgba(255,158,138,0.12); --borda: rgba(255,158,138,0.40);">Pilotos</a>
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Área restrita</span>
       <button id="btn-logout" type="button" style="padding: 8px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Sair</button>
-    </div>
+    </nav>
   </header>
 
   <section style="padding: 60px 40px; box-sizing: border-box; flex: 1;">
