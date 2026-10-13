@@ -53,8 +53,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <label for="piloto" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de piloto <span class="gda-req" aria-hidden="true">*</span></label>
-          <input id="piloto" name="piloto" type="text" required inputmode="numeric" aria-describedby="err-piloto" list="pilotos-lista" placeholder="Digite seu número de piloto" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
-          <datalist id="pilotos-lista"></datalist>
+          <input id="piloto" name="piloto" type="text" required inputmode="numeric" aria-describedby="err-piloto" maxlength="6" placeholder="Digite seu número de piloto" style="width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: 'Manrope', sans-serif; font-size: 15px;">
           <span id="err-piloto" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; color: #FF8A7A;"></span>
           <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">[Se não tem número de piloto, Fale com o suporte agora mesmo.]</span>
         </div>
@@ -265,6 +264,7 @@
   function erroPiloto(v) {
     v = String(v || '').trim();
     if (!v) return 'Digite seu número de piloto.';
+    if (!/^\d{1,6}$/.test(v)) return 'Use só números, ex.: 113.';
     return '';
   }
   function erroWhatsapp(v) {
@@ -293,7 +293,9 @@
     if (e.target.classList.contains('gda-invalid')) setErro('identificacao', erroNome(state.identificacao));
   });
   document.getElementById('piloto').addEventListener('input', function (e) {
-    state.piloto = e.target.value;
+    var v = e.target.value.replace(/\D/g, '').slice(0, 6);
+    if (e.target.value !== v) e.target.value = v;
+    state.piloto = v;
     if (e.target.classList.contains('gda-invalid')) setErro('piloto', erroPiloto(state.piloto));
   });
   document.getElementById('wa-camisa').addEventListener('input', function (e) {
@@ -384,6 +386,46 @@
     if (primeiroLink) primeiroLink.focus();
   }
 
+  // ----- conferência do piloto no Supabase (tabela pilotos) -----
+  // Devolve { encontrado, confere } ou null se não deu para conferir (internet/servidor) — nesse caso não trava o pedido.
+  function conferirPiloto() {
+    if (!window.gdaSupabase) return Promise.resolve(null);
+    var limite = new Promise(function (ok) { setTimeout(function () { ok(null); }, 5000); });
+    var consulta = Promise.resolve(window.gdaSupabase.rpc('conferir_piloto', {
+      p_num: String(parseInt(state.piloto, 10)), p_nome: state.identificacao.trim()
+    })).then(function (r) {
+      if (!r || r.error) return null;
+      var linha = Array.isArray(r.data) ? r.data[0] : r.data;
+      return linha ? { encontrado: !!linha.encontrado, confere: !!linha.confere } : null;
+    }, function () { return null; });
+    return Promise.race([consulta, limite]);
+  }
+
+  function conferirEAvancar() {
+    if (verificando) return;
+    if (!validarPasso1()) return;
+    verificando = true;
+    var btn = document.getElementById('btn-go-2');
+    var textoOriginal = btn.textContent;
+    btn.textContent = 'Verificando…';
+    conferirPiloto().then(function (res) {
+      verificando = false;
+      btn.textContent = textoOriginal;
+      var num = String(parseInt(state.piloto, 10));
+      if (res && !res.encontrado) {
+        setErro('piloto', 'Não encontramos o Número de Piloto ' + num + '. Confira o número ou fale com o suporte.');
+        document.getElementById('piloto').focus();
+        return;
+      }
+      if (res && !res.confere) {
+        setErro('identificacao', 'O nome não confere com o cadastro do Piloto ' + num + '. Digite o nome como está no seu cadastro, ou fale com o suporte.');
+        document.getElementById('identificacao').focus();
+        return;
+      }
+      verificarPendentesEAvancar();
+    });
+  }
+
   // Nunca trava o pedido: se algo falhar ou demorar, segue para o passo 2 normalmente.
   function verificarPendentesEAvancar() {
     var whatsapp = soDigitos(state.whatsapp);
@@ -420,7 +462,7 @@
   document.getElementById('lembrete-fechar').addEventListener('click', fecharLembrete);
   document.getElementById('lembrete-overlay').addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharLembrete(); });
 
-  document.getElementById('btn-go-2').addEventListener('click', verificarPendentesEAvancar);
+  document.getElementById('btn-go-2').addEventListener('click', conferirEAvancar);
   document.getElementById('btn-back-1').addEventListener('click', function () { scrollToTop(); state.screen = 1; render(); });
   document.getElementById('header-back-2').addEventListener('click', function () { scrollToTop(); state.screen = 1; render(); });
   document.getElementById('btn-back-2').addEventListener('click', function () { scrollToTop(); state.screen = 2; render(); });

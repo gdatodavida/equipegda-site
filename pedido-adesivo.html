@@ -145,52 +145,21 @@
 (function () {
   'use strict';
 
-  // Mesma planilha de numerações (Num/NOME) usada no painel de cadastros e no GDA Vendas.
-  var API_URL_CLIENTES = 'https://script.google.com/macros/s/AKfycbwD_VuIrQK9WusXinCg03e732PUX9jaPRNkOKcCRN181tMh6M8l_La2qq-GPw39t0Hr/exec';
   var SUPORTE_WHATSAPP = '557331914501';
 
   var state = { nome: '', numero: '', whatsapp: '' };
-  var pilotos = null;        // { '113': 'NOME COMPLETO' } — carregado da planilha
-  var carregando = null;     // Promise da carga da planilha
 
   function scrollToTop() { try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (err) { try { window.scrollTo(0, 0); } catch (e) {} } }
 
-  // ----- planilha -----
-  function pegar(obj, chaves) {
-    for (var i = 0; i < chaves.length; i++) { if (obj && obj[chaves[i]] != null && String(obj[chaves[i]]).trim() !== '') return obj[chaves[i]]; }
-    return '';
-  }
-  function carregarPilotos() {
-    if (pilotos) return Promise.resolve(pilotos);
-    if (carregando) return carregando;
-    carregando = fetch(API_URL_CLIENTES, { method: 'GET' }).then(function (r) { return r.json(); }).then(function (res) {
-      var lista = (res && (res.customers || res.clientes)) || [];
-      if (!Array.isArray(lista) || !lista.length) throw new Error('planilha vazia');
-      var mapa = {};
-      lista.forEach(function (c) {
-        var num = String(pegar(c, ['id', 'num', 'Num', 'numero', 'número'])).replace(/\D/g, '');
-        var nome = String(pegar(c, ['name', 'nome', 'NOME', 'Nome', 'cliente']));
-        if (num) mapa[String(parseInt(num, 10))] = nome;
-      });
-      pilotos = mapa;
-      return mapa;
+  // ----- conferência do piloto no Supabase (tabela pilotos) -----
+  // Devolve { encontrado: bool, confere: bool }. Só número + nome são enviados; nenhum dado pessoal volta.
+  function conferirPiloto(numero, nome) {
+    if (!window.gdaSupabase) return Promise.reject(new Error('supabase'));
+    return Promise.resolve(window.gdaSupabase.rpc('conferir_piloto', { p_num: numero, p_nome: nome })).then(function (r) {
+      if (!r || r.error) throw (r && r.error) || new Error('conferir_piloto');
+      var linha = Array.isArray(r.data) ? r.data[0] : r.data;
+      return { encontrado: !!(linha && linha.encontrado), confere: !!(linha && linha.confere) };
     });
-    carregando.catch(function () { carregando = null; }); // permite tentar de novo
-    return carregando;
-  }
-  carregarPilotos().catch(function (err) { console.error('[GDA] planilha de pilotos:', err); });
-
-  // ----- comparação de nome -----
-  var IGNORAR = { da: 1, de: 1, di: 1, do: 1, du: 1, das: 1, dos: 1, e: 1 };
-  function palavras(nome) {
-    return String(nome || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
-      .replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(function (p) { return p.length >= 2 && !IGNORAR[p]; });
-  }
-  // Passa se pelo menos o nome ou um sobrenome digitado bater com o nome cadastrado.
-  function nomeConfere(digitado, cadastrado) {
-    var a = palavras(digitado), b = palavras(cadastrado);
-    for (var i = 0; i < a.length; i++) { if (b.indexOf(a[i]) > -1) return true; }
-    return false;
   }
 
   // ----- validação dos campos -----
@@ -264,14 +233,14 @@
     verificando = true;
     btn.textContent = 'Verificando…';
     btn.style.opacity = '0.6';
-    carregarPilotos().then(function (mapa) {
+    conferirPiloto(String(parseInt(state.numero, 10)), state.nome.trim()).then(function (res) {
       var num = String(parseInt(state.numero, 10));
-      if (!(num in mapa)) {
+      if (!res.encontrado) {
         setErro('ad-numero', 'Não encontramos o Número de Piloto ' + num + '. Confira o número ou fale com o suporte.');
         document.getElementById('ad-numero').focus();
         return;
       }
-      if (!nomeConfere(state.nome, mapa[num])) {
+      if (!res.confere) {
         setErro('ad-nome', 'O nome não confere com o cadastro do Piloto ' + num + '. Digite o nome como está no seu cadastro, ou fale com o suporte.');
         document.getElementById('ad-nome').focus();
         return;
