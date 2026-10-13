@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Pilotos — Painel Equipe GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{--bg:#14110F;--bg2:#1A1512;--card:#211B17;--campo:#171310;--linha:rgba(245,241,234,0.10);--txt:#F5F1EA;--txt2:#D8D2C7;--txt3:#A89C8E;--txt4:#6B655C;--am:#FFDB00;--ok:#7FD99A;--erro:#FF8A7A;--alerta:#F2B35B;}
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:'Manrope',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  button{cursor:pointer;font-family:'Manrope',sans-serif;}
+  input,select,textarea{font-family:'Manrope',sans-serif;font-size:15px;color:var(--txt);background:var(--campo);border:1px solid rgba(245,241,234,0.16);border-radius:10px;padding:11px 14px;outline:none;width:100%;}
+  input:focus,select:focus,textarea:focus{border-color:var(--am);}
+  textarea{resize:vertical;min-height:70px;}
+  header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:rgba(20,17,15,0.95);border-bottom:1px solid var(--linha);backdrop-filter:blur(6px);}
+  header .marca{display:flex;align-items:center;gap:12px;}
+  header h1{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;}
+  .quem{font-size:13px;color:var(--txt3);display:flex;align-items:center;gap:12px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;border:none;background:var(--am);color:#14110F;font-weight:800;font-size:14px;}
+  .btn:disabled{opacity:.55;cursor:default;}
+  .btn-sec{background:transparent;border:1px solid rgba(245,241,234,0.18);color:var(--txt2);font-weight:600;}
+  .btn-peq{padding:7px 14px;font-size:13px;}
+  main{max-width:1180px;margin:0 auto;padding:24px 20px 80px;}
+  .resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+  .tile{background:var(--card);border:1px solid var(--linha);border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;color:var(--txt);}
+  .tile.ativo{border-color:var(--am);}
+  .tile .n{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;}
+  .tile .l{font-size:12px;color:var(--txt3);font-weight:600;}
+  .barra{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .barra input{flex:1;min-width:220px;}
+  .barra select{width:auto;min-width:180px;}
+  .tabela{background:var(--card);border:1px solid var(--linha);border-radius:16px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;}
+  th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--linha);font-weight:700;}
+  td{padding:11px 14px;border-bottom:1px solid rgba(245,241,234,0.05);font-size:14px;vertical-align:middle;}
+  tbody tr{cursor:pointer;}
+  tbody tr:hover{background:rgba(245,241,234,0.03);}
+  .num{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;color:var(--am);white-space:nowrap;}
+  .sub{font-size:12px;color:var(--txt3);}
+  .tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.03em;white-space:nowrap;}
+  .t-credenciado{background:rgba(127,217,154,.12);color:var(--ok);}
+  .t-sem_numero,.t-pendente{background:rgba(242,179,91,.12);color:var(--alerta);}
+  .t-livre{background:rgba(245,241,234,.08);color:var(--txt2);}
+  .t-bloqueado,.t-indisponivel{background:rgba(255,138,122,.10);color:var(--erro);}
+  .t-reservado{background:rgba(255,219,0,.10);color:var(--am);}
+  .aviso{color:var(--alerta);font-size:12px;font-weight:700;}
+  .vazio{padding:40px;text-align:center;color:var(--txt3);}
+  .mais{display:flex;justify-content:center;padding:14px;}
+  .col-tel{white-space:nowrap;}
+  .zap{color:var(--ok);font-weight:600;}
+  /* login */
+  .login{max-width:400px;margin:80px auto;background:var(--card);border:1px solid var(--linha);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;gap:16px;}
+  .login h2{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:24px;}
+  label{font-size:13px;font-weight:600;color:var(--txt2);display:flex;flex-direction:column;gap:6px;}
+  .msg-erro{color:var(--erro);font-size:13px;font-weight:600;}
+  .msg-ok{color:var(--ok);font-size:13px;font-weight:600;}
+  /* edição */
+  .fundo{position:fixed;inset:0;z-index:50;background:rgba(10,8,6,.78);display:none;justify-content:flex-end;}
+  .fundo.aberto{display:flex;}
+  .gaveta{width:100%;max-width:560px;height:100%;overflow-y:auto;background:var(--bg2);border-left:1px solid var(--linha);padding:24px 24px 40px;display:flex;flex-direction:column;gap:18px;}
+  .gaveta h2{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:24px;}
+  .grade{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grade .inteira{grid-column:1/-1;}
+  .check{flex-direction:row;align-items:center;gap:10px;font-weight:600;}
+  .check input{width:18px;height:18px;accent-color:var(--am);}
+  .secao{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--am);margin-top:6px;}
+  .rodape-gaveta{display:flex;gap:10px;justify-content:space-between;align-items:center;position:sticky;bottom:-40px;background:var(--bg2);padding:14px 0 10px;border-top:1px solid var(--linha);}
+  .meta{font-size:12px;color:var(--txt4);}
+  .acesso-box{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:14px 16px;background:var(--campo);border-radius:12px;}
+  .acesso-box details{width:100%;font-size:13px;color:var(--txt2);}
+  .acesso-box summary{cursor:pointer;font-weight:700;color:var(--txt2);}
+  .hist{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(245,241,234,0.06);font-size:12px;}
+  .hist .c{color:var(--txt3);} .hist .v{text-align:right;}
+  .nav-paineis{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;flex:1;}
+  .gda-nav{display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;color:var(--cor);background:var(--fundo);border:1px solid var(--borda);white-space:nowrap;}
+  .gda-nav:hover{filter:brightness(1.15);}
+  .gda-nav.atual{background:var(--cor);color:#14110F;border-color:var(--cor);}
+  @media (max-width:760px){
+    header{flex-wrap:wrap;} .nav-paineis{order:3;flex-basis:100%;justify-content:flex-start;}
+    header{padding:12px 16px;} main{padding:16px 12px 60px;}
+    .col-tel,.col-sang,.col-ades{display:none;}
+    .grade{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="marca">
+    <a href="index.html"><img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height:30px;width:auto;display:block;"></a>
+    <h1>Pilotos</h1>
+  </div>
+  <nav class="nav-paineis">
+    <a href="painel-cadastros.html" class="gda-nav" style="--cor:#C9A7FF;--fundo:rgba(201,167,255,0.12);--borda:rgba(201,167,255,0.40);">Cadastros</a>
+    <a href="credenciamento.html?previa=1" target="_blank" rel="noopener" class="gda-nav" style="--cor:#FFDB00;--fundo:rgba(255,219,0,0.12);--borda:rgba(255,219,0,0.40);">Prévia do credenciamento</a>
+    <a href="painel-pedidos.html" class="gda-nav" style="--cor:#7FD99A;--fundo:rgba(127,217,154,0.12);--borda:rgba(127,217,154,0.40);">Painel de pedidos</a>
+    <a href="painel-adesivos.html" class="gda-nav" style="--cor:#7CC4FF;--fundo:rgba(124,196,255,0.12);--borda:rgba(124,196,255,0.40);">Adesivos de reposição</a>
+    <a href="pilotos-admin.html" class="gda-nav atual" aria-current="page" style="--cor:#FF9E8A;--fundo:rgba(255,158,138,0.12);--borda:rgba(255,158,138,0.40);">Pilotos</a>
+  </nav>
+  <div class="quem" id="quem" hidden>
+    <span id="quem-email"></span>
+    <button class="btn btn-sec btn-peq" id="btn-sair" type="button">Sair</button>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<div id="tela-login" hidden>
+  <form class="login" id="form-login">
+    <h2>Entrar no painel</h2>
+    <span class="sub">Use o mesmo e-mail e senha do Painel de Cadastros.</span>
+    <label>E-mail<input id="login-email" type="email" autocomplete="username" required></label>
+    <label>Senha<input id="login-senha" type="password" autocomplete="current-password" required></label>
+    <span class="msg-erro" id="login-erro" hidden></span>
+    <button class="btn" type="submit" id="btn-entrar">Entrar</button>
+  </form>
+</div>
+
+<!-- SEM PERMISSÃO -->
+<div id="tela-negado" hidden>
+  <div class="login">
+    <h2>Sem acesso aos pilotos</h2>
+    <span class="sub" id="negado-texto">Seu login não está na lista de administradores. Peça para incluir seu e-mail na tabela gda_admins do Supabase.</span>
+    <button class="btn btn-sec" type="button" id="btn-sair-2">Entrar com outro e-mail</button>
+  </div>
+</div>
+
+<!-- LISTA -->
+<main id="tela-lista" hidden>
+  <div class="resumo" id="resumo"></div>
+
+  <div class="barra">
+    <input id="busca" type="search" placeholder="Buscar por número, nome, apelido ou telefone…" autocomplete="off">
+    <select id="filtro">
+      <option value="todos">Todos</option>
+      <option value="credenciado">Credenciados</option>
+      <option value="incompleto">Credenciados sem cadastro completo</option>
+      <option value="conferir">Com aviso “CONFERIR”</option>
+      <option value="adesivo_nao_entregue">Adesivo pago e não entregue</option>
+      <option value="sem_numero">Cadastros sem número</option>
+      <option value="livre">Números livres</option>
+      <option value="bloqueado">Bloqueados / indisponíveis / reservados</option>
+    </select>
+    <button class="btn btn-sec" type="button" id="btn-novo">+ Novo piloto</button>
+  </div>
+
+  <div class="tabela">
+    <table>
+      <thead><tr>
+        <th>Nº</th><th>Nome</th><th>Situação</th><th class="col-tel">WhatsApp</th><th class="col-sang">Sangue</th><th class="col-ades">Adesivo</th>
+      </tr></thead>
+      <tbody id="linhas"></tbody>
+    </table>
+    <div class="vazio" id="vazio" hidden>Nenhum piloto encontrado.</div>
+    <div class="mais" id="mais" hidden><button class="btn btn-sec btn-peq" type="button" id="btn-mais">Mostrar mais</button></div>
+  </div>
+  <p class="sub" id="carregando" style="text-align:center;margin-top:20px;">Carregando pilotos…</p>
+</main>
+
+<!-- EDIÇÃO -->
+<div class="fundo" id="fundo">
+  <form class="gaveta" id="form-edicao" role="dialog" aria-modal="true" aria-labelledby="ed-titulo">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <h2 id="ed-titulo">Piloto</h2>
+      <button class="btn btn-sec btn-peq" type="button" id="btn-fechar">Fechar</button>
+    </div>
+
+    <div class="secao">Identificação</div>
+    <div class="grade">
+      <label>Número de piloto<input id="f-num" type="text" inputmode="numeric" maxlength="6" placeholder="vazio = sem número"></label>
+      <label>Situação
+        <select id="f-situacao">
+          <option value="credenciado">Credenciado</option>
+          <option value="pendente">Pendente</option>
+          <option value="sem_numero">Sem número</option>
+          <option value="livre">Número livre</option>
+          <option value="reservado">Reservado</option>
+          <option value="bloqueado">Bloqueado</option>
+          <option value="indisponivel">Indisponível</option>
+        </select>
+      </label>
+      <label class="inteira">Nome no adesivo / lista<input id="f-nome" type="text"></label>
+      <label class="inteira">Nome completo<input id="f-nome_completo" type="text"></label>
+      <label>Apelido<input id="f-apelido" type="text"></label>
+      <label>WhatsApp<input id="f-telefone" type="tel" inputmode="numeric" placeholder="73991234567"></label>
+    </div>
+
+    <div class="secao">Adesivo</div>
+    <div class="grade">
+      <label class="check"><input id="f-adesivo_pago" type="checkbox"> Adesivo pago</label>
+      <label class="check"><input id="f-adesivo_entregue" type="checkbox"> Adesivo entregue</label>
+    </div>
+
+    <div class="secao">Segurança</div>
+    <div class="grade">
+      <label>Data de nascimento<input id="f-data_nascimento" type="date"></label>
+      <label>Tipo sanguíneo
+        <select id="f-tipo_sanguineo">
+          <option value="">Não informado</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </label>
+      <label>Emergência 1 — nome<input id="f-contato_emergencia_1_nome" type="text"></label>
+      <label>Parentesco<input id="f-contato_emergencia_1_parentesco" type="text"></label>
+      <label class="inteira">Emergência 1 — WhatsApp<input id="f-contato_emergencia_1_whatsapp" type="tel" inputmode="numeric" placeholder="73999999999"></label>
+      <label>Emergência 2 — nome<input id="f-contato_emergencia_2_nome" type="text"></label>
+      <label>Parentesco<input id="f-contato_emergencia_2_parentesco" type="text"></label>
+      <label class="inteira">Emergência 2 — WhatsApp<input id="f-contato_emergencia_2_whatsapp" type="tel" inputmode="numeric" placeholder="73999999999"></label>
+      <label>Moto
+        <select id="f-moto"><option value="">Não informado</option><option value="própria">Própria</option><option value="alugada">Alugada</option></select>
+      </label>
+    </div>
+
+    <div class="secao">Área do Piloto</div>
+    <div class="acesso-box">
+      <span id="acesso-status" class="sub"></span>
+      <button class="btn btn-sec btn-peq" type="button" id="btn-convite">Enviar acesso pelo WhatsApp</button>
+      <span class="msg-erro" id="convite-erro" hidden></span>
+      <details id="historico" hidden><summary>Alterações feitas pelo piloto</summary><div id="historico-lista"></div></details>
+    </div>
+
+    <div class="secao">Observações</div>
+    <label><textarea id="f-observacoes" placeholder="Anotações da equipe (ex.: avisos CONFERIR)"></textarea></label>
+
+    <span class="msg-erro" id="ed-erro" hidden></span>
+    <span class="msg-ok" id="ed-ok" hidden></span>
+    <div class="rodape-gaveta">
+      <span class="meta" id="ed-meta"></span>
+      <button class="btn" type="submit" id="btn-salvar">Salvar</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  'use strict';
+  var sb = window.gdaSupabase;
+  var CAMPOS = 'id,num,nome,situacao,adesivo_entregue,adesivo_pago,observacoes,nome_completo,apelido,telefone,data_nascimento,nascimento_texto,contato_emergencia_1,contato_emergencia_2,contato_emergencia_1_nome,contato_emergencia_1_parentesco,contato_emergencia_1_whatsapp,contato_emergencia_2_nome,contato_emergencia_2_parentesco,contato_emergencia_2_whatsapp,tipo_sanguineo,moto,origem,cadastro_site_id,updated_at,atualizado_por,auth_user_id,acesso_membro_em';
+  var EDITAVEIS = ['nome','situacao','adesivo_entregue','adesivo_pago','observacoes','nome_completo','apelido','telefone','data_nascimento','contato_emergencia_1_nome','contato_emergencia_1_parentesco','contato_emergencia_1_whatsapp','contato_emergencia_2_nome','contato_emergencia_2_parentesco','contato_emergencia_2_whatsapp','tipo_sanguineo','moto'];
+  var SIT = { credenciado: 'Credenciado', pendente: 'Pendente', sem_numero: 'Sem número', livre: 'Livre', reservado: 'Reservado', bloqueado: 'Bloqueado', indisponivel: 'Indisponível' };
+  var POR_PAGINA = 80;
+
+  var todos = [], visiveis = [], mostrando = POR_PAGINA, atual = null;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function mostrar(tela) {
+    ['tela-login', 'tela-negado', 'tela-lista'].forEach(function (t) { $(t).hidden = t !== tela; });
+  }
+  function semAcento(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function soDigitos(t) { return String(t || '').replace(/\D/g, ''); }
+  function fmtTel(t) {
+    var d = soDigitos(t); if (d.length > 11 && d.indexOf('55') === 0) d = d.slice(2);
+    if (d.length === 11) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+    if (d.length === 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return t || '';
+  }
+  function zapLink(t) { var d = soDigitos(t); if (!d) return ''; if (d.length <= 11) d = '55' + d; return 'https://wa.me/' + d; }
+  function incompleto(p) { return p.situacao === 'credenciado' && !p.telefone && !p.nome_completo; }
+  function temConferir(p) { return /CONFERIR/i.test(p.observacoes || ''); }
+  function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
+
+  // ---------- sessão ----------
+  function iniciar() {
+    if (!sb || !sb.auth) { document.body.innerHTML = '<p style="padding:40px;color:#FF8A7A">Não foi possível carregar o Supabase. Atualize a página.</p>'; return; }
+    sb.auth.getSession().then(function (r) {
+      var s = r && r.data && r.data.session;
+      if (!s) { mostrar('tela-login'); $('quem').hidden = true; return; }
+      $('quem-email').textContent = s.user && s.user.email || '';
+      $('quem').hidden = false;
+      carregar();
+    });
+  }
+
+  $('form-login').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('btn-entrar'); btn.disabled = true; btn.textContent = 'Entrando…'; $('login-erro').hidden = true;
+    sb.auth.signInWithPassword({ email: $('login-email').value.trim(), password: $('login-senha').value }).then(function (r) {
+      btn.disabled = false; btn.textContent = 'Entrar';
+      if (r.error) { $('login-erro').textContent = 'E-mail ou senha incorretos.'; $('login-erro').hidden = false; return; }
+      iniciar();
+    });
+  });
+  function sair() { sb.auth.signOut().then(function () { todos = []; iniciar(); }); }
+  $('btn-sair').addEventListener('click', sair);
+  $('btn-sair-2').addEventListener('click', sair);
+
+  // ---------- dados ----------
+  function carregar() {
+    mostrar('tela-lista'); $('carregando').hidden = false;
+    sb.from('pilotos').select(CAMPOS).order('num', { ascending: true, nullsFirst: false }).limit(5000).then(function (r) {
+      $('carregando').hidden = true;
+      if (r.error) { $('carregando').hidden = false; $('carregando').textContent = 'Erro ao carregar: ' + r.error.message; return; }
+      todos = r.data || [];
+      if (!todos.length) { mostrar('tela-negado'); return; } // sem permissão, o Supabase devolve lista vazia
+      desenhar();
+    });
+  }
+
+  function contar() {
+    var c = { todos: todos.length, credenciado: 0, incompleto: 0, conferir: 0, adesivo_nao_entregue: 0, sem_numero: 0, livre: 0 };
+    todos.forEach(function (p) {
+      if (p.situacao === 'credenciado') c.credenciado++;
+      if (incompleto(p)) c.incompleto++;
+      if (temConferir(p)) c.conferir++;
+      if (p.situacao === 'credenciado' && p.adesivo_pago && !p.adesivo_entregue) c.adesivo_nao_entregue++;
+      if (p.situacao === 'sem_numero') c.sem_numero++;
+      if (p.situacao === 'livre') c.livre++;
+    });
+    return c;
+  }
+
+  function desenharResumo() {
+    var c = contar(), f = $('filtro').value;
+    var tiles = [['credenciado', 'Credenciados'], ['incompleto', 'Sem cadastro completo'], ['adesivo_nao_entregue', 'Adesivo a entregar'], ['conferir', 'Para conferir'], ['sem_numero', 'Sem número'], ['livre', 'Números livres']];
+    $('resumo').innerHTML = tiles.map(function (t) {
+      return '<button type="button" class="tile' + (f === t[0] ? ' ativo' : '') + '" data-f="' + t[0] + '"><div class="n">' + c[t[0]] + '</div><div class="l">' + t[1] + '</div></button>';
+    }).join('');
+  }
+  $('resumo').addEventListener('click', function (e) {
+    var b = e.target.closest('.tile'); if (!b) return;
+    $('filtro').value = $('filtro').value === b.dataset.f ? 'todos' : b.dataset.f;
+    mostrando = POR_PAGINA; desenhar();
+  });
+
+  function passaFiltro(p, f) {
+    switch (f) {
+      case 'credenciado': return p.situacao === 'credenciado';
+      case 'incompleto': return incompleto(p);
+      case 'conferir': return temConferir(p);
+      case 'adesivo_nao_entregue': return p.situacao === 'credenciado' && p.adesivo_pago && !p.adesivo_entregue;
+      case 'sem_numero': return p.situacao === 'sem_numero' || p.situacao === 'pendente';
+      case 'livre': return p.situacao === 'livre';
+      case 'bloqueado': return p.situacao === 'bloqueado' || p.situacao === 'indisponivel' || p.situacao === 'reservado';
+      default: return true;
+    }
+  }
+  function passaBusca(p, termo) {
+    if (!termo) return true;
+    if (/^\d{1,6}$/.test(termo) && p.num === parseInt(termo, 10)) return true;
+    var dig = soDigitos(termo);
+    if (dig.length >= 4 && soDigitos(p.telefone).indexOf(dig) > -1) return true;
+    var alvo = semAcento([p.nome, p.nome_completo, p.apelido].join(' '));
+    return semAcento(termo).split(/\s+/).every(function (w) { return !w || alvo.indexOf(w) > -1; });
+  }
+
+  function desenhar() {
+    desenharResumo();
+    var termo = $('busca').value.trim(), f = $('filtro').value;
+    visiveis = todos.filter(function (p) { return passaFiltro(p, f) && passaBusca(p, termo); });
+    // número exato buscado aparece primeiro
+    if (/^\d{1,6}$/.test(termo)) { var n = parseInt(termo, 10); visiveis.sort(function (a, b) { return (b.num === n) - (a.num === n); }); }
+    var pedaco = visiveis.slice(0, mostrando);
+    $('linhas').innerHTML = pedaco.map(function (p) {
+      var nome = p.nome || p.nome_completo || '—';
+      var sub = p.nome_completo && p.nome_completo !== p.nome ? p.nome_completo : (p.apelido ? '“' + p.apelido + '”' : '');
+      var avisos = [];
+      if (temConferir(p)) avisos.push('⚠ conferir');
+      if (incompleto(p)) avisos.push('sem cadastro');
+      var ades = p.situacao !== 'credenciado' ? '' : (p.adesivo_entregue ? 'Entregue' : p.adesivo_pago ? 'Pago · a entregar' : '—');
+      return '<tr data-id="' + p.id + '">' +
+        '<td class="num">' + (p.num != null ? p.num : '—') + '</td>' +
+        '<td><div>' + esc(nome) + '</div>' + (sub ? '<div class="sub">' + esc(sub) + '</div>' : '') + (avisos.length ? '<div class="aviso">' + avisos.join(' · ') + '</div>' : '') + '</td>' +
+        '<td><span class="tag t-' + p.situacao + '">' + (SIT[p.situacao] || p.situacao) + '</span></td>' +
+        '<td class="col-tel">' + (p.telefone ? '<a class="zap" href="' + zapLink(p.telefone) + '" target="_blank" rel="noopener" data-link="1">' + esc(fmtTel(p.telefone)) + '</a>' : '<span class="sub">—</span>') + '</td>' +
+        '<td class="col-sang">' + esc(p.tipo_sanguineo || '—') + '</td>' +
+        '<td class="col-ades sub">' + ades + '</td></tr>';
+    }).join('');
+    $('vazio').hidden = visiveis.length > 0;
+    $('mais').hidden = visiveis.length <= mostrando;
+  }
+
+  var tBusca;
+  $('busca').addEventListener('input', function () { clearTimeout(tBusca); tBusca = setTimeout(function () { mostrando = POR_PAGINA; desenhar(); }, 150); });
+  $('filtro').addEventListener('change', function () { mostrando = POR_PAGINA; desenhar(); });
+  $('btn-mais').addEventListener('click', function () { mostrando += POR_PAGINA; desenhar(); });
+  $('linhas').addEventListener('click', function (e) {
+    if (e.target.closest('[data-link]')) return; // clique no WhatsApp abre a conversa
+    var tr = e.target.closest('tr'); if (!tr) return;
+    abrir(todos.find(function (p) { return p.id == tr.dataset.id; }));
+  });
+
+  // ---------- edição ----------
+  function abrir(p) {
+    atual = p || null;
+    var v = p || { situacao: 'credenciado', adesivo_pago: false, adesivo_entregue: false };
+    $('ed-titulo').textContent = p ? (p.num != null ? 'Piloto Nº ' + p.num : 'Cadastro sem número') : 'Novo piloto';
+    $('f-num').value = v.num != null ? v.num : '';
+    EDITAVEIS.forEach(function (k) {
+      var el = $('f-' + k); if (!el) return;
+      if (el.type === 'checkbox') el.checked = !!v[k]; else el.value = v[k] != null ? v[k] : '';
+    });
+    if (v.tipo_sanguineo && !$('f-tipo_sanguineo').value) { // valor fora da lista
+      var o = document.createElement('option'); o.textContent = v.tipo_sanguineo; $('f-tipo_sanguineo').appendChild(o); $('f-tipo_sanguineo').value = v.tipo_sanguineo;
+    }
+    var meta = [];
+    if (p && p.updated_at) meta.push('Alterado em ' + new Date(p.updated_at).toLocaleString('pt-BR') + (p.atualizado_por ? ' por ' + p.atualizado_por : ''));
+    if (p && p.nascimento_texto && !p.data_nascimento) meta.push('Nascimento digitado: ' + p.nascimento_texto);
+    if (p && p.cadastro_site_id) meta.push('Veio do cadastro do site');
+    [1, 2].forEach(function (n) { // contato antigo (só texto, da planilha) aparece no campo nome para não se perder
+      var txt = p && p['contato_emergencia_' + n];
+      if (txt && !p['contato_emergencia_' + n + '_nome'] && !p['contato_emergencia_' + n + '_whatsapp']) {
+        if (/^[\d\s()+.\-]+$/.test(txt)) $('f-contato_emergencia_' + n + '_whatsapp').value = soDigitos(txt);
+        else $('f-contato_emergencia_' + n + '_nome').value = txt;
+      }
+    });
+    $('ed-meta').textContent = meta.join(' · ');
+    $('ed-erro').hidden = true; $('ed-ok').hidden = true;
+    mostrarAcesso(p);
+    $('fundo').classList.add('aberto');
+    setTimeout(function () { $(p ? 'f-nome' : 'f-num').focus(); }, 50);
+  }
+  // ---------- Área do Piloto: convite e histórico ----------
+  function mostrarAcesso(p) {
+    $('convite-erro').hidden = true;
+    var pode = p && p.num != null && p.situacao === 'credenciado';
+    $('btn-convite').hidden = !pode;
+    $('btn-convite').textContent = p && p.auth_user_id ? 'Enviar nova senha pelo WhatsApp' : 'Enviar acesso pelo WhatsApp';
+    $('acesso-status').textContent = !p ? 'Salve o piloto primeiro.'
+      : !pode ? 'Só pilotos credenciados com número podem ter acesso.'
+      : p.auth_user_id ? 'Tem acesso desde ' + (p.acesso_membro_em ? new Date(p.acesso_membro_em).toLocaleDateString('pt-BR') : '—') + '. Se esqueceu a senha, envie um novo link.'
+      : 'Ainda não tem acesso à Área do Piloto.';
+    $('historico').hidden = true; $('historico-lista').innerHTML = '';
+    if (!p) return;
+    sb.from('pilotos_alteracoes').select('campo,antes,depois,feito_por,created_at').eq('piloto_id', p.id).order('created_at', { ascending: false }).limit(30).then(function (r) {
+      if (!atual || atual.id !== p.id || r.error || !r.data || !r.data.length) return;
+      $('historico-lista').innerHTML = r.data.map(function (h) {
+        return '<div class="hist"><span class="c">' + new Date(h.created_at).toLocaleDateString('pt-BR') + ' · ' + esc(String(h.campo).replace(/_/g, ' ')) + '</span><span class="v">' + esc(h.antes || '—') + ' → <strong>' + esc(h.depois || '—') + '</strong></span></div>';
+      }).join('');
+      $('historico').hidden = false;
+    });
+  }
+  $('btn-convite').addEventListener('click', function () {
+    if (!atual) return;
+    var p = atual, btn = this;
+    var tel = soDigitos(p.telefone);
+    if (tel.length < 10) { $('convite-erro').textContent = 'Este piloto não tem WhatsApp cadastrado. Preencha o WhatsApp e salve antes.'; $('convite-erro').hidden = false; return; }
+    var win = null; try { win = window.open('', '_blank'); } catch (err) {}
+    btn.disabled = true; btn.textContent = 'Gerando link…';
+    Promise.resolve(sb.rpc('gerar_convite_membro', { p_piloto_id: p.id })).then(function (r) {
+      btn.disabled = false; mostrarAcesso(p);
+      if (r.error || !r.data) {
+        if (win) win.close();
+        $('convite-erro').textContent = 'Não foi possível gerar o link: ' + (r.error ? r.error.message : 'tente de novo'); $('convite-erro').hidden = false; return;
+      }
+      var link = location.origin + '/membros.html?convite=' + encodeURIComponent(r.data);
+      var nome = String(p.apelido || p.nome_completo || p.nome || '').trim().split(/\s+/)[0];
+      var msg = 'Oi' + (nome ? ' ' + nome : '') + '! Aqui é o suporte da Equipe GDA. ' +
+        (p.auth_user_id ? 'Segue o link para você criar uma nova senha da Área do Piloto:' : 'Agora você tem acesso à Área do Piloto, onde pode conferir e atualizar seus dados (WhatsApp, contatos de emergência e mais). Crie sua senha neste link:') +
+        '\n\n' + link + '\n\nO link é pessoal, vale por 3 dias e só pode ser usado uma vez. Depois é só entrar com seu número de piloto (' + p.num + ') e a senha em ' + location.origin + '/membros.html';
+      var url = zapLink(tel) + '?text=' + encodeURIComponent(msg);
+      if (win) win.location.href = url; else window.open(url, '_blank');
+    });
+  });
+
+  function fechar() { $('fundo').classList.remove('aberto'); atual = null; }
+  $('btn-fechar').addEventListener('click', fechar);
+  $('fundo').addEventListener('click', function (e) { if (e.target === $('fundo')) fechar(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && $('fundo').classList.contains('aberto')) fechar(); });
+  $('btn-novo').addEventListener('click', function () { abrir(null); });
+  $('f-num').addEventListener('input', function (e) { var d = e.target.value.replace(/\D/g, '').slice(0, 6); if (d !== e.target.value) e.target.value = d; });
+
+  function erro(msg) { $('ed-erro').textContent = msg; $('ed-erro').hidden = false; $('ed-ok').hidden = true; }
+
+  $('form-edicao').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var dados = {};
+    EDITAVEIS.forEach(function (k) {
+      var el = $('f-' + k); if (!el) return;
+      dados[k] = el.type === 'checkbox' ? el.checked : (el.value.trim() === '' ? null : el.value.trim());
+    });
+    if (dados.telefone) dados.telefone = soDigitos(dados.telefone);
+    ['contato_emergencia_1_whatsapp', 'contato_emergencia_2_whatsapp'].forEach(function (k) { if (dados[k]) dados[k] = soDigitos(dados[k]); });
+    var numTxt = $('f-num').value.trim();
+    dados.num = numTxt ? parseInt(numTxt, 10) : null;
+
+    if (dados.num == null && dados.situacao !== 'sem_numero' && dados.situacao !== 'pendente') return erro('Sem número de piloto, a situação deve ser "Sem número" ou "Pendente".');
+    if (dados.situacao === 'credenciado' && !dados.nome && !dados.nome_completo) return erro('Coloque pelo menos o nome do piloto.');
+    var dono = dados.num != null && todos.find(function (p) { return p.num === dados.num && (!atual || p.id !== atual.id); });
+    if (dono) {
+      if (dono.situacao === 'livre' && !atual) {
+        atual = dono; // número livre: o novo piloto ocupa essa linha
+      } else {
+        return erro('O número ' + dados.num + ' já é de ' + (dono.nome || dono.nome_completo || 'outro registro') + ' (' + (SIT[dono.situacao] || dono.situacao) + '). Libere esse número primeiro.');
+      }
+    }
+
+    var btn = $('btn-salvar'); btn.disabled = true; btn.textContent = 'Salvando…';
+    var q = atual ? sb.from('pilotos').update(dados).eq('id', atual.id) : sb.from('pilotos').insert(dados);
+    q.select(CAMPOS).single().then(function (r) {
+      btn.disabled = false; btn.textContent = 'Salvar';
+      if (r.error) {
+        if (/duplicate|unique/i.test(r.error.message)) return erro('Esse número de piloto já está em uso.');
+        return erro('Não foi possível salvar: ' + r.error.message);
+      }
+      var i = todos.findIndex(function (p) { return p.id === r.data.id; });
+      if (i > -1) todos[i] = r.data; else todos.push(r.data);
+      todos.sort(function (a, b) { return (a.num == null) - (b.num == null) || (a.num || 0) - (b.num || 0); });
+      atual = r.data;
+      $('ed-titulo').textContent = r.data.num != null ? 'Piloto Nº ' + r.data.num : 'Cadastro sem número';
+      $('ed-ok').textContent = 'Salvo!'; $('ed-ok').hidden = false; $('ed-erro').hidden = true;
+      desenhar();
+    });
+  });
+
+  iniciar();
+})();
+</script>
+</body>
+</html>
