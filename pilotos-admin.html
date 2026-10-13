@@ -70,6 +70,13 @@
   .secao{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--am);margin-top:6px;}
   .rodape-gaveta{display:flex;gap:10px;justify-content:space-between;align-items:center;position:sticky;bottom:-40px;background:var(--bg2);padding:14px 0 10px;border-top:1px solid var(--linha);}
   .meta{font-size:12px;color:var(--txt4);}
+  .pedidos{background:var(--card);border:1px solid rgba(255,219,0,0.35);border-radius:16px;padding:18px;margin-bottom:20px;display:flex;flex-direction:column;gap:14px;}
+  .pedidos-topo{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .pedido{background:var(--campo);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+  .pedido-cab{display:flex;align-items:center;gap:12px;}
+  .pedido-grade{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:14px;}
+  .pedido-acoes{display:flex;gap:8px;flex-wrap:wrap;}
+  .ok-tag{color:var(--ok);font-size:12px;font-weight:700;}
   .acesso-box{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:14px 16px;background:var(--campo);border-radius:12px;}
   .acesso-box details{width:100%;font-size:13px;color:var(--txt2);}
   .acesso-box summary{cursor:pointer;font-weight:700;color:var(--txt2);}
@@ -80,6 +87,7 @@
   .gda-nav:hover{filter:brightness(1.15);}
   .gda-nav.atual{background:var(--cor);color:#14110F;border-color:var(--cor);}
   @media (max-width:760px){
+    .pedido-grade{grid-template-columns:1fr;}
     header{flex-wrap:wrap;} .nav-paineis{order:3;flex-basis:100%;justify-content:flex-start;}
     header{padding:12px 16px;} main{padding:16px 12px 60px;}
     .col-tel,.col-sang,.col-ades{display:none;}
@@ -130,6 +138,7 @@
 
 <!-- LISTA -->
 <main id="tela-lista" hidden>
+  <div class="pedidos" id="pedidos" hidden></div>
   <div class="resumo" id="resumo"></div>
 
   <div class="barra">
@@ -218,7 +227,11 @@
     <div class="secao">Área do Piloto</div>
     <div class="acesso-box">
       <span id="acesso-status" class="sub"></span>
-      <button class="btn btn-sec btn-peq" type="button" id="btn-convite">Enviar acesso pelo WhatsApp</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-sec btn-peq" type="button" id="btn-convite">Enviar acesso pelo WhatsApp</button>
+        <button class="btn btn-sec btn-peq" type="button" id="btn-copiar-convite">Copiar link de acesso</button>
+      </div>
+      <textarea id="convite-texto" hidden readonly style="min-height:120px;font-size:13px;"></textarea>
       <span class="msg-erro" id="convite-erro" hidden></span>
       <details id="historico" hidden><summary>Alterações feitas pelo piloto</summary><div id="historico-lista"></div></details>
     </div>
@@ -299,6 +312,7 @@
       todos = r.data || [];
       if (!todos.length) { mostrar('tela-negado'); return; } // sem permissão, o Supabase devolve lista vazia
       desenhar();
+      carregarPedidos();
     });
   }
 
@@ -419,7 +433,8 @@
   function mostrarAcesso(p) {
     $('convite-erro').hidden = true;
     var pode = p && p.num != null && p.situacao === 'credenciado';
-    $('btn-convite').hidden = !pode;
+    $('btn-convite').hidden = !pode; $('btn-copiar-convite').hidden = !pode;
+    $('btn-copiar-convite').textContent = 'Copiar link de acesso'; $('convite-texto').hidden = true;
     $('btn-convite').textContent = p && p.auth_user_id ? 'Enviar nova senha pelo WhatsApp' : 'Enviar acesso pelo WhatsApp';
     $('acesso-status').textContent = !p ? 'Salve o piloto primeiro.'
       : !pode ? 'Só pilotos credenciados com número podem ter acesso.'
@@ -435,27 +450,120 @@
       $('historico').hidden = false;
     });
   }
+  function mensagemConvite(p, token) {
+    var link = location.origin + '/membros.html?convite=' + encodeURIComponent(token);
+    var nome = String(p.apelido || p.nome_completo || p.nome || '').trim().split(/\s+/)[0];
+    return 'Oi' + (nome ? ' ' + nome : '') + '! Aqui é o suporte da Equipe GDA. ' +
+      (p.auth_user_id ? 'Segue o link para você criar uma nova senha da Área do Piloto:' : 'Agora você tem acesso à Área do Piloto, onde pode conferir e atualizar seus dados (WhatsApp, contatos de emergência e mais). Crie sua senha neste link:') +
+      '\n\n' + link + '\n\nO link é pessoal, vale por 3 dias e só pode ser usado uma vez. Depois é só entrar com seu número de piloto (' + p.num + ') e a senha em ' + location.origin + '/membros.html';
+  }
+  function erroConvite(msg) { $('convite-erro').textContent = msg; $('convite-erro').hidden = !msg; }
+  function copiarTexto(texto) {
+    try { if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(texto).then(function () { return true; }, function () { return copiarAntigo(texto); }); } catch (e) {}
+    return Promise.resolve(copiarAntigo(texto));
+  }
+  function copiarAntigo(texto) {
+    try { var ta = document.createElement('textarea'); ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); var ok = document.execCommand('copy'); document.body.removeChild(ta); return ok; } catch (e) { return false; }
+  }
+
+  // Enviar pelo WhatsApp (precisa do WhatsApp do piloto na ficha)
   $('btn-convite').addEventListener('click', function () {
     if (!atual) return;
     var p = atual, btn = this;
     var tel = soDigitos(p.telefone);
-    if (tel.length < 10) { $('convite-erro').textContent = 'Este piloto não tem WhatsApp cadastrado. Preencha o WhatsApp e salve antes.'; $('convite-erro').hidden = false; return; }
+    if (tel.length < 10) { erroConvite('Este piloto não tem WhatsApp na ficha. Use "Copiar link de acesso" e cole na conversa com ele.'); return; }
     var win = null; try { win = window.open('', '_blank'); } catch (err) {}
     btn.disabled = true; btn.textContent = 'Gerando link…';
     Promise.resolve(sb.rpc('gerar_convite_membro', { p_piloto_id: p.id })).then(function (r) {
       btn.disabled = false; mostrarAcesso(p);
-      if (r.error || !r.data) {
-        if (win) win.close();
-        $('convite-erro').textContent = 'Não foi possível gerar o link: ' + (r.error ? r.error.message : 'tente de novo'); $('convite-erro').hidden = false; return;
-      }
-      var link = location.origin + '/membros.html?convite=' + encodeURIComponent(r.data);
-      var nome = String(p.apelido || p.nome_completo || p.nome || '').trim().split(/\s+/)[0];
-      var msg = 'Oi' + (nome ? ' ' + nome : '') + '! Aqui é o suporte da Equipe GDA. ' +
-        (p.auth_user_id ? 'Segue o link para você criar uma nova senha da Área do Piloto:' : 'Agora você tem acesso à Área do Piloto, onde pode conferir e atualizar seus dados (WhatsApp, contatos de emergência e mais). Crie sua senha neste link:') +
-        '\n\n' + link + '\n\nO link é pessoal, vale por 3 dias e só pode ser usado uma vez. Depois é só entrar com seu número de piloto (' + p.num + ') e a senha em ' + location.origin + '/membros.html';
-      var url = zapLink(tel) + '?text=' + encodeURIComponent(msg);
+      if (r.error || !r.data) { if (win) win.close(); erroConvite('Não foi possível gerar o link: ' + (r.error ? r.error.message : 'tente de novo')); return; }
+      var url = zapLink(tel) + '?text=' + encodeURIComponent(mensagemConvite(p, r.data));
       if (win) win.location.href = url; else window.open(url, '_blank');
     });
+  });
+
+  // Copiar a mensagem com o link (para colar em qualquer conversa)
+  $('btn-copiar-convite').addEventListener('click', function () {
+    if (!atual) return;
+    var p = atual, btn = this;
+    btn.disabled = true; btn.textContent = 'Gerando link…'; erroConvite('');
+    Promise.resolve(sb.rpc('gerar_convite_membro', { p_piloto_id: p.id })).then(function (r) {
+      btn.disabled = false;
+      if (r.error || !r.data) { btn.textContent = 'Copiar link de acesso'; erroConvite('Não foi possível gerar o link: ' + (r.error ? r.error.message : 'tente de novo')); return; }
+      var msg = mensagemConvite(p, r.data);
+      copiarTexto(msg).then(function (ok) {
+        btn.textContent = ok ? 'Copiado ✓ — cole na conversa' : 'Copiar link de acesso';
+        if (!ok) { $('convite-texto').value = msg; $('convite-texto').hidden = false; $('convite-texto').select(); erroConvite('Não deu para copiar sozinho — selecione o texto abaixo e copie.'); }
+        setTimeout(function () { if (btn.isConnected) btn.textContent = 'Copiar link de acesso'; }, 4000);
+      });
+    });
+  });
+
+  // ---------- pedidos de acesso feitos pelo piloto ----------
+  var pedidos = [];
+  function carregarPedidos() {
+    sb.from('membros_pedidos_acesso').select('id,num,nome_digitado,whatsapp,piloto_id,created_at').eq('status', 'pendente').order('created_at', { ascending: true }).then(function (r) {
+      pedidos = (r && !r.error && r.data) || [];
+      desenharPedidos();
+    });
+  }
+  function desenharPedidos() {
+    var box = $('pedidos');
+    if (!pedidos.length) { box.hidden = true; box.innerHTML = ''; return; }
+    box.hidden = false;
+    box.innerHTML = '<div class="pedidos-topo"><span class="secao">Pedidos de acesso à Área do Piloto</span><span class="sub">' + pedidos.length + ' aguardando</span></div>' +
+      pedidos.map(function (pd) {
+        var p = todos.find(function (x) { return x.id === pd.piloto_id; }) || {};
+        var telBase = soDigitos(p.telefone);
+        var chave = function (t) { t = soDigitos(t); if (t.length > 11 && t.indexOf('55') === 0) t = t.slice(2); return t.slice(0, 2) + t.slice(-8); }; // DDD + 8 últimos (ignora o 9 extra)
+        var mesmoTel = telBase && chave(telBase) === chave(pd.whatsapp);
+        var nomeBase = p.nome_completo || p.nome || '—';
+        return '<div class="pedido" data-pedido="' + pd.id + '">' +
+          '<div class="pedido-cab"><span class="num">' + pd.num + '</span><span class="sub">' + new Date(pd.created_at).toLocaleString('pt-BR') + '</span></div>' +
+          '<div class="pedido-grade">' +
+            '<span class="sub">Nome digitado</span><span>' + esc(pd.nome_digitado) + '</span>' +
+            '<span class="sub">Nome na ficha</span><span>' + esc(nomeBase) + '</span>' +
+            '<span class="sub">WhatsApp digitado</span><span><a class="zap" data-link="1" target="_blank" rel="noopener" href="' + zapLink(pd.whatsapp) + '">' + esc(fmtTel(pd.whatsapp)) + '</a></span>' +
+            '<span class="sub">WhatsApp na ficha</span><span>' + (telBase ? esc(fmtTel(p.telefone)) + (mesmoTel ? ' <span class="ok-tag">igual ✓</span>' : ' <span class="aviso">diferente</span>') : '<span class="aviso">nenhum</span>') + '</span>' +
+          '</div>' +
+          (mesmoTel ? '' : '<label class="check"><input type="checkbox" data-salvar checked> Salvar o WhatsApp digitado na ficha do piloto</label>') +
+          '<div class="pedido-acoes"><button class="btn btn-peq" type="button" data-aprovar>Aprovar e enviar no WhatsApp</button>' +
+          '<button class="btn btn-sec btn-peq" type="button" data-recusar>Recusar</button></div>' +
+          '<span class="msg-erro" data-erro hidden></span>' +
+        '</div>';
+      }).join('');
+  }
+  $('pedidos').addEventListener('click', function (e) {
+    var card = e.target.closest('[data-pedido]'); if (!card) return;
+    var id = Number(card.getAttribute('data-pedido'));
+    var pd = pedidos.find(function (x) { return x.id === id; }); if (!pd) return;
+    var erro = card.querySelector('[data-erro]');
+    function falha(msg) { erro.textContent = msg; erro.hidden = false; }
+    if (e.target.closest('[data-recusar]')) {
+      var b = e.target.closest('[data-recusar]');
+      if (b.getAttribute('data-confirmar') !== '1') { b.setAttribute('data-confirmar', '1'); b.textContent = 'Toque de novo para recusar'; return; }
+      Promise.resolve(sb.rpc('recusar_pedido_acesso', { p_pedido_id: id })).then(function (r) {
+        if (r.error) return falha('Não foi possível recusar: ' + r.error.message);
+        pedidos = pedidos.filter(function (x) { return x.id !== id; }); desenharPedidos();
+      });
+      return;
+    }
+    if (e.target.closest('[data-aprovar]')) {
+      var btn = e.target.closest('[data-aprovar]');
+      var chk = card.querySelector('[data-salvar]');
+      var salvar = chk ? chk.checked : false;
+      var win = null; try { win = window.open('', '_blank'); } catch (err) {}
+      btn.disabled = true; btn.textContent = 'Gerando link…';
+      Promise.resolve(sb.rpc('aprovar_pedido_acesso', { p_pedido_id: id, p_salvar_whatsapp: salvar })).then(function (r) {
+        if (r.error || !r.data) { if (win) win.close(); btn.disabled = false; btn.textContent = 'Aprovar e enviar no WhatsApp'; return falha('Não foi possível aprovar: ' + (r.error ? r.error.message : 'tente de novo')); }
+        var p = todos.find(function (x) { return x.id === pd.piloto_id; }) || { num: pd.num, nome: pd.nome_digitado };
+        if (salvar) p.telefone = pd.whatsapp;
+        var url = zapLink(pd.whatsapp) + '?text=' + encodeURIComponent(mensagemConvite(p, r.data));
+        if (win) win.location.href = url; else window.open(url, '_blank');
+        pedidos = pedidos.filter(function (x) { return x.piloto_id !== pd.piloto_id; });
+        desenharPedidos(); desenhar();
+      });
+    }
   });
 
   function fechar() { $('fundo').classList.remove('aberto'); atual = null; }

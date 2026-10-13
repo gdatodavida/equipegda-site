@@ -85,7 +85,7 @@
   <div class="card" id="tela-convite-ruim" hidden>
     <h2>Este link não vale mais</h2>
     <span class="dica">O link de acesso é de uso único e vale por 3 dias. Peça um novo ao suporte da equipe.</span>
-    <a class="btn" id="link-suporte-convite" target="_blank" rel="noopener" href="#">Pedir novo link no WhatsApp</a>
+    <button class="btn" type="button" id="btn-ruim-pedido">Pedir um novo link</button>
     <button class="btn btn-sec" type="button" id="btn-ir-login">Já tenho senha — entrar</button>
   </div>
 
@@ -96,8 +96,30 @@
     <label>Senha<input id="lg-senha" type="password" autocomplete="current-password"></label>
     <span class="msg-erro" id="lg-erro" hidden></span>
     <button class="btn" type="submit" id="btn-entrar">Entrar</button>
-    <p class="suporte">Primeiro acesso ou esqueceu a senha?<br><a id="link-suporte-login" target="_blank" rel="noopener" href="#">Peça seu link de acesso ao suporte no WhatsApp</a></p>
+    <div style="height:1px;background:var(--linha);"></div>
+    <p class="suporte" style="margin:0;">Primeiro acesso ou esqueceu a senha?</p>
+    <button class="btn btn-sec" type="button" id="btn-ir-pedido">Pedir meu link de acesso</button>
   </form>
+
+  <!-- PEDIR ACESSO -->
+  <form class="card" id="tela-pedido" hidden novalidate>
+    <h2>Pedir link de acesso</h2>
+    <span class="dica">Preencha seus dados. O suporte confere e te manda o link no WhatsApp que você informar aqui.</span>
+    <label>Número de piloto<input id="pd-num" type="text" inputmode="numeric" maxlength="6" placeholder="Ex.: 113"></label>
+    <label>Nome completo<input id="pd-nome" type="text" autocomplete="name" maxlength="120" placeholder="Como está no seu cadastro"></label>
+    <label>Seu WhatsApp<input id="pd-zap" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(73) 91234-5678"></label>
+    <span class="msg-erro" id="pd-erro" hidden></span>
+    <button class="btn" type="submit" id="btn-pedir">Enviar pedido</button>
+    <button class="btn btn-sec" type="button" id="btn-pedido-voltar">Voltar</button>
+  </form>
+
+  <!-- PEDIDO ENVIADO -->
+  <div class="card" id="tela-pedido-ok" hidden>
+    <h2>Pedido enviado ✓</h2>
+    <span class="dica" id="pd-ok-texto"></span>
+    <span class="dica">Demorou? <a id="link-suporte-login" target="_blank" rel="noopener" href="#" style="color:var(--txt2);text-decoration:underline;">Chame o suporte no WhatsApp</a>.</span>
+    <button class="btn btn-sec" type="button" id="btn-pedido-ok-voltar">Voltar para o login</button>
+  </div>
 
   <!-- DADOS -->
   <form id="tela-dados" hidden novalidate>
@@ -199,7 +221,7 @@
   var SUPORTE = '557331914501';
   var DOMINIO_MEMBRO = '@membros.equipegda.com.br';
   var $ = function (id) { return document.getElementById(id); };
-  var TELAS = ['tela-convite', 'tela-convite-ruim', 'tela-login', 'tela-dados'];
+  var TELAS = ['tela-convite', 'tela-convite-ruim', 'tela-login', 'tela-pedido', 'tela-pedido-ok', 'tela-dados'];
   var CAMPOS_TEXTO = ['telefone', 'apelido', 'email', 'tipo_sanguineo',
     'contato_emergencia_1_nome', 'contato_emergencia_1_parentesco', 'contato_emergencia_1_whatsapp',
     'contato_emergencia_2_nome', 'contato_emergencia_2_parentesco', 'contato_emergencia_2_whatsapp',
@@ -227,8 +249,7 @@
   function erroEm(id, msg) { $(id).textContent = msg || ''; $(id).hidden = !msg; }
   function scrollTopo() { try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); } }
 
-  $('link-suporte-login').href = zap('Olá! Sou piloto da Equipe GDA e preciso do meu link de acesso à Área do Piloto. Meu número de piloto é: ');
-  $('link-suporte-convite').href = zap('Olá! Meu link de acesso à Área do Piloto venceu. Pode me mandar um novo? Meu número de piloto é: ');
+  $('link-suporte-login').href = zap('Olá! Sou piloto da Equipe GDA e pedi meu link de acesso à Área do Piloto pelo site.');
 
   // ---------- botões Sim / Não ----------
   document.querySelectorAll('.simnao').forEach(function (box) {
@@ -323,6 +344,43 @@
     return Promise.resolve(null);
   }
 
+  // ---------- pedir acesso ----------
+  function abrirPedido() {
+    history.replaceState(null, '', location.pathname); convite = null;
+    if ($('lg-num').value && !$('pd-num').value) $('pd-num').value = $('lg-num').value;
+    erroEm('pd-erro', ''); mostrar('tela-pedido'); scrollTopo();
+    setTimeout(function () { $($('pd-num').value ? 'pd-nome' : 'pd-num').focus(); }, 50);
+  }
+  $('btn-ir-pedido').addEventListener('click', abrirPedido);
+  $('btn-ruim-pedido').addEventListener('click', abrirPedido);
+  $('btn-pedido-voltar').addEventListener('click', function () { mostrar('tela-login'); });
+  $('btn-pedido-ok-voltar').addEventListener('click', function () { mostrar('tela-login'); });
+  $('pd-num').addEventListener('input', function (e) { var d = soDigitos(e.target.value).slice(0, 6); if (d !== e.target.value) e.target.value = d; });
+  $('pd-zap').addEventListener('input', function (e) { var f = fmtTel(e.target.value); if (e.target.value !== f) e.target.value = f; });
+
+  $('tela-pedido').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var num = $('pd-num').value.trim(), nome = $('pd-nome').value.trim().replace(/\s+/g, ' '), zapDig = soDigitos($('pd-zap').value);
+    if (!num) return erroEm('pd-erro', 'Digite seu número de piloto.');
+    if (nome.length < 5 || nome.indexOf(' ') < 0) return erroEm('pd-erro', 'Digite seu nome completo (nome e sobrenome).');
+    if (zapDig.length !== 11 || zapDig.charAt(2) !== '9') return erroEm('pd-erro', 'Confira seu WhatsApp: DDD + número, ex.: (73) 91234-5678.');
+    erroEm('pd-erro', '');
+    var btn = $('btn-pedir'); btn.disabled = true; btn.textContent = 'Enviando…';
+    Promise.resolve(sb.rpc('solicitar_acesso_membro', { p_num: num, p_nome: nome, p_whatsapp: zapDig })).then(function (r) {
+      btn.disabled = false; btn.textContent = 'Enviar pedido';
+      var res = r && !r.error ? r.data : null;
+      if (res === 'recebido') {
+        $('pd-ok-texto').textContent = 'Recebemos o pedido do piloto Nº ' + num + '. Assim que o suporte conferir, o link chega no WhatsApp ' + fmtTel(zapDig) + '.';
+        $('link-suporte-login').href = zap('Olá! Sou o piloto Nº ' + num + ' (' + nome + ') e pedi meu link de acesso à Área do Piloto pelo site.');
+        mostrar('tela-pedido-ok'); scrollTopo(); return;
+      }
+      erroEm('pd-erro', res === 'numero_nao_encontrado' ? 'Não encontramos o piloto Nº ' + num + ' entre os credenciados. Confira o número ou fale com o suporte.'
+        : res === 'muitos_pedidos' ? 'Já recebemos pedidos para este número. Aguarde o suporte te chamar no WhatsApp.'
+        : res === 'dados_invalidos' ? 'Confira os dados digitados.'
+        : 'Não foi possível enviar agora. Tente de novo em instantes.');
+    }, function () { btn.disabled = false; btn.textContent = 'Enviar pedido'; erroEm('pd-erro', 'Sem conexão agora. Tente de novo.'); });
+  });
+
   // ---------- login ----------
   $('tela-login').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -334,10 +392,10 @@
     function fim() { btn.disabled = false; btn.textContent = 'Entrar'; }
     Promise.resolve(sb.rpc('email_login_membro', { p_num: num })).then(function (r) {
       var email = r && !r.error && r.data;
-      if (!email) { fim(); erroEm('lg-erro', 'O piloto Nº ' + num + ' ainda não tem acesso. Peça seu link de acesso ao suporte no WhatsApp.'); return; }
+      if (!email) { fim(); erroEm('lg-erro', 'O piloto Nº ' + num + ' ainda não tem acesso. Toque em “Pedir meu link de acesso” logo abaixo.'); return; }
       return sb.auth.signInWithPassword({ email: email, password: senha }).then(function (l) {
         fim();
-        if (l.error) { erroEm('lg-erro', 'Senha incorreta. Se esqueceu, peça um novo link de acesso ao suporte.'); return; }
+        if (l.error) { erroEm('lg-erro', 'Senha incorreta. Se esqueceu, toque em “Pedir meu link de acesso”.'); return; }
         carregarDados();
       });
     }, function () { fim(); erroEm('lg-erro', 'Sem conexão agora. Tente de novo.'); });
