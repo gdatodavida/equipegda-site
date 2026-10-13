@@ -14,6 +14,30 @@
   .gda-nav:hover{opacity:1;filter:brightness(1.15);}
   .gda-nav.atual{background:var(--cor);color:#14110F;border-color:var(--cor);}
   @media (max-width:760px){ header{flex-wrap:wrap;padding:14px 16px !important;} }
+  /* ---- cadastro manual ---- */
+  [hidden]{display:none !important;}
+  .cm-fundo{position:fixed;inset:0;z-index:80;background:rgba(10,8,6,.8);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 14px;}
+  .cm-fundo.aberto{display:flex;}
+  .cm{width:100%;max-width:680px;background:#1A1512;border:1px solid rgba(245,241,234,0.12);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:16px;font-family:'Manrope',sans-serif;color:#F5F1EA;}
+  .cm h2{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:24px;}
+  .cm .sec{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FFDB00;margin-top:6px;}
+  .cm .grade{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cm .inteira{grid-column:1/-1;}
+  .cm label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:#D8D2C7;}
+  .cm input,.cm select{font-family:'Manrope',sans-serif;font-size:15px;color:#F5F1EA;background:#171310;border:1px solid rgba(245,241,234,0.16);border-radius:10px;padding:11px 13px;outline:none;width:100%;box-sizing:border-box;}
+  .cm input:focus,.cm select:focus{border-color:#FFDB00;}
+  .cm .dica{font-size:12px;color:#7A7369;font-weight:500;line-height:1.5;}
+  .cm .erro{color:#FF8A7A;font-size:13px;font-weight:700;line-height:1.5;}
+  .cm .ok{color:#7FD99A;font-size:13px;font-weight:700;}
+  .cm .check{flex-direction:row;align-items:center;gap:10px;}
+  .cm .check input{width:18px;height:18px;accent-color:#FFDB00;}
+  .cm .acoes{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+  .cm .b1{padding:13px 24px;border-radius:999px;border:none;background:#FFDB00;color:#14110F;font-weight:800;font-size:14px;font-family:'Manrope',sans-serif;cursor:pointer;}
+  .cm .b2{padding:13px 22px;border-radius:999px;background:transparent;border:1px solid rgba(245,241,234,0.18);color:#D8D2C7;font-weight:600;font-size:14px;font-family:'Manrope',sans-serif;cursor:pointer;}
+  .cm .b1:disabled{opacity:.55;cursor:default;}
+  .cm .doc{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#171310;border:1px dashed rgba(245,241,234,0.2);border-radius:12px;font-size:13px;color:#A89C8E;}
+  .cm .doc img{width:64px;height:64px;object-fit:cover;border-radius:8px;}
+  @media (max-width:600px){ .cm .grade{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -48,6 +72,7 @@
         <button data-filtro="recusado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Recusados</button>
         <button data-filtro="incompletos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Credenciamento incompleto</button>
         <button data-filtro="todos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Todos</button>
+        <button id="btn-cad-manual" type="button" style="margin-left: auto; padding: 8px 18px; border-radius: 999px; border: none; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">+ Novo cadastro manual</button>
       </div>
 
       <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando cadastros…</div>
@@ -56,6 +81,77 @@
     </div>
   </section>
 
+</div>
+
+
+<!-- ===== CADASTRO MANUAL ===== -->
+<div class="cm-fundo" id="cm-fundo">
+  <form class="cm" id="cm-form" novalidate role="dialog" aria-modal="true" aria-labelledby="cm-titulo">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <h2 id="cm-titulo">Novo cadastro manual</h2>
+      <button type="button" class="b2" id="cm-fechar" style="padding:8px 16px;">Fechar</button>
+    </div>
+    <span class="dica">Para quando o piloto não conseguiu fazer o cadastro pelo site. Preencha com os dados que ele te mandou. Campos com * são obrigatórios.</span>
+
+    <div class="sec">Dados pessoais</div>
+    <div class="grade">
+      <label class="inteira">Nome completo *<input name="nome" maxlength="120" required></label>
+      <label>Apelido<input name="apelido" maxlength="40"></label>
+      <label>WhatsApp *<input name="whatsapp" type="tel" inputmode="numeric" maxlength="15" placeholder="(73) 91234-5678" data-tel></label>
+      <label>E-mail<input name="email" type="email" maxlength="120"></label>
+      <label>Data de nascimento<input name="nascimento" type="text" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" data-data></label>
+      <label>Tipo sanguíneo
+        <select name="tipo_sanguineo"><option value="">Não sei</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+      </label>
+    </div>
+
+    <div class="sec">Contatos de emergência</div>
+    <div class="grade">
+      <label>Contato 1 — nome *<input name="contato_emergencia_1_nome" maxlength="80"></label>
+      <label>Parentesco<input name="contato_emergencia_1_parentesco" maxlength="40" list="cm-parentescos"></label>
+      <label class="inteira">Contato 1 — WhatsApp *<input name="contato_emergencia_1_whatsapp" type="tel" inputmode="numeric" maxlength="15" data-tel></label>
+      <label>Contato 2 — nome<input name="contato_emergencia_2_nome" maxlength="80"></label>
+      <label>Parentesco<input name="contato_emergencia_2_parentesco" maxlength="40" list="cm-parentescos"></label>
+      <label class="inteira">Contato 2 — WhatsApp<input name="contato_emergencia_2_whatsapp" type="tel" inputmode="numeric" maxlength="15" data-tel></label>
+    </div>
+    <datalist id="cm-parentescos"><option>Mãe</option><option>Pai</option><option>Cônjuge/Companheiro(a)</option><option>Irmão(ã)</option><option>Filho(a)</option><option>Tio(a)</option><option>Amigo(a)</option></datalist>
+
+    <div class="sec">Perfil profissional</div>
+    <div class="grade">
+      <label>Veículo<select name="veiculo_tipo"><option value="">—</option><option value="moto">Moto</option><option value="carro">Carro</option><option value="ambos">Moto e carro</option></select></label>
+      <label>Moto é<select name="moto_tipo"><option value="">—</option><option value="propria">Própria</option><option value="alugada">Alugada</option></select></label>
+      <label>Rastreador na moto<select name="rastreador"><option value="">—</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+      <label>Carro é<select name="carro_tipo"><option value="">—</option><option value="propria">Próprio</option><option value="alugada">Alugado</option></select></label>
+      <label>Rastreador no carro<select name="rastreador_carro"><option value="">—</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+      <label>Proteção veicular<select name="protecao_veicular"><option value="">—</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+      <label>Seguro de vida<select name="seguro_vida"><option value="">—</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+      <label>Plano de saúde<select name="plano_saude"><option value="">—</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+      <label>MEI<select name="mei"><option value="">—</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
+    </div>
+
+    <div class="sec">Documento (CNH)</div>
+    <div class="doc" id="cm-doc">
+      <span id="cm-doc-prev"></span>
+      <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+        <span id="cm-doc-texto">Foto ou PDF da CNH (opcional). A foto é reduzida automaticamente antes de enviar.</span>
+        <input type="file" id="cm-arquivo" accept="image/*,application/pdf" style="padding:8px;font-size:13px;">
+      </div>
+    </div>
+
+    <div class="sec">Aprovação</div>
+    <label class="check"><input type="checkbox" id="cm-aprovar"> Já aprovar agora com o número de piloto</label>
+    <div class="grade" id="cm-num-box" hidden>
+      <label>Número de piloto<input id="cm-num" type="text" inputmode="numeric" maxlength="6"></label>
+      <span class="dica" id="cm-num-dica" style="align-self:end;"></span>
+    </div>
+
+    <span class="erro" id="cm-erro" hidden></span>
+    <label class="check" id="cm-dup-box" hidden><input type="checkbox" id="cm-dup"> Cadastrar mesmo assim (sei que é outra pessoa)</label>
+    <div class="acoes">
+      <button type="button" class="b2" id="cm-cancelar">Cancelar</button>
+      <button type="submit" class="b1" id="cm-salvar">Salvar cadastro</button>
+    </div>
+  </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -404,6 +500,7 @@
           '<div style="display: flex; flex-direction: column; gap: 4px;">' +
             '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 19px; color: #F5F1EA;">' + escapeHtml(c.nome) + (c.apelido ? ' <span style="color: #6B655C; font-weight: 400; font-size: 14px;">"' + escapeHtml(c.apelido) + '"</span>' : '') + '</span>' +
             '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #7A7369;">Nascimento: ' + escapeHtml(c.nascimento) + ' · Tipo sanguíneo: ' + escapeHtml(c.tipo_sanguineo) + '</span>' +
+            (c.cadastro_manual ? '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; color: #C9A7FF;">Cadastro manual' + (c.cadastrado_por ? ' — por ' + escapeHtml(c.cadastrado_por) : '') + '</span>' : '') +
           '</div>' +
           '<span style="padding: 6px 14px; border-radius: 999px; background: ' + st.bg + '; color: ' + st.color + '; font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">' + st.label + '</span>' +
         '</div>' +
@@ -582,6 +679,144 @@
     try { var ta = document.createElement('textarea'); ta.value = texto; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); document.body.removeChild(ta); } catch (err) {}
     fim();
   });
+
+
+  // ===================== CADASTRO MANUAL =====================
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var form = $('cm-form'), arquivo = null;
+    function soDig(v) { return String(v || '').replace(/\D/g, ''); }
+    function fmtTel(v) {
+      var d = soDig(v).slice(0, 11);
+      if (!d) return ''; if (d.length <= 2) return '(' + d; if (d.length <= 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+      if (d.length <= 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+      return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+    }
+    function fmtData(v) { var d = soDig(v).slice(0, 8); return d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4) : d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; }
+    form.querySelectorAll('[data-tel]').forEach(function (el) { el.addEventListener('input', function () { var f = fmtTel(el.value); if (f !== el.value) el.value = f; }); });
+    form.querySelectorAll('[data-data]').forEach(function (el) { el.addEventListener('input', function () { var f = fmtData(el.value); if (f !== el.value) el.value = f; }); });
+    $('cm-num').addEventListener('input', function (e) { var d = soDig(e.target.value).slice(0, 6); if (d !== e.target.value) e.target.value = d; });
+    function erro(msg) { $('cm-erro').textContent = msg || ''; $('cm-erro').hidden = !msg; }
+    function aviso(texto) {
+      var t = document.createElement('div');
+      t.textContent = texto;
+      t.setAttribute('style', "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;max-width:90%;padding:14px 22px;border-radius:14px;background:#1F3A28;border:1px solid #5AC878;color:#E6F7EA;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.4);");
+      document.body.appendChild(t);
+      setTimeout(function () { t.remove(); }, 6000);
+    }
+
+    function abrir() {
+      form.reset(); arquivo = null; erro(''); $('cm-dup-box').hidden = true; $('cm-num-box').hidden = true;
+      $('cm-doc-prev').innerHTML = ''; $('cm-doc-texto').textContent = 'Foto ou PDF da CNH (opcional). A foto é reduzida automaticamente antes de enviar.';
+      $('cm-fundo').classList.add('aberto');
+      setTimeout(function () { form.querySelector('[name=nome]').focus(); }, 50);
+    }
+    function fechar() { $('cm-fundo').classList.remove('aberto'); }
+    $('btn-cad-manual').addEventListener('click', abrir);
+    $('cm-fechar').addEventListener('click', fechar);
+    $('cm-cancelar').addEventListener('click', fechar);
+    $('cm-fundo').addEventListener('click', function (e) { if (e.target === $('cm-fundo')) fechar(); });
+
+    $('cm-aprovar').addEventListener('change', function () {
+      $('cm-num-box').hidden = !this.checked;
+      if (this.checked) {
+        var s = sugestaoNumeroPiloto();
+        if (!$('cm-num').value && s.disponivel) $('cm-num').value = s.numero;
+        $('cm-num-dica').textContent = s.disponivel ? ('Sugestão: ' + s.numero + (s.livres && s.livres.length ? ' · livres: ' + s.livres.slice(0, 8).join(', ') : '')) : '';
+        $('cm-num').focus();
+      }
+    });
+
+    // ---- documento: reduz a foto antes de enviar ----
+    $('cm-arquivo').addEventListener('change', function () {
+      var f = this.files && this.files[0]; arquivo = null; $('cm-doc-prev').innerHTML = '';
+      if (!f) return;
+      if (f.type === 'application/pdf') {
+        if (f.size > 8 * 1024 * 1024) { erro('PDF muito grande (máximo 8 MB).'); this.value = ''; return; }
+        arquivo = { blob: f, ext: 'pdf', tipo: 'application/pdf' };
+        $('cm-doc-texto').textContent = 'PDF pronto: ' + f.name + ' (' + Math.round(f.size / 1024) + ' KB)'; erro(''); return;
+      }
+      $('cm-doc-texto').textContent = 'Preparando a foto…';
+      reduzirImagem(f).then(function (blob) {
+        arquivo = { blob: blob, ext: 'jpg', tipo: 'image/jpeg' };
+        var url = URL.createObjectURL(blob);
+        $('cm-doc-prev').innerHTML = '<img src="' + url + '" alt="Prévia da CNH">';
+        $('cm-doc-texto').textContent = 'Foto pronta (' + Math.round(blob.size / 1024) + ' KB).'; erro('');
+      }, function () {
+        $('cm-doc-texto').textContent = 'Não deu para abrir essa foto (formato do iPhone/HEIC?). Tire um print da foto e anexe o print, ou mande em PDF.';
+        $('cm-arquivo').value = '';
+      });
+    });
+    function reduzirImagem(file) {
+      return new Promise(function (ok, falha) {
+        var img = new Image(), url = URL.createObjectURL(file);
+        img.onload = function () {
+          var max = 1600, w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, max / Math.max(w, h));
+          var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          URL.revokeObjectURL(url);
+          c.toBlob(function (b) { b ? ok(b) : falha(); }, 'image/jpeg', 0.82);
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); falha(); };
+        img.src = url;
+      });
+    }
+    function enviarDocumento() {
+      if (!arquivo) return Promise.resolve(null);
+      if (arquivo.caminho) return Promise.resolve(arquivo.caminho); // já enviado numa tentativa anterior
+      var caminho = 'manual/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + arquivo.ext;
+      return window.gdaSupabase.storage.from('documentos-cadastro').upload(caminho, arquivo.blob, { contentType: arquivo.tipo, upsert: false })
+        .then(function (r) { if (r.error) throw r.error; arquivo.caminho = caminho; return caminho; });
+    }
+
+    // ---- salvar ----
+    var MSG = {
+      sem_permissao: 'Seu login não tem permissão de admin.',
+      nome_obrigatorio: 'Digite o nome completo.',
+      whatsapp_obrigatorio: 'Digite o WhatsApp com DDD.',
+      numero_invalido: 'Use só números no número de piloto.'
+    };
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var dados = {};
+      Array.prototype.forEach.call(form.elements, function (el) { if (el.name) dados[el.name] = el.value.trim(); });
+      ['whatsapp', 'contato_emergencia_1_whatsapp', 'contato_emergencia_2_whatsapp'].forEach(function (k) { if (dados[k]) dados[k] = fmtTel(dados[k]); });
+      if (dados.nome.split(/\s+/).length < 2) return erro('Digite o nome completo (nome e sobrenome).');
+      if (soDig(dados.whatsapp).length < 10) return erro('Digite o WhatsApp do piloto com DDD.');
+      if (!dados.contato_emergencia_1_nome || soDig(dados.contato_emergencia_1_whatsapp).length < 10) return erro('Preencha o contato de emergência 1 (nome e WhatsApp com DDD).');
+      if (dados.nascimento && !/^\d{2}\/\d{2}\/\d{4}$/.test(dados.nascimento)) return erro('Data de nascimento no formato dd/mm/aaaa.');
+      var numero = $('cm-aprovar').checked ? $('cm-num').value.trim() : '';
+      if ($('cm-aprovar').checked && !numero) return erro('Digite o número de piloto (ou desmarque "Já aprovar agora").');
+      if ($('cm-dup').checked) dados.ignorar_duplicado = 'true';
+      erro('');
+      var btn = $('cm-salvar'); btn.disabled = true; btn.textContent = arquivo ? 'Enviando documento…' : 'Salvando…';
+
+      enviarDocumento().then(function (caminho) {
+        if (caminho) dados.documento_cnh_path = caminho;
+        btn.textContent = 'Salvando…';
+        return Promise.resolve(window.gdaSupabase.rpc('cadastro_manual', { p: dados, p_numero: numero || null }));
+      }, function (err) {
+        throw { etapa: 'documento', err: err };
+      }).then(function (r) {
+        btn.disabled = false; btn.textContent = 'Salvar cadastro';
+        if (r.error) {
+          var m = String(r.error.message || '');
+          if (/whatsapp_ja_cadastrado/.test(m)) { $('cm-dup-box').hidden = false; return erro('Já existe um cadastro com esse WhatsApp. Confira na lista "Todos" — se for outra pessoa, marque a opção abaixo e salve de novo.'); }
+          if (/numero_em_uso/.test(m)) { $('cm-num').focus(); return erro(m.replace(/^.*numero_em_uso:\s*/, '').replace(/\(pendente\)/, '(reservado)') + ' — escolha outro número.'); }
+          var cod = m.split(':')[0].trim();
+          return erro(MSG[cod] || ('Não foi possível salvar: ' + m));
+        }
+        fechar();
+        filtroAtual = numero ? 'aprovado' : 'pendente';
+        carregarCadastros(); carregarClientes();
+        aviso('Cadastro de ' + dados.nome + ' salvo' + (numero ? ' e aprovado com o número ' + numero + '.' : ' — está em Pendentes para aprovar.'));
+      }).catch(function (x) {
+        btn.disabled = false; btn.textContent = 'Salvar cadastro';
+        if (x && x.etapa === 'documento') return erro('Não foi possível enviar o documento (' + ((x.err && x.err.message) || 'erro') + '). Tente de novo ou salve sem o documento (remova o arquivo).');
+        erro('Sem conexão agora. Tente de novo.');
+      });
+    });
+  })();
 
   window.gdaRequireAuth(function () {
     carregarCadastros();
