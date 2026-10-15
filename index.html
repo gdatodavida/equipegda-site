@@ -25,20 +25,32 @@
   .gda-first { display: flex; flex-direction: column; min-height: calc(100vh - var(--gda-hdr, 81px)); min-height: calc(100svh - var(--gda-hdr, 81px)); }
   .gda-first > #hero { flex: 1 0 auto; }
 
+  /* Carrossel: no computador usa a arte larga (1920x442) ocupando a largura toda;
+     no celular usa a arte 1600x912 (troca automática via <picture>). */
   .gda-mobile-slides { display: block; padding: 0 !important; }
-  .gda-mobile-slides-track { --gda-track-h: clamp(280px, calc(100vh - 440px), 640px); width: 100%; height: var(--gda-track-h); }
-  .gda-mslide-bg { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(28px) brightness(0.5) saturate(1.1); }
-  .gda-mslide-img { position: relative; object-fit: contain !important; }
-  .gda-mslide-dots { position: absolute !important; left: 50% !important; bottom: 16px !important; transform: translateX(-50%); width: max-content !important; padding: 8px 14px !important; border-radius: 999px; background: rgba(20,17,15,0.55) !important; z-index: 3; gap: 10px !important; }
+  .gda-mobile-slides-track { width: 100%; height: auto !important; aspect-ratio: 1920 / 442 !important; }
+  .gda-mslide picture { display: block; width: 100%; height: 100%; }
+  .gda-mslide-img { position: relative; object-fit: cover !important; }
+  .gda-mslide-shade, .gda-mslide-cap { display: none !important; }
+
+  /* Cards "Números da Equipe GDA": texto colado no rodapé do card */
+  .gda-stat-txt > span:first-child { line-height: 1 !important; }
+  /* Galeria "A estrada em imagens" */
+  .gda-gal-item { display: block; height: 240px; padding: 0; border: 1px solid rgba(245,241,234,0.08); border-radius: 14px; overflow: hidden; background: #1C1713; cursor: zoom-in; }
+  .gda-gal-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+  .gda-gal-item:hover img { transform: scale(1.04); }
+  .gda-gal-item:first-child { grid-column: span 2; }
+  .gda-lightbox { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(10,8,7,0.92); cursor: zoom-out; }
+  .gda-lightbox.open { display: flex; }
+  .gda-lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+  .gda-lightbox-close { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.28); background: rgba(20,17,15,0.7); color: #F5F1EA; font-size: 24px; line-height: 1; cursor: pointer; }
+  .gda-stat-shadow > span { text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.75); }
+  .gda-mslide-dots { position: absolute !important; left: 50% !important; bottom: 12px !important; transform: translateX(-50%); width: max-content !important; padding: 8px 14px !important; border-radius: 999px; background: rgba(20,17,15,0.55) !important; z-index: 3; gap: 10px !important; }
   .gda-mslide-dots .gda-mdot { width: 10px !important; height: 10px !important; cursor: pointer; }
   .gda-mslide-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 52px; height: 52px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.28); background: rgba(20,17,15,0.55); color: #F5F1EA; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
   .gda-mslide-arrow:hover { background: rgba(20,17,15,0.8); }
   .gda-mslide-arrow[data-dir="-1"] { left: 28px; }
   .gda-mslide-arrow[data-dir="1"] { right: 28px; }
-  /* a legenda acompanha a borda esquerda da arte (largura da arte = altura x 1600/912) */
-  .gda-mslide-cap { left: max(32px, calc(50% - var(--gda-track-h) * 0.8772 + 32px)) !important; right: 32px !important; bottom: 64px !important; gap: 6px !important; z-index: 2; }
-  .gda-mslide-cap .gda-mslide-cap-k { font-size: clamp(11px, calc(var(--gda-track-h) * 0.026), 15px) !important; }
-  .gda-mslide-cap .gda-mslide-cap-t { font-size: clamp(18px, calc(var(--gda-track-h) * 0.07), 46px) !important; }
 
   #hero { padding: 44px 40px 56px !important; min-height: 0 !important; align-items: center !important; }
   #hero .gda-hero-content { gap: 20px !important; max-width: 1160px !important; }
@@ -49,7 +61,6 @@
 
   /* Notebook / janela baixa: compacta o texto do herói pra caber na primeira tela */
   @media (min-width: 761px) and (max-height: 760px) {
-    .gda-mobile-slides-track { --gda-track-h: clamp(260px, calc(100vh - 380px), 640px); }
     #hero { padding: 26px 40px 32px !important; }
     #hero .gda-hero-content { gap: 13px !important; }
     #hero h1 { font-size: 52px !important; }
@@ -61,9 +72,9 @@
   @media (max-width: 760px) {
     .gda-first { min-height: calc(100vh - var(--gda-hdr, 76px)); min-height: calc(100svh - var(--gda-hdr, 76px)); }
     .gda-mobile-slides { border-bottom: 1px solid rgba(245,241,234,0.08); }
-    .gda-mobile-slides-track { height: auto !important; }
-    .gda-mslide-bg { display: none !important; }
-    .gda-mslide-img { object-fit: cover !important; }
+    .gda-mobile-slides-track { height: auto !important; aspect-ratio: 1600 / 912 !important; }
+    .gda-mslide-shade { display: block !important; }
+    .gda-mslide-cap { display: flex !important; }
     .gda-mslide-dots { position: static !important; transform: none !important; left: auto !important; bottom: auto !important; width: auto !important; border-radius: 0 !important; background: #14110F !important; padding: 7px 0 !important; gap: 8px !important; }
     .gda-mslide-dots .gda-mdot { width: 8px !important; height: 8px !important; }
     .gda-mslide-arrow { display: none !important; }
@@ -95,7 +106,9 @@
 
     .gda-grid-4, .gda-grid-3 { grid-template-columns: 1fr !important; }
     .gda-grid-2 { grid-template-columns: 1fr !important; gap: 28px !important; }
-    .gda-grid-3-gal { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .gda-grid-3-gal { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+    .gda-gal-item { height: 150px; }
+    .gda-gal-item:first-child, .gda-gal-item:last-child { grid-column: 1 / -1; height: 200px; }
     .gda-sobre-photo { height: 220px !important; }
 
     .gda-container-pad { padding-left: 20px !important; padding-right: 20px !important; }
@@ -125,15 +138,15 @@
       </a>
 
       <a href="fazer-parte.html" style="display: none; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 999px; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; white-space: nowrap; background-color: #FFDB00; font-style: normal">Fazer parte da equipe</a><nav class="gda-nav" style="display: flex; align-items: center; gap: 30px; width: 590px; height: 50px"><a href="#sobre" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Quem somos</a>
-        <a href="loja.html" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Loja GDA</a>
+        <a href="loja.html" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 700; color: #FFDB00">Loja GDA</a>
         <a href="#galeria" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Galeria</a>
         <a href="#contato" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Contato</a>
 
-      </nav><a href="#remessa" class="gda-pill-cta" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px; background-color: rgb(255, 219, 0); color: rgb(20, 17, 15); font-family: Manrope, sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap">PEÇA AQUI sua Camisa Oficial</a>
+      </nav><a href="/membros" class="gda-pill-cta" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px; background-color: rgb(255, 219, 0); color: rgb(20, 17, 15); font-family: Manrope, sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap">Área de Membros</a>
     </div>
     <nav id="gda-mobile-menu" class="gda-mobile-menu" style="display: none; flex-direction: column; background: #1A1512; border-top: 1px solid rgba(245,241,234,0.08);">
       <a href="#sobre" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Quem somos</a>
-      <a href="loja.html" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Loja GDA</a>
+      <a href="loja.html" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 700; color: #FFDB00; border-bottom: 1px solid rgba(245,241,234,0.06);">Loja GDA</a>
       <a href="#galeria" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Galeria</a>
       <a href="#contato" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7;">Contato</a>
     </nav>
@@ -143,21 +156,27 @@
   <div class="gda-mobile-slides" style="position: relative; width: 100%; overflow: hidden; background: #14110F;">
     <div class="gda-mobile-slides-track" style="position: relative; width: 100%; aspect-ratio: 1600 / 912;">
       <a href="fazer-parte.html" class="gda-mslide" data-slide="0" style="position: absolute; inset: 0; display: block; opacity: 1; transition: opacity .5s ease; background: #0F0C0A;">
-        <img class="gda-mslide-bg" src="img/recrutamento-familia-gda.jpg" alt="" aria-hidden="true">
-        <img class="gda-mslide-img" src="img/recrutamento-familia-gda.jpg" alt="Família GDA — GDA toda vida: disciplina, respeito, união" style="width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block;">
-        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,17,15,0) 55%, rgba(20,17,15,0.92) 100%);"></div>
+        <picture>
+          <source media="(min-width: 761px)" srcset="img/recrutamento-pc.jpg" width="1920" height="442">
+          <img class="gda-mslide-img" src="img/recrutamento-familia-gda.jpg" alt="Família GDA — GDA toda vida: disciplina, respeito, união" style="width: 100%; height: 100%; object-fit: cover; object-position: center 25%; display: block;">
+        </picture>
+        <div class="gda-mslide-shade" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,17,15,0) 55%, rgba(20,17,15,0.92) 100%);"></div>
         <div class="gda-mslide-cap" style="position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 6px;">
           <span class="gda-mslide-cap-k" style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #ffdb00;">Recrutamento</span>
           <span class="gda-mslide-cap-t" style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #F5F1EA;">Faça parte da Equipe GDA</span>
         </div>
       </a>
       <a href="https://equipegda.com.br/#remessa" class="gda-mslide" data-slide="1" style="position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
-        <img class="gda-mslide-bg" src="img/3a-remessa-aberta.jpg" alt="" aria-hidden="true">
-        <img class="gda-mslide-img" src="img/3a-remessa-aberta.jpg" alt="3ª Remessa Aberta — Camisa Oficial de Piloto GDA, pedidos até 22/10" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <picture>
+          <source media="(min-width: 761px)" srcset="img/remessa-pc.jpg" width="1920" height="442">
+          <img class="gda-mslide-img" src="img/3a-remessa-aberta.jpg" alt="3ª Remessa Aberta — Camisa Oficial de Piloto GDA, pedidos até 22/10" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </picture>
       </a>
       <a href="pedido-adesivo.html" class="gda-mslide" data-slide="2" style="position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;">
-        <img class="gda-mslide-bg" src="img/adesivo-reposicao-gda.jpg" alt="" aria-hidden="true">
-        <img class="gda-mslide-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        <picture>
+          <source media="(min-width: 761px)" srcset="img/adesivo-pc.jpg" width="1920" height="442">
+          <img class="gda-mslide-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </picture>
       </a>
     </div>
     <button type="button" class="gda-mslide-arrow" data-dir="-1" aria-label="Tela anterior"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"></polyline></svg></button>
@@ -268,24 +287,24 @@
       <div class="gda-grid-3" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
 
         <div style="position: relative; min-height: 220px; border-radius: 18px; overflow: hidden; background: #221D19; display: flex; align-items: flex-end;">
-          <span style="position: absolute; top: 18px; left: 20px; font-family: 'Manrope', sans-serif; font-size: 12px; color: #4A453D;">[foto]</span>
-          <div style="position: relative; width: 100%; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 4px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
+          <img src="img/membros-na-ativa.jpg" alt="Mosaico com fotos dos membros da Equipe GDA" loading="lazy" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;">
+          <div class="gda-stat-txt gda-stat-shadow" style="position: relative; width: 100%; box-sizing: border-box; padding: 10px 20px 12px; display: flex; flex-direction: column; gap: 2px;">
             <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #FFDB00;">[+400]</span>
             <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #F5F1EA; text-transform: uppercase; letter-spacing: 0.04em;">Membros na ativa</span>
           </div>
         </div>
 
         <div style="position: relative; min-height: 220px; border-radius: 18px; overflow: hidden; background: #221D19; display: flex; align-items: flex-end;">
-          <span style="position: absolute; top: 18px; left: 20px; font-family: 'Manrope', sans-serif; font-size: 12px; color: #4A453D;">[foto]</span>
-          <div style="position: relative; width: 100%; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 4px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
+          <img src="img/anos-de-pista.jpg" alt="Membros da Equipe GDA reunidos em um encontro" loading="lazy" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 55%; display: block;">
+          <div class="gda-stat-txt" style="position: relative; width: 100%; box-sizing: border-box; padding: 10px 20px 12px; display: flex; flex-direction: column; gap: 2px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
             <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #FFDB00;">[+2]</span>
             <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #F5F1EA; text-transform: uppercase; letter-spacing: 0.04em;">Anos de pista</span>
           </div>
         </div>
 
         <div style="position: relative; min-height: 220px; border-radius: 18px; overflow: hidden; background: #221D19; display: flex; align-items: flex-end;">
-          <span style="position: absolute; top: 18px; left: 20px; font-family: 'Manrope', sans-serif; font-size: 12px; color: #4A453D;">[foto]</span>
-          <div style="position: relative; width: 100%; box-sizing: border-box; padding: 22px; display: flex; flex-direction: column; gap: 4px; background: linear-gradient(180deg, transparent, rgba(20,17,15,0.94) 65%);">
+          <img src="img/sos-realizados.jpg" alt="Atendimento SOS GDA: moto envolvida em acidente com um carro" loading="lazy" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; display: block;">
+          <div class="gda-stat-txt gda-stat-shadow" style="position: relative; width: 100%; box-sizing: border-box; padding: 10px 20px 12px; display: flex; flex-direction: column; gap: 2px;">
             <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; color: #FFDB00;">[+500]</span>
             <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; color: #F5F1EA; text-transform: uppercase; letter-spacing: 0.04em;">SOS realizados</span>
           </div>
@@ -303,12 +322,20 @@
         <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 34px; color: #F5F1EA;">A estrada em imagens</h2>
       </div>
       <div class="gda-grid-3-gal" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
-        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
-        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
-        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
-        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
-        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
-        <div style="height: 220px; border-radius: 14px; background: #1C1713; border: 1px solid rgba(245,241,234,0.08); display: flex; align-items: center; justify-content: center;"><span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #56504A;">[foto]</span></div>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-1.jpg" aria-label="Ampliar foto: Confraternização da Equipe GDA em frente ao banner GDA toda vida"><img src="img/galeria-1.jpg" alt="Confraternização da Equipe GDA em frente ao banner GDA toda vida" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-2.jpg" aria-label="Ampliar foto: Campanha Mais Respeito no Trânsito com membros da Equipe GDA"><img src="img/galeria-2.jpg" alt="Campanha Mais Respeito no Trânsito com membros da Equipe GDA" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-3.jpg" aria-label="Ampliar foto: Pilotos da Equipe GDA rodando juntos em comboio"><img src="img/galeria-3.jpg" alt="Pilotos da Equipe GDA rodando juntos em comboio" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-4.jpg" aria-label="Ampliar foto: Pilotos da Equipe GDA reunidos em um posto antes do passeio"><img src="img/galeria-4.jpg" alt="Pilotos da Equipe GDA reunidos em um posto antes do passeio" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-5.jpg" aria-label="Ampliar foto: Encontro entre pilotos durante ação da Equipe GDA"><img src="img/galeria-5.jpg" alt="Encontro entre pilotos durante ação da Equipe GDA" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-6.jpg" aria-label="Ampliar foto: Motociata da Equipe GDA pela avenida"><img src="img/galeria-6.jpg" alt="Motociata da Equipe GDA pela avenida" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-7.jpg" aria-label="Ampliar foto: Comboio de pilotos GDA seguindo pela orla"><img src="img/galeria-7.jpg" alt="Comboio de pilotos GDA seguindo pela orla" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-8.jpg" aria-label="Ampliar foto: Fim de tarde no ponto de encontro dos pilotos GDA"><img src="img/galeria-8.jpg" alt="Fim de tarde no ponto de encontro dos pilotos GDA" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-9.jpg" aria-label="Ampliar foto: Membros da Equipe GDA jogando sinuca em confraternização"><img src="img/galeria-9.jpg" alt="Membros da Equipe GDA jogando sinuca em confraternização" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-10.jpg" aria-label="Ampliar foto: Administradores da Equipe GDA em frente ao banner da equipe"><img src="img/galeria-10.jpg" alt="Administradores da Equipe GDA em frente ao banner da equipe" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-11.jpg" aria-label="Ampliar foto: Membros da Equipe GDA reunidos em frente ao banner Família GDA"><img src="img/galeria-11.jpg" alt="Membros da Equipe GDA reunidos em frente ao banner Família GDA" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-12.jpg" aria-label="Ampliar foto: Membros da Equipe GDA confraternizando em um restaurante"><img src="img/galeria-12.jpg" alt="Membros da Equipe GDA confraternizando em um restaurante" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-13.jpg" aria-label="Ampliar foto: Pilotos da Equipe GDA em encontro de rua"><img src="img/galeria-13.jpg" alt="Pilotos da Equipe GDA em encontro de rua" loading="lazy"></button>
+        <button type="button" class="gda-gal-item" data-full="img/galeria-14.jpg" aria-label="Ampliar foto: Copos oficiais da Equipe GDA à beira da piscina"><img src="img/galeria-14.jpg" alt="Copos oficiais da Equipe GDA à beira da piscina" loading="lazy"></button>
       </div>
     </div>
   </section>
@@ -335,7 +362,7 @@
         </div>
         <nav style="display: flex; gap: 28px; flex-wrap: wrap;">
           <a href="#sobre" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">Quem somos</a>
-          <a href="loja.html" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">Loja GDA</a>
+          <a href="loja.html" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: #FFDB00;">Loja GDA</a>
           <a href="#galeria" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">Galeria</a>
         </nav>
         <div style="display: flex; align-items: center; gap: 16px;">
@@ -357,6 +384,11 @@
     </div>
   </footer>
 
+</div>
+
+<div id="gda-lightbox" class="gda-lightbox" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <button type="button" class="gda-lightbox-close" aria-label="Fechar">×</button>
+  <img src="" alt="">
 </div>
 
 <script>
@@ -384,6 +416,21 @@
       mobileMenu.classList.remove('open');
       menuBtn.setAttribute('aria-expanded', 'false');
     });
+  }
+
+  // Galeria: clicar na foto abre ampliada
+  var lb = document.getElementById('gda-lightbox');
+  if (lb) {
+    var lbImg = lb.querySelector('img');
+    Array.prototype.slice.call(document.querySelectorAll('.gda-gal-item')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        lbImg.src = btn.getAttribute('data-full');
+        lbImg.alt = btn.querySelector('img').alt;
+        lb.classList.add('open');
+      });
+    });
+    lb.addEventListener('click', function () { lb.classList.remove('open'); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lb.classList.remove('open'); });
   }
 
   // Telas de passagem (recrutamento / remessa de camisas / loja GDA)
