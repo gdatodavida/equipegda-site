@@ -1,0 +1,141 @@
+/* =====================================================================
+   GDA Admin — cores do modo NOITE e do modo DIA, usadas por todos os
+   painéis da diretoria (/admin, Recrutamento, Pedidos, Adesivos,
+   Pilotos e GDA Vendas). Para mudar uma cor em todos os painéis de uma
+   vez, mude aqui.
+   O modo é escolhido pelo js/gda-admin.js (atributo data-theme no <html>).
+   ===================================================================== */
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --g-bg: #14110F;   --g-bg-rgb: 20,17,15;
+  --g-bg2: #1A1512;
+  --g-card: #211B17;
+  --g-campo: #171310;
+  --g-cab: #171310;                         /* cabeçalho das tabelas */
+  --g-ink-rgb: 245,241,234;                 /* linhas e bordas finas */
+  --g-txt: #F5F1EA;
+  --g-txt2: #D8D2C7;  --g-txt2-rgb: 216,210,199;
+  --g-txt3: #A89C8E;  --g-mute-rgb: 168,156,142;
+  --g-txt-mute: #7A7369;
+  --g-txt4: #6B655C;
+  --g-txt5: #56504A;
+
+  --g-am: #FFDB00;                          /* amarelo GDA para FUNDO de botão/selo */
+  --g-on-am: #14110F;                       /* texto em cima do amarelo */
+  --g-am-txt: #FFDB00;  --g-am-rgb: 255,219,0;   /* amarelo como TEXTO/ícone */
+
+  --g-ok: #7FD99A;    --g-ok-rgb: 127,217,154;
+  --g-ok2: #5AC878;   --g-ok2-rgb: 90,200,120;
+  --g-erro: #FF8A7A;  --g-erro-rgb: 255,138,122;
+  --g-erro2: #E8806F; --g-erro2-rgb: 232,128,111;
+  --g-erro3: #DC5A5A; --g-erro3-rgb: 220,90,90;
+  --g-alerta: #F2B35B; --g-alerta-rgb: 242,179,91;
+
+  /* cor de cada área (barra de atalhos e tela inicial) */
+  --g-roxo: #C9A7FF;  --g-roxo-rgb: 201,167,255;   /* Recrutamento */
+  --g-verde: #7FD99A; --g-verde-rgb: 127,217,154;  /* Pedidos */
+  --g-azul: #7CC4FF;  --g-azul-rgb: 124,196,255;   /* Adesivos */
+  --g-coral: #FF9E8A; --g-coral-rgb: 255,158,138;  /* Pilotos */
+  --g-teal: #5EE3CF;  --g-teal-rgb: 94,227,207;    /* GDA Vendas */
+  --g-on-cor: #14110F;                              /* texto do botão da área atual */
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --g-bg: #F7F3EC;   --g-bg-rgb: 247,243,236;
+  --g-bg2: #FFFDF9;
+  --g-card: #FFFFFF;
+  --g-campo: #FBF8F3;
+  --g-cab: #F3EEE6;
+  --g-ink-rgb: 30,25,21;
+  --g-txt: #1E1915;
+  --g-txt2: #3D362F;  --g-txt2-rgb: 61,54,47;
+  --g-txt3: #6B6057;  --g-mute-rgb: 107,96,87;
+  --g-txt-mute: #6E645A;
+  --g-txt4: #776C61;
+  --g-txt5: #A0968B;
+
+  --g-am: #FFDB00;
+  --g-on-am: #14110F;
+  --g-am-txt: #7A5F00;  --g-am-rgb: 166,128,0;
+
+  --g-ok: #1E7A44;    --g-ok-rgb: 30,122,68;
+  --g-ok2: #1E7A44;   --g-ok2-rgb: 30,122,68;
+  --g-erro: #B3261E;  --g-erro-rgb: 179,38,30;
+  --g-erro2: #B3261E; --g-erro2-rgb: 179,38,30;
+  --g-erro3: #B3261E; --g-erro3-rgb: 179,38,30;
+  --g-alerta: #9A5B00; --g-alerta-rgb: 154,91,0;
+
+  --g-roxo: #6B3FC4;  --g-roxo-rgb: 107,63,196;
+  --g-verde: #1E7A44; --g-verde-rgb: 30,122,68;
+  --g-azul: #1D6FB8;  --g-azul-rgb: 29,111,184;
+  --g-coral: #B8452E; --g-coral-rgb: 184,69,46;
+  --g-teal: #0E7A6C;  --g-teal-rgb: 14,122,108;
+  --g-on-cor: #FFFFFF;
+}
+
+html, body { background: var(--g-bg); color: var(--g-txt); }
+body { transition: background-color .2s, color .2s; }
+
+/* ---------- barra de atalhos (cabeçalho comum) ---------- */
+.gda-bar{
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 12px 20px; flex-wrap: wrap;
+  padding: 14px 32px;
+  background: rgba(var(--g-bg-rgb), 0.94);
+  border-bottom: 1px solid rgba(var(--g-ink-rgb), 0.10);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  font-family: 'Manrope', sans-serif;
+}
+.gda-bar__logo{ display: flex; align-items: center; text-decoration: none; flex: none; }
+.gda-bar__logo img{ height: 30px; width: auto; display: block; }
+:root[data-theme="light"] .gda-bar__logo{ background: #14110F; padding: 6px 10px; border-radius: 10px; }
+.gda-bar__nav{ display: flex; gap: 8px; flex-wrap: wrap; flex: 1; justify-content: center; }
+.gda-bar__acoes{ display: flex; align-items: center; gap: 10px; flex: none; }
+.gda-bar__quem{ font-size: 12px; color: var(--g-txt3); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.gda-nav{
+  display: inline-flex; align-items: center; padding: 7px 14px; border-radius: 999px;
+  font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; white-space: nowrap;
+  text-decoration: none; color: rgb(var(--c)); background: rgba(var(--c), 0.12); border: 1px solid rgba(var(--c), 0.40);
+}
+.gda-nav:hover{ filter: brightness(1.12); opacity: 1; }
+:root[data-theme="light"] .gda-nav{ background: rgba(var(--c), 0.08); border-color: rgba(var(--c), 0.35); }
+:root[data-theme="light"] .gda-nav:hover{ filter: brightness(0.92); }
+.gda-nav.atual,
+:root[data-theme="light"] .gda-nav.atual{ background: rgb(var(--c)); border-color: rgb(var(--c)); color: var(--g-on-cor); filter: none; }
+.gda-nav--inicio{ --c: var(--g-txt2-rgb); }
+.gda-nav--recrutamento{ --c: var(--g-roxo-rgb); }
+.gda-nav--pedidos{ --c: var(--g-verde-rgb); }
+.gda-nav--adesivos{ --c: var(--g-azul-rgb); }
+.gda-nav--pilotos{ --c: var(--g-coral-rgb); }
+.gda-nav--vendas{ --c: var(--g-teal-rgb); }
+
+.gda-btn-icone, .gda-btn-sair{
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb), 0.16); background: transparent;
+  color: var(--g-txt2); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;
+}
+.gda-btn-icone{ width: 40px; height: 40px; padding: 0; }
+.gda-btn-icone svg{ display: block; }
+.gda-btn-sair{ padding: 9px 16px; }
+.gda-btn-icone:hover, .gda-btn-sair:hover{ border-color: rgba(var(--g-ink-rgb), 0.35); }
+
+@media (max-width: 760px){
+  .gda-bar{ padding: 12px 16px; }
+  .gda-bar__nav{ order: 3; flex-basis: 100%; justify-content: flex-start; }
+  .gda-bar__acoes{ margin-left: auto; }
+  .gda-bar__quem{ display: none; }
+}
+
+/* ---------- tela "sem acesso" (quem tem login mas não é da diretoria) ---------- */
+.gda-negado{
+  max-width: 420px; margin: 80px auto; padding: 32px 28px; border-radius: 20px;
+  background: var(--g-card); border: 1px solid rgba(var(--g-ink-rgb), 0.10);
+  font-family: 'Manrope', sans-serif; color: var(--g-txt); display: flex; flex-direction: column; gap: 14px;
+}
+.gda-negado h2{ margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; }
+.gda-negado p{ margin: 0; font-size: 14px; line-height: 1.6; color: var(--g-txt3); }
+.gda-negado button{ align-self: flex-start; padding: 11px 20px; border-radius: 999px; border: none; background: var(--g-am); color: var(--g-on-am); font-weight: 800; font-size: 14px; cursor: pointer; font-family: 'Manrope', sans-serif; }

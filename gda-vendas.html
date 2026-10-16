@@ -1,0 +1,1708 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GDA Vendas — Equipe GDA</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14110F">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  /* Cores vindas do tema GDA (css/gda-admin.css): modo dia e noite iguais aos outros painéis. */
+  :root{
+    --bg:var(--g-bg);
+    --surface:var(--g-card);
+    --surface-alt:rgba(var(--g-ink-rgb),0.06);
+    --ink:var(--g-txt);
+    --ink-soft:var(--g-txt2);
+    --ink-faint:var(--g-txt3);
+    --border:rgba(var(--g-ink-rgb),0.16);
+    --border-soft:rgba(var(--g-ink-rgb),0.09);
+    --accent:var(--g-am);            /* amarelo GDA como fundo */
+    --accent-ink:var(--g-on-am);     /* texto em cima do amarelo */
+    --accent-txt:var(--g-am-txt);    /* amarelo como texto (fica mais escuro no modo dia) */
+    --accent-soft:rgba(var(--g-am-rgb),0.14);
+    --accent-soft-ink:var(--g-am-txt);
+    --good:var(--g-ok);
+    --good-soft:rgba(var(--g-ok-rgb),0.14);
+    --warn:var(--g-alerta);
+    --warn-soft:rgba(var(--g-alerta-rgb),0.14);
+    --bad:var(--g-erro);
+    --bad-soft:rgba(var(--g-erro-rgb),0.12);
+    --shadow: 0 1px 2px rgba(0,0,0,0.10);
+    --radius: 14px;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Manrope", -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3{ font-family:"Oswald", "Manrope", sans-serif; font-weight:700; text-wrap:balance; margin:0; }
+  .num{ font-family:"Oswald", ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+  :focus-visible{ outline:2px solid var(--accent-txt); outline-offset:2px; }
+
+  .app{ max-width:1180px; margin:0 auto; padding:20px 20px 64px; }
+
+  /* Header */
+  .topbar{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    gap:14px; padding:6px 2px 20px;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:10px; background:var(--g-teal); color:var(--g-on-cor);
+    display:flex; align-items:center; justify-content:center; font-family:"Oswald"; font-weight:700; font-size:16px;
+    flex:none;
+  }
+  .brand-text h1{ font-size:19px; letter-spacing:-0.01em; }
+  .brand-text p{ margin:2px 0 0; font-size:12.5px; color:var(--ink-faint); }
+  .conn{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-faint); }
+  .conn-dot{ width:7px; height:7px; border-radius:50%; background:var(--ink-faint); }
+  .conn-dot.on{ background:var(--good); }
+  .conn-dot.off{ background:var(--bad); }
+  .conn-dot.reconnecting{ background:var(--warn); }
+  .conn #btnRefresh{ padding:4px 9px; font-size:11.5px; }
+
+  nav.tabs{
+    display:flex; gap:4px; background:var(--surface-alt); padding:4px; border-radius:11px;
+    border:1px solid var(--border-soft); width:fit-content;
+  }
+  nav.tabs button{
+    border:none; background:transparent; color:var(--ink-soft); font-size:13.5px; font-weight:600;
+    padding:8px 14px; border-radius:8px; cursor:pointer; transition:background .15s, color .15s;
+    white-space:nowrap;
+  }
+  nav.tabs button:hover{ color:var(--ink); }
+  nav.tabs button.active{ background:var(--accent); color:var(--accent-ink); }
+
+  .cta-vender{
+    border:none; background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:13.5px;
+    padding:10px 16px; border-radius:9px; cursor:pointer; display:inline-flex; align-items:center; gap:7px;
+    box-shadow:var(--shadow);
+  }
+  .cta-vender:hover{ filter:brightness(1.05); }
+
+  .tabrow{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
+
+  /* KPI cards */
+  .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+  .kpi{
+    background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:16px 16px 14px; box-shadow:var(--shadow);
+  }
+  .kpi .label{ font-size:12px; color:var(--ink-faint); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+  .kpi .value{ font-size:24px; font-weight:600; margin-top:6px; letter-spacing:-0.01em; }
+  .kpi .sub{ font-size:12px; color:var(--ink-faint); margin-top:3px; }
+  .kpi.accent .value{ color:var(--accent-txt); }
+
+  .substats{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
+  .chip-stat{
+    display:flex; align-items:center; gap:7px; background:var(--surface); border:1px solid var(--border-soft);
+    border-radius:999px; padding:7px 13px; font-size:12.5px; color:var(--ink-soft);
+  }
+  .chip-stat b{ color:var(--ink); font-family:"Oswald"; font-variant-numeric:tabular-nums; }
+  .chip-stat.warn{ border-color:transparent; background:var(--warn-soft); color:var(--warn); }
+  .chip-stat.warn b{ color:var(--warn); }
+
+  .grid-2{ display:grid; grid-template-columns:1.55fr 1fr; gap:16px; align-items:start; }
+
+  .panel{
+    background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .panel-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px 12px; border-bottom:1px solid var(--border-soft); }
+  .panel-head h2{ font-size:14.5px; }
+  .panel-head .hint{ font-size:12px; color:var(--ink-faint); }
+  .panel-body{ padding:6px 0; }
+  .panel-body.pad{ padding:14px 16px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint);
+      font-weight:600; padding:9px 14px; border-bottom:1px solid var(--border-soft); white-space:nowrap; }
+  td{ padding:10px 14px; border-bottom:1px solid var(--border-soft); vertical-align:middle; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background:var(--surface-alt); }
+  .num-cell{ text-align:right; font-family:"Oswald"; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .table-wrap{ overflow-x:auto; }
+
+  .status-pill{ display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+  .status-pill.ok{ background:var(--good-soft); color:var(--good); }
+  .status-pill.low{ background:var(--warn-soft); color:var(--warn); }
+  .status-pill.out{ background:var(--bad-soft); color:var(--bad); }
+
+  .bar-track{ width:64px; height:6px; border-radius:99px; background:var(--surface-alt); overflow:hidden; display:inline-block; vertical-align:middle; }
+  .bar-fill{ height:100%; border-radius:99px; }
+
+  .empty{ padding:34px 16px; text-align:center; color:var(--ink-faint); font-size:13px; }
+  .empty b{ display:block; color:var(--ink-soft); font-size:14px; margin-bottom:4px; font-weight:600; }
+
+  .feed-item{ display:flex; justify-content:space-between; gap:10px; padding:10px 16px; border-bottom:1px solid var(--border-soft); font-size:13px; }
+  .feed-item:last-child{ border-bottom:none; }
+  .feed-item .who{ color:var(--ink-faint); font-size:11.5px; }
+  .feed-item .amt{ font-family:"Oswald"; font-variant-numeric:tabular-nums; font-weight:600; white-space:nowrap; }
+
+  .rank-row{ display:flex; align-items:center; gap:10px; padding:9px 16px; border-bottom:1px solid var(--border-soft); }
+  .rank-row:last-child{ border-bottom:none; }
+  .rank-avatar{ width:26px; height:26px; border-radius:50%; background:var(--accent-soft); color:var(--accent-soft-ink);
+      display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex:none; }
+  .rank-name{ flex:1; font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rank-meta{ font-size:11.5px; color:var(--ink-faint); }
+  .rank-val{ font-family:"Oswald"; font-variant-numeric:tabular-nums; font-size:12.5px; font-weight:600; }
+
+  /* Forms */
+  .card{ background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; }
+  .field{ display:flex; flex-direction:column; gap:5px; }
+  .field.span2{ grid-column:1 / -1; }
+  label{ font-size:12px; font-weight:600; color:var(--ink-soft); }
+  input, select, textarea{
+    font-family:"Manrope", sans-serif; font-size:14px; color:var(--ink); background:var(--surface);
+    border:1px solid var(--border); border-radius:8px; padding:9px 11px; width:100%;
+  }
+  input:focus, select:focus, textarea:focus{ border-color:var(--accent-txt); outline:none; }
+  input[type=number], input[inputmode=decimal]{ font-family:"Oswald"; font-variant-numeric:tabular-nums; }
+  .field .hint{ font-size:11.5px; color:var(--ink-faint); }
+
+  .btn{ border:none; border-radius:9px; padding:10px 16px; font-size:13.5px; font-weight:700; cursor:pointer; }
+  .btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:var(--shadow); }
+  .btn-primary:hover{ filter:brightness(1.05); }
+  .btn-ghost{ background:var(--surface-alt); color:var(--ink-soft); }
+  .btn-ghost:hover{ color:var(--ink); }
+  .btn-sm{ padding:6px 11px; font-size:12px; border-radius:7px; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .sell-wrap{ max-width:520px; margin:0 auto; }
+  .paymethod-group{ display:flex; flex-wrap:wrap; gap:8px; }
+  .paymethod-btn{
+    flex:1; min-width:100px; border:1px solid var(--border); background:var(--surface); color:var(--ink-soft);
+    font-weight:600; font-size:13px; padding:10px 12px; border-radius:9px; cursor:pointer; transition:all .12s;
+  }
+  .paymethod-btn:hover{ border-color:var(--accent); color:var(--ink); }
+  .paymethod-btn.active{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .paymethod-btn.active[data-method="presente"]{ background:var(--ink-soft); border-color:var(--ink-soft); color:var(--bg); }
+  .paymethod-btn.active[data-method="a_receber"]{ background:var(--warn); border-color:var(--warn); color:var(--bg); }
+
+  .tab-badge{
+    display:inline-flex; align-items:center; justify-content:center; min-width:17px; height:17px; padding:0 4px;
+    margin-left:6px; border-radius:99px; background:var(--warn); color:var(--bg); font-size:10.5px; font-weight:700;
+  }
+
+  .status-pill.paid{ background:var(--good-soft); color:var(--good); }
+  .status-pill.gift{ background:var(--surface-alt); color:var(--ink-soft); }
+  .status-pill.pending{ background:var(--warn-soft); color:var(--warn); }
+  .receipt-link{ font-size:11.5px; color:var(--accent-txt); text-decoration:none; font-weight:600; white-space:nowrap; }
+  .receipt-link:hover{ text-decoration:underline; }
+
+  .sell-total{
+    display:flex; align-items:center; justify-content:space-between; background:var(--accent-soft);
+    color:var(--accent-soft-ink); border-radius:10px; padding:14px 16px; margin:14px 0 16px;
+  }
+  .sell-total .lbl{ font-size:12.5px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  .sell-total .val{ font-family:"Oswald"; font-size:22px; font-weight:600; }
+
+  .cart-list{ border:1px solid var(--border-soft); border-radius:10px; overflow:hidden; }
+  .cart-item{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; font-size:13px; border-bottom:1px solid var(--border-soft); background:var(--surface); }
+  .cart-item:last-child{ border-bottom:none; }
+  .cart-item .cart-item-name{ flex:1; }
+  .cart-item .cart-item-sub{ font-family:"Oswald"; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .cart-item .cart-item-remove{ background:none; border:none; color:var(--bad); cursor:pointer; font-size:16px; line-height:1; padding:2px 6px; }
+  .cart-item .cart-item-remove:hover{ background:var(--bad-soft); border-radius:6px; }
+
+  .toolbar{ display:flex; flex-wrap:wrap; gap:8px; padding:12px 16px; border-bottom:1px solid var(--border-soft); }
+  .toolbar select, .toolbar input{ width:auto; min-width:120px; font-size:13px; padding:7px 9px; }
+  .toolbar .grow{ flex:1; min-width:160px; }
+
+  .row-flex{ display:flex; align-items:center; gap:8px; }
+  .qty-badge{ font-family:"Oswald"; font-size:12.5px; background:var(--surface-alt); padding:3px 8px; border-radius:6px; }
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:var(--bg); padding:11px 18px; border-radius:9px; font-size:13px; font-weight:600;
+    box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.bad{ background:var(--bad); }
+
+  .section-title{ font-size:13px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; margin:26px 0 10px; }
+  .section-title:first-child{ margin-top:0; }
+
+  .footfoot td{ font-weight:700; border-top:2px solid var(--border); border-bottom:none; }
+
+  .setup-overlay{
+    position:fixed; inset:0; background:var(--bg); z-index:100; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .setup-card{ max-width:560px; background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px; }
+  .setup-card h2{ font-size:18px; margin-bottom:10px; }
+  .setup-card ol{ padding-left:20px; font-size:13.5px; line-height:1.7; color:var(--ink-soft); }
+  .setup-card code{ background:var(--surface-alt); padding:1px 6px; border-radius:5px; font-family:"Oswald"; font-size:12.5px; }
+
+  @media (max-width:860px){
+    .kpis{ grid-template-columns:repeat(2,1fr); }
+    .grid-2{ grid-template-columns:1fr; }
+    .form-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width:520px){
+    .kpis{ grid-template-columns:1fr 1fr; }
+    .kpi .value{ font-size:20px; }
+    .topbar{ flex-direction:column; align-items:flex-start; }
+  }
+  .inapp-banner{
+    position:fixed; left:12px; right:12px; bottom:12px; z-index:60; display:flex; gap:10px; align-items:flex-start;
+    background:var(--warn-soft); color:var(--warn); border:1px solid var(--warn); border-radius:10px;
+    padding:11px 12px; font-size:13px; line-height:1.4; box-shadow:var(--shadow);
+  }
+  .inapp-banner button{ background:none; border:none; color:inherit; font-size:20px; line-height:1; cursor:pointer; padding:0 4px; }
+  .upload-status{ font-size:12px; color:var(--ink-soft); margin-top:4px; }
+  .upload-status.bad{ color:var(--bad); }
+  .upload-status.good{ color:var(--good); }
+  [hidden]{ display:none !important; }
+</style>
+<link rel="stylesheet" href="/css/gda-admin.css">
+<script src="/js/gda-admin.js"></script>
+</head>
+<body>
+<div id="gda-admin-bar" data-pagina="vendas"></div>
+
+<div class="setup-overlay" id="setupOverlay" hidden>
+  <div class="setup-card">
+    <h2>Falta configurar a URL do backend</h2>
+    <p style="font-size:13.5px; color:var(--ink-soft);">Esta página ainda não sabe onde está sua planilha do Google. Siga o guia que acompanha este arquivo (Codigo.gs) e depois:</p>
+    <ol>
+      <li>Implante o Apps Script como App da Web e copie a URL (termina em <code>/exec</code>).</li>
+      <li>Abra este arquivo <code>gda-vendas.html</code> num editor de texto.</li>
+      <li>No topo do <code>&lt;script&gt;</code>, troque o valor de <code>API_URL</code> por essa URL.</li>
+      <li>Salve e abra o arquivo de novo no navegador.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">R$</div>
+      <div class="brand-text">
+        <h1>GDA Vendas</h1>
+        <p>Vendas, estoque e caixa da Equipe GDA</p>
+      </div>
+    </div>
+    <div class="conn">
+      <span class="conn-dot" id="connDot"></span><span id="connLabel">Conectando…</span>
+      <button class="btn btn-ghost btn-sm" id="btnRefresh" title="Forçar atualização dos dados">⟳ Atualizar</button>
+    </div>
+  </header>
+
+  <div class="tabrow">
+    <nav class="tabs" id="tabs">
+      <button data-tab="painel" class="active">Painel</button>
+      <button data-tab="vender">Vender</button>
+      <button data-tab="estoque">Estoque</button>
+      <button data-tab="vendas">Vendas</button>
+      <button data-tab="brindes">Brindes</button>
+      <button data-tab="receber">A receber<span class="tab-badge" id="tabBadgeReceber" hidden></span></button>
+      <button data-tab="clientes">Clientes</button>
+    </nav>
+    <button class="cta-vender" id="ctaVender">+ Registrar venda</button>
+  </div>
+
+  <!-- PAINEL -->
+  <section id="tab-painel">
+    <div class="kpis">
+      <div class="kpi accent">
+        <div class="label">Caixa (recebido)</div>
+        <div class="value num" id="kpiCaixa">R$ 0,00</div>
+        <div class="sub" id="kpiCaixaSub">de todas as vendas</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Itens vendidos</div>
+        <div class="value num" id="kpiVendidos">0</div>
+        <div class="sub" id="kpiVendidosSub">unidades</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Itens em estoque</div>
+        <div class="value num" id="kpiEstoque">0</div>
+        <div class="sub" id="kpiEstoqueSub">disponíveis p/ venda</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Valor em estoque</div>
+        <div class="value num" id="kpiValorEstoque">R$ 0,00</div>
+        <div class="sub" id="kpiValorEstoqueSub">a preço de venda</div>
+      </div>
+    </div>
+    <div class="substats" id="substats"></div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><h2>Estoque por produto</h2><span class="hint" id="produtosCount"></span></div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table id="tblEstoquePainel">
+              <thead><tr><th>Produto</th><th>Preço</th><th class="num-cell">Vendido</th><th>Disponível</th><th class="num-cell">Valor em estoque</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="empty" id="emptyProdutosPainel" hidden><b>Nenhum produto cadastrado</b>Adicione produtos na aba Estoque para começar.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="panel">
+          <div class="panel-head"><h2>Vendas por vendedor(a)</h2></div>
+          <div class="panel-body" id="rankVendedores"></div>
+          <div class="empty" id="emptyRank" hidden><b>Sem vendas ainda</b>As vendas por pessoa aparecem aqui.</div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Vendas recentes</h2></div>
+          <div class="panel-body" id="feedRecentes"></div>
+          <div class="empty" id="emptyFeed" hidden><b>Nenhuma venda registrada</b>Registre a primeira venda na aba Vender.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VENDER -->
+  <section id="tab-vender" hidden>
+    <div class="sell-wrap">
+      <div class="card" style="padding:20px;">
+        <h2 style="font-size:16px; margin-bottom:2px;">Registrar venda</h2>
+        <p style="margin:2px 0 16px; font-size:12.5px; color:var(--ink-faint);">Preenchido por quem vendeu, na hora da venda.</p>
+        <form id="formVenda">
+          <div class="form-grid">
+            <div class="field span2">
+              <label for="vProduto">Produto</label>
+              <select id="vProduto"></select>
+            </div>
+            <div class="field">
+              <label for="vQtd">Quantidade</label>
+              <input type="number" id="vQtd" min="1" step="1" value="1">
+            </div>
+            <div class="field">
+              <label for="vPreco">Preço unitário (R$)</label>
+              <input type="text" inputmode="decimal" id="vPreco" placeholder="0,00">
+            </div>
+            <div class="field span2">
+              <button type="button" class="btn btn-ghost btn-sm" id="btnAddItem">+ Adicionar este produto à venda</button>
+              <span class="hint">Vendeu mais de um produto na mesma venda? Adicione cada um aqui — o total soma tudo. Pra vender só um produto, pode deixar preenchido acima e ir direto em "Registrar venda".</span>
+            </div>
+            <div class="field span2" id="cartField" hidden>
+              <label>Itens já adicionados nesta venda</label>
+              <div id="cartList" class="cart-list"></div>
+            </div>
+            <div class="field">
+              <label for="vVendedor">Vendedor(a)</label>
+              <input type="text" id="vVendedor" placeholder="Seu nome" required>
+            </div>
+            <div class="field">
+              <label for="vData">Data</label>
+              <input type="date" id="vData" required>
+            </div>
+            <div class="field span2">
+              <label for="vCliente">Cliente (opcional)</label>
+              <input type="text" id="vCliente" list="vClienteList" placeholder="Buscar por nome ou número — deixe em branco para venda avulsa" autocomplete="off">
+              <datalist id="vClienteList"></datalist>
+              <span class="hint">Vem da sua planilha de clientes. Se não encontrar ou deixar em branco, a venda fica avulsa (sem cliente vinculado), do mesmo jeito de sempre.</span>
+            </div>
+            <div class="field span2">
+              <label>Forma de pagamento</label>
+              <div class="paymethod-group" id="paymethodGroup">
+                <button type="button" class="paymethod-btn" data-method="pix">Pix</button>
+                <button type="button" class="paymethod-btn" data-method="dinheiro">Dinheiro</button>
+                <button type="button" class="paymethod-btn" data-method="presente">Brinde</button>
+                <button type="button" class="paymethod-btn" data-method="a_receber">A receber</button>
+              </div>
+              <span class="hint" id="paymethodHint">Brinde não entra no caixa; A receber fica pendente até você marcar como recebido.</span>
+            </div>
+            <div class="field span2" id="entradaField" hidden>
+              <label for="vEntrada">Valor já recebido agora (entrada, opcional)</label>
+              <input type="text" inputmode="decimal" id="vEntrada" placeholder="0,00">
+              <span class="hint">Se o cliente já pagou uma parte na hora, informe aqui — o restante fica como pendência na aba "A receber".</span>
+            </div>
+            <div class="field span2" id="comprovanteField" hidden>
+              <label for="vComprovante" id="comprovanteLabel">Comprovante de pagamento (opcional)</label>
+              <input type="file" id="vComprovante" accept="image/*,.pdf,application/pdf">
+              <span class="hint" id="comprovanteHint">Foto, print ou PDF do comprovante — fica anexado a essa venda. Print da tela do banco é o mais leve e rápido.</span>
+              <span class="upload-status" id="vComprovanteStatus" hidden></span>
+            </div>
+            <div class="field span2">
+              <label for="vObs">Observação (opcional)</label>
+              <input type="text" id="vObs" placeholder="Ex.: cliente fulano, combinou de pagar sexta...">
+            </div>
+          </div>
+          <div class="sell-total">
+            <span class="lbl">Total da venda</span>
+            <span class="val num" id="vTotal">R$ 0,00</span>
+          </div>
+          <div class="field" id="vAvisoEstoque" style="display:none; margin-bottom:12px;">
+            <span class="hint" style="color:var(--warn);">⚠ Quantidade acima do estoque disponível — confira antes de registrar.</span>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;" id="btnRegistrar">Registrar venda</button>
+        </form>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h2>Últimas vendas</h2></div>
+        <div class="panel-body" id="feedVenderRecentes"></div>
+        <div class="empty" id="emptyFeedVender" hidden><b>Nenhuma venda ainda</b>Registre a primeira acima.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESTOQUE -->
+  <section id="tab-estoque" hidden>
+    <div class="section-title">Novo produto</div>
+    <div class="card" style="padding:18px;">
+      <form id="formProduto">
+        <div class="form-grid">
+          <div class="field span2">
+            <label for="pNome">Nome do produto</label>
+            <input type="text" id="pNome" placeholder="Ex.: Camiseta P branca" required>
+          </div>
+          <div class="field">
+            <label for="pPreco">Preço de venda (R$)</label>
+            <input type="text" inputmode="decimal" id="pPreco" placeholder="0,00" required>
+          </div>
+          <div class="field">
+            <label for="pCusto">Custo unitário (R$) — opcional</label>
+            <input type="text" inputmode="decimal" id="pCusto" placeholder="0,00">
+          </div>
+          <div class="field">
+            <label for="pEstoque">Estoque inicial</label>
+            <input type="number" id="pEstoque" min="0" step="1" value="0" required>
+          </div>
+        </div>
+        <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+          <button type="submit" class="btn btn-primary">Adicionar produto</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="section-title">Produtos cadastrados</div>
+    <div class="panel">
+      <div class="panel-body">
+        <div class="table-wrap">
+          <table id="tblEstoqueGerenciar">
+            <thead><tr><th>Produto</th><th class="num-cell">Preço</th><th class="num-cell">Vendido</th><th>Disponível</th><th class="num-cell">Valor estoque</th><th>Ações</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyProdutosEstoque" hidden><b>Nenhum produto cadastrado</b>Use o formulário acima para começar.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VENDAS -->
+  <section id="tab-vendas" hidden>
+    <div class="panel">
+      <div class="toolbar">
+        <select id="fVendedor"><option value="">Todos vendedores</option></select>
+        <select id="fProduto"><option value="">Todos produtos</option></select>
+        <input type="date" id="fDe" title="De">
+        <input type="date" id="fAte" title="Até">
+        <input type="text" id="fBusca" class="grow" placeholder="Buscar por observação…">
+        <button class="btn btn-ghost btn-sm" id="btnLimparFiltro">Limpar filtros</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tblVendas">
+          <thead><tr><th>Data</th><th>Produto</th><th class="num-cell">Qtd</th><th class="num-cell">Preço</th><th class="num-cell">Total</th><th>Cliente</th><th>Vendedor(a)</th><th>Pagamento</th><th>Obs.</th><th></th></tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <div class="empty" id="emptyVendas" hidden><b>Nenhuma venda encontrada</b>Ajuste os filtros ou registre uma nova venda.</div>
+    </div>
+  </section>
+
+  <!-- BRINDES -->
+  <section id="tab-brindes" hidden>
+    <div class="panel">
+      <div class="panel-head"><h2>Brindes distribuídos</h2><span class="hint" id="brindesCount"></span></div>
+      <div class="table-wrap">
+        <table id="tblBrindes">
+          <thead><tr><th>Data</th><th>Produto</th><th class="num-cell">Qtd</th><th class="num-cell">Valor equivalente</th><th>Vendedor(a)</th><th>Obs.</th></tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <div class="empty" id="emptyBrindes" hidden><b>Nenhum brinde registrado</b>As vendas marcadas como "Brinde" na aba Vender aparecem aqui.</div>
+    </div>
+  </section>
+
+  <!-- A RECEBER -->
+  <section id="tab-receber" hidden>
+    <div class="panel">
+      <div class="panel-head"><h2>Vendas a receber</h2><span class="hint" id="receberCount"></span></div>
+      <div class="table-wrap">
+        <table id="tblReceber">
+          <thead><tr><th>Data</th><th>Produto</th><th class="num-cell">Qtd</th><th class="num-cell">Total</th><th class="num-cell">Pago</th><th class="num-cell">Falta</th><th>Cliente</th><th>Vendedor(a)</th><th>Obs.</th><th>Ações</th></tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <div class="empty" id="emptyReceber" hidden><b>Nada pendente</b>As vendas marcadas como "A receber" aparecem aqui até você confirmar o pagamento.</div>
+    </div>
+  </section>
+
+  <!-- CLIENTES -->
+  <section id="tab-clientes" hidden>
+    <div class="panel">
+      <div class="panel-head"><h2>Clientes</h2><span class="hint" id="clientesCount"></span></div>
+      <div class="toolbar">
+        <input type="text" id="fCliente" class="grow" placeholder="Buscar por nome ou número…">
+      </div>
+      <div class="table-wrap">
+        <table id="tblClientes">
+          <thead><tr><th>Num</th><th>Nome</th><th class="num-cell">Itens comprados</th><th class="num-cell">Total</th><th class="num-cell">Pago</th><th class="num-cell">Deve</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyClientes" hidden><b>Nenhum cliente encontrado</b>Sua lista de clientes vem direto da sua planilha do Google Sheets — cadastre ou edite por lá.</div>
+      <div class="empty" id="clientesSemConexao" hidden><b>Não foi possível carregar os clientes</b>Confira se a planilha de clientes ainda está compartilhada com a conta usada no Apps Script.</div>
+    </div>
+  </section>
+</div>
+
+<!-- Seletor de arquivo único e fixo (fora das tabelas), usado pelo "anexar comprovante"
+     da aba A receber. Fica fora do <tbody> porque a tabela é redesenhada a cada 20s:
+     se o input morasse dentro dela, ele seria destruído enquanto a pessoa ainda está
+     escolhendo a foto no celular, e o comprovante sumia sem aviso nenhum. -->
+<input type="file" id="receberFileInput" accept="image/*,.pdf,application/pdf" hidden>
+
+<div class="inapp-banner" id="inappBanner" hidden>
+  <span>Você abriu o painel dentro do <b id="inappName">app</b>. Se o envio de comprovante falhar, toque nos <b>⋮</b> ou no ícone de compartilhar e escolha <b>"Abrir no navegador"</b> (Chrome ou Safari).</span>
+  <button type="button" id="inappClose" aria-label="Fechar aviso">×</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-client.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ============================================================
+  // COLE AQUI a URL do seu Apps Script (App da Web), termina em /exec.
+  // Veja o guia no arquivo Codigo.gs para como gerar essa URL.
+  // ============================================================
+  var API_URL = 'https://script.google.com/macros/s/AKfycbwD_VuIrQK9WusXinCg03e732PUX9jaPRNkOKcCRN181tMh6M8l_La2qq-GPw39t0Hr/exec';
+
+  var state = { products: [], sales: [], movements: [], customers: [], customersError: '' };
+  var apiOk = false;
+
+  var currency = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+  var integer = new Intl.NumberFormat('pt-BR');
+  function fmtMoney(n){ return currency.format(Number(n)||0); }
+  function fmtInt(n){ return integer.format(Number(n)||0); }
+  // Accepts "39.90" or the Brazilian "39,90" (and "1.234,56") from a text input.
+  function parseDecimal(str){
+    if(str==null) return NaN;
+    var s = String(str).trim();
+    if(s==='') return NaN;
+    if(s.indexOf(',')>-1){ s = s.replace(/\./g,'').replace(',', '.'); }
+    return Number(s);
+  }
+  function toDecimalStr(n){ return (Number(n)||0).toFixed(2).replace('.', ','); }
+  function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function fmtDateBR(iso){
+    if(!iso) return '—';
+    var p = String(iso).split('-'); if(p.length!==3) return iso;
+    return p[2].slice(0,2)+'/'+p[1]+'/'+p[0];
+  }
+  function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function initials(name){
+    var parts = String(name||'?').trim().split(/\s+/);
+    var a = (parts[0]||'?')[0] || '?';
+    var b = parts.length>1 ? (parts[parts.length-1][0]||'') : '';
+    return (a+b).toUpperCase();
+  }
+  function uid(){ return (crypto.randomUUID ? crypto.randomUUID() : ('id-'+Date.now()+'-'+Math.random().toString(16).slice(2))); }
+
+  function showToast(msg, bad){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (bad?' bad':'');
+    clearTimeout(showToast._h);
+    // Erros ficam mais tempo na tela: no celular a pessoa muitas vezes nem via a mensagem.
+    showToast._h = setTimeout(function(){ t.className = 'toast'; }, bad ? 7000 : 2600);
+  }
+
+  /* ---------- API client (Google Apps Script Web App) ---------- */
+  function apiGet(){
+    return fetch(API_URL, { method:'GET' }).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    });
+  }
+  // opts.timeoutMs: corta a requisição se passar desse tempo (no 4G ela podia ficar
+  // "carregando" pra sempre, com o botão travado). Sem AbortController (navegador
+  // antigo), segue sem limite, como antes.
+  function apiPost(action, data, id, opts){
+    opts = opts || {};
+    var body = { action: action };
+    if(data!==undefined && data!==null) body.data = data;
+    if(id!==undefined) body.id = id;
+    var ctrl = (typeof AbortController!=='undefined') ? new AbortController() : null;
+    var timer = null;
+    if(ctrl && opts.timeoutMs){ timer = setTimeout(function(){ ctrl.abort(); }, opts.timeoutMs); }
+    return fetch(API_URL, {
+      method:'POST',
+      // text/plain avoids a CORS preflight against Apps Script Web Apps —
+      // Apps Script still reads the raw body and JSON.parse()s it fine.
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(body),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    }).then(function(res){
+      if(timer) clearTimeout(timer);
+      if(!res.ok) throw new Error(res.error||'Erro desconhecido');
+      return res;
+    }, function(err){
+      if(timer) clearTimeout(timer);
+      if(err && err.name==='AbortError') throw new Error('a internet demorou demais para responder');
+      if(err && /Failed to fetch|NetworkError|Load failed|network/i.test(String(err.message))) throw new Error('sem conexão com a internet no momento');
+      throw err;
+    });
+  }
+
+  /* ---------- payment method helpers ---------- */
+  // Sales migrated before this feature existed have no payment_method at all —
+  // treat those as already-paid cash sales (the safe, backward-compatible default).
+  function paymentMethodOf(s){ return s.payment_method || 'dinheiro'; }
+  function isPending(s){ return paymentMethodOf(s)==='a_receber'; }
+  function isGift(s){ return paymentMethodOf(s)==='presente'; }
+  function isPaidSale(s){ return !isPending(s) && !isGift(s); }
+  // Valor já recebido dessa venda. Pra Pix/Dinheiro é o total (paga na hora);
+  // pra Brinde é 0; pra A receber é a entrada informada (0 se nada foi pago ainda).
+  // Vendas antigas sem paid_amount salvo são tratadas pelo comportamento de cada método.
+  function paidAmountOf(s){
+    var total = Number(s.total)||0;
+    if(isGift(s)) return 0;
+    if(isPending(s)){
+      var paid = s.paid_amount!==undefined && s.paid_amount!=='' ? Number(s.paid_amount) : 0;
+      if(isNaN(paid) || paid<0) paid = 0;
+      return Math.min(paid, total);
+    }
+    return total;
+  }
+  function pendingAmountOf(s){ return (Number(s.total)||0) - paidAmountOf(s); }
+  function paymentMethodLabel(method){
+    return method==='pix' ? 'Pix' : method==='presente' ? 'Brinde' : method==='a_receber' ? 'A receber' : 'Dinheiro';
+  }
+  function paymentPillHtml(s){
+    var method = paymentMethodOf(s);
+    var cls = isPending(s) ? 'pending' : (isGift(s) ? 'gift' : 'paid');
+    var html = '<span class="status-pill '+cls+'">'+paymentMethodLabel(method)+'</span>';
+    if(s.comprovante_url){ html += ' <a class="receipt-link" href="'+escapeHtml(s.comprovante_url)+'" target="_blank" rel="noopener">comprovante</a>'; }
+    return html;
+  }
+
+  /* ---------- receipt upload (Google Drive via Apps Script) ---------- */
+  //
+  // Por que isto foi reescrito (problemas que apareciam no celular/tablet):
+  //  - A foto era lida inteira como texto base64 (FileReader) antes de comprimir.
+  //    Foto de câmera de 12–48 MP vira uma string de 15–60 MB e o Safari/Android
+  //    falha ao abrir ("Não foi possível abrir a imagem"). Agora a imagem é aberta
+  //    direto do arquivo (createImageBitmap / URL de objeto), sem esse peso.
+  //  - Quando o celular não informava o tipo do arquivo (acontece com fotos do
+  //    Google Fotos, HEIC de Samsung/iPhone e alguns gerenciadores de arquivo), a
+  //    foto ia SEM compressão, com 5–15 MB, e o envio estourava no 4G. Agora o
+  //    tipo também é reconhecido pela extensão, e qualquer imagem é comprimida.
+  //  - HEIC que o navegador não consegue abrir (comum no Android) agora dá uma
+  //    mensagem clara pedindo um print, em vez de um erro genérico.
+  //  - O envio tem limite de tempo e tenta de novo 1x se a conexão falhar.
+  //
+  var MAX_IMG_DIM = 1600;           // lado maior da imagem enviada (px) — continua legível
+  var TARGET_IMG_BYTES = 450*1024;  // tenta deixar cada comprovante abaixo de ~450 KB
+  var MAX_PDF_BYTES = 6*1024*1024;  // PDF não é comprimido; acima disso, recusa com aviso
+  var UPLOAD_TIMEOUT_MS = 90000;
+
+  function fileExt(file){ var m = /\.([a-z0-9]+)$/i.exec(file && file.name || ''); return m ? m[1].toLowerCase() : ''; }
+  function isPdfFile(file){ return file.type==='application/pdf' || fileExt(file)==='pdf'; }
+  function isHeicFile(file){ return /heic|heif/i.test(file.type||'') || /^(heic|heif)$/.test(fileExt(file)); }
+  function isImageFile(file){
+    if(isPdfFile(file)) return false;
+    if(file.type && file.type.indexOf('image/')===0) return true;
+    if(/^(jpe?g|png|webp|gif|bmp|heic|heif|avif)$/.test(fileExt(file))) return true;
+    // Tipo vazio ou genérico (alguns Androids/Google Fotos mandam assim): tenta abrir como imagem.
+    return !file.type || file.type==='application/octet-stream';
+  }
+  function fmtMB(bytes){ return (bytes/1024/1024).toFixed(1).replace('.', ',')+' MB'; }
+
+  function readFileAsDataURL(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result); };
+      reader.onerror = function(){ reject(new Error('Não foi possível ler o arquivo. Tente escolher de novo.')); };
+      reader.readAsDataURL(file);
+    });
+  }
+  function blobToBase64(blob){
+    return readFileAsDataURL(blob).then(function(d){ return String(d).split(',')[1] || ''; });
+  }
+  // Abre a imagem sem carregar o arquivo inteiro como texto. Já respeita a rotação
+  // da foto (EXIF) para o comprovante não ficar deitado.
+  function decodeImage(file){
+    if(typeof createImageBitmap==='function'){
+      return createImageBitmap(file, { imageOrientation:'from-image' }).catch(function(){
+        return createImageBitmap(file);
+      }).catch(function(){ return decodeWithImgTag(file); });
+    }
+    return decodeWithImgTag(file);
+  }
+  function decodeWithImgTag(file){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function(){ resolve({ source:img, width:img.naturalWidth||img.width, height:img.naturalHeight||img.height, revoke:function(){ URL.revokeObjectURL(url); } }); };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('decode')); };
+      img.src = url;
+    });
+  }
+  function canvasToBlob(canvas, quality){
+    return new Promise(function(resolve){
+      if(canvas.toBlob){ canvas.toBlob(function(b){ resolve(b); }, 'image/jpeg', quality); }
+      else { // navegador antigo
+        var d = canvas.toDataURL('image/jpeg', quality), bin = atob(d.split(',')[1]), arr = new Uint8Array(bin.length);
+        for(var i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+        resolve(new Blob([arr], {type:'image/jpeg'}));
+      }
+    });
+  }
+  function compressImageFile(file){
+    return decodeImage(file).then(function(dec){
+      var src = dec.source || dec, w = dec.width, h = dec.height;
+      var scale = Math.min(1, MAX_IMG_DIM / Math.max(w, h));
+      var cw = Math.max(1, Math.round(w*scale)), ch = Math.max(1, Math.round(h*scale));
+      var canvas = document.createElement('canvas');
+      canvas.width = cw; canvas.height = ch;
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cw, ch); // PNG transparente não vira preto
+      ctx.drawImage(src, 0, 0, cw, ch);
+      if(dec.revoke) dec.revoke();
+      if(src.close) try{ src.close(); }catch(e){}
+      // Reduz a qualidade aos poucos até ficar leve (sem perder a leitura).
+      var qualities = [0.8, 0.68, 0.55, 0.45];
+      function attempt(i){
+        return canvasToBlob(canvas, qualities[i]).then(function(blob){
+          if(!blob) throw new Error('compress');
+          if(blob.size <= TARGET_IMG_BYTES || i===qualities.length-1){ canvas.width = canvas.height = 0; return blob; }
+          return attempt(i+1);
+        });
+      }
+      return attempt(0);
+    }, function(){
+      if(isHeicFile(file)) throw new Error('Este celular salvou a foto em formato HEIC, que o navegador não consegue abrir. Tire um PRINT da tela do comprovante e anexe o print.');
+      throw new Error('Não foi possível abrir essa imagem. Tente anexar um print da tela do comprovante.');
+    });
+  }
+
+  // Returns a Promise<{filename, mimeType, base64} | null>
+  function prepareReceiptPayload(file){
+    if(!file) return Promise.resolve(null);
+    var baseName = (file.name||'comprovante').replace(/\.[^.]+$/,'') || 'comprovante';
+    if(isPdfFile(file)){
+      if(file.size > MAX_PDF_BYTES) return Promise.reject(new Error('PDF muito grande ('+fmtMB(file.size)+'). Envie um print da tela do comprovante no lugar.'));
+      return blobToBase64(file).then(function(b64){ return { filename: baseName+'.pdf', mimeType:'application/pdf', base64:b64 }; });
+    }
+    if(isImageFile(file)){
+      return compressImageFile(file).then(blobToBase64).then(function(b64){
+        return { filename: baseName+'.jpg', mimeType:'image/jpeg', base64:b64 };
+      });
+    }
+    return Promise.reject(new Error('Tipo de arquivo não aceito. Anexe uma foto, um print ou um PDF.'));
+  }
+
+  // Envia com limite de tempo e 1 nova tentativa automática se a conexão falhar.
+  function postReceiptWithRetry(payload){
+    return apiPost('uploadReceipt', payload, undefined, { timeoutMs: UPLOAD_TIMEOUT_MS }).catch(function(err){
+      if(/HTTP 4/.test(String(err.message))) throw err;
+      return new Promise(function(r){ setTimeout(r, 1500); }).then(function(){
+        return apiPost('uploadReceipt', payload, undefined, { timeoutMs: UPLOAD_TIMEOUT_MS });
+      });
+    });
+  }
+
+  // Returns a Promise<string> — the receipt's URL, or '' when there was no file.
+  // onStatus(texto) é opcional: mostra em que etapa o envio está.
+  function uploadReceiptIfAny(file, onStatus){
+    onStatus = onStatus || function(){};
+    if(!file) return Promise.resolve('');
+    onStatus('Preparando comprovante…');
+    return prepareReceiptPayload(file).then(function(payload){
+      if(!payload) return '';
+      onStatus('Enviando comprovante…');
+      return postReceiptWithRetry(payload).then(function(res){
+        if(!res.url) throw new Error('o Google não devolveu o link do comprovante');
+        return res.url;
+      });
+    }).catch(function(err){
+      var msg = String(err && err.message || err);
+      // Mensagens já escritas para o usuário passam direto; o resto ganha contexto.
+      if(/^(Este celular|Não foi possível|PDF muito|Tipo de arquivo)/.test(msg)) throw err;
+      throw new Error('falha ao enviar o comprovante: '+msg);
+    });
+  }
+
+  // Valida o arquivo assim que a pessoa escolhe, antes de clicar em Registrar.
+  document.getElementById('vComprovante').addEventListener('change', function(){
+    var f = this.files && this.files[0];
+    var st = document.getElementById('vComprovanteStatus');
+    if(!f){ st.hidden = true; return; }
+    st.hidden = false;
+    if(isPdfFile(f) && f.size > MAX_PDF_BYTES){
+      st.className = 'upload-status bad';
+      st.textContent = 'PDF muito grande ('+fmtMB(f.size)+'). Envie um print no lugar.';
+    } else if(!isPdfFile(f) && !isImageFile(f)){
+      st.className = 'upload-status bad';
+      st.textContent = 'Tipo de arquivo não aceito. Use foto, print ou PDF.';
+    } else {
+      st.className = 'upload-status good';
+      st.textContent = '✓ Anexado: '+(f.name||'comprovante')+(isImageFile(f) ? ' (será reduzido antes de enviar)' : '');
+    }
+  });
+
+  /* ---------- derived stats (same logic regardless of backend) ---------- */
+  function productStats(p){
+    var sold = 0, revenue = 0;
+    for (var i=0;i<state.sales.length;i++){ var s=state.sales[i]; if(s.product_id===p.id){ sold += Number(s.qty)||0; revenue += Number(s.total)||0; } }
+    var stockedIn = 0;
+    for (var j=0;j<state.movements.length;j++){ var m=state.movements[j]; if(m.product_id===p.id){ stockedIn += Number(m.qty)||0; } }
+    var available = stockedIn - sold;
+    var stockValue = available * (Number(p.price)||0);
+    var status = available<=0 ? 'out' : (available<=5 ? 'low' : 'ok');
+    var pctSold = stockedIn>0 ? Math.min(100, Math.round((sold/stockedIn)*100)) : 0;
+    return { sold:sold, revenue:revenue, stockedIn:stockedIn, available:available, stockValue:stockValue, status:status, pctSold:pctSold };
+  }
+
+  function allStats(){
+    var list = state.products.map(function(p){ return { p:p, st:productStats(p) }; });
+    var totals = { caixa:0, vendidos:0, disponiveis:0, valorEstoque:0, baixos:0, pendente:0, pendenteQtd:0, presenteValor:0, presenteQtd:0 };
+    for(var i=0;i<state.sales.length;i++){
+      var s = state.sales[i];
+      var total = Number(s.total)||0, qty = Number(s.qty)||0;
+      totals.vendidos += qty;
+      if(isPending(s)){
+        var paid = paidAmountOf(s);
+        totals.caixa += paid; // entrada já recebida entra no caixa mesmo com a venda pendente
+        totals.pendente += (total-paid);
+        totals.pendenteQtd += qty;
+      }
+      else if(isGift(s)){ totals.presenteValor += total; totals.presenteQtd += qty; }
+      else { totals.caixa += total; }
+    }
+    list.forEach(function(x){
+      if(x.p.active!==false){ totals.disponiveis += x.st.available; totals.valorEstoque += x.st.stockValue; if(x.st.status!=='ok') totals.baixos++; }
+    });
+    return { list:list, totals:totals };
+  }
+
+  /* ---------- tabs ---------- */
+  var TABS = ['painel','vender','estoque','vendas','brindes','receber','clientes'];
+  function setTab(name){
+    TABS.forEach(function(t){
+      document.getElementById('tab-'+t).hidden = (t!==name);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function(b){
+      b.classList.toggle('active', b.getAttribute('data-tab')===name);
+    });
+    if(name==='vender'){ prefillVendaForm(); }
+  }
+  document.getElementById('tabs').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-tab]'); if(!btn) return;
+    setTab(btn.getAttribute('data-tab'));
+  });
+  document.getElementById('ctaVender').addEventListener('click', function(){ setTab('vender'); });
+
+  /* ---------- render: PAINEL ---------- */
+  function renderPainel(){
+    var a = allStats();
+    document.getElementById('kpiCaixa').textContent = fmtMoney(a.totals.caixa);
+    document.getElementById('kpiCaixaSub').textContent = fmtInt(state.sales.filter(isPaidSale).length) + ' venda(s) paga(s)';
+    document.getElementById('kpiVendidos').textContent = fmtInt(a.totals.vendidos);
+    document.getElementById('kpiEstoque').textContent = fmtInt(a.totals.disponiveis);
+    document.getElementById('kpiValorEstoque').textContent = fmtMoney(a.totals.valorEstoque);
+
+    var activeCount = state.products.filter(function(p){ return p.active!==false; }).length;
+    var paidCount = state.sales.filter(isPaidSale).length;
+    var subs = document.getElementById('substats');
+    subs.innerHTML =
+      '<span class="chip-stat">Produtos ativos <b>'+fmtInt(activeCount)+'</b></span>' +
+      '<span class="chip-stat">Ticket médio <b>'+fmtMoney(paidCount>0 ? a.totals.caixa/paidCount : 0)+'</b></span>' +
+      (a.totals.pendente>0 ? '<span class="chip-stat warn">A receber <b>'+fmtMoney(a.totals.pendente)+'</b> ('+fmtInt(a.totals.pendenteQtd)+' item(ns))</span>' : '') +
+      (a.totals.presenteValor>0 ? '<span class="chip-stat">Brindes <b>'+fmtMoney(a.totals.presenteValor)+'</b> ('+fmtInt(a.totals.presenteQtd)+' item(ns))</span>' : '') +
+      (a.totals.baixos>0 ? '<span class="chip-stat warn">⚠ '+fmtInt(a.totals.baixos)+' produto(s) com estoque baixo</span>' : '');
+
+    document.getElementById('produtosCount').textContent = fmtInt(activeCount) + ' produto(s)';
+    var tb = document.querySelector('#tblEstoquePainel tbody');
+    var active = a.list.filter(function(x){ return x.p.active!==false; });
+    document.getElementById('emptyProdutosPainel').hidden = active.length>0;
+    tb.innerHTML = active.map(function(x){
+      var st = x.st;
+      var pillCls = st.status==='out'?'out':(st.status==='low'?'low':'ok');
+      var pillTxt = st.status==='out'?'Esgotado':(st.status==='low'?'Baixo':'OK');
+      var barColor = st.status==='out'?'var(--bad)':(st.status==='low'?'var(--warn)':'var(--good)');
+      return '<tr>'+
+        '<td>'+escapeHtml(x.p.name)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(x.p.price)+'</td>'+
+        '<td class="num-cell">'+fmtInt(st.sold)+'</td>'+
+        '<td><div class="row-flex"><span class="status-pill '+pillCls+'">'+pillTxt+'</span><span class="num" style="font-size:12.5px;">'+fmtInt(st.available)+'</span>'+
+          '<span class="bar-track"><span class="bar-fill" style="width:'+st.pctSold+'%; background:'+barColor+';"></span></span></div></td>'+
+        '<td class="num-cell">'+fmtMoney(st.stockValue)+'</td>'+
+        '</tr>';
+    }).join('');
+
+    // ranking por vendedor
+    var bySeller = {};
+    state.sales.forEach(function(s){
+      var k = s.seller || '—';
+      if(!bySeller[k]) bySeller[k] = { qty:0, revenue:0 };
+      bySeller[k].qty += Number(s.qty)||0;
+      bySeller[k].revenue += Number(s.total)||0;
+    });
+    var sellers = Object.keys(bySeller).map(function(k){ return {name:k, qty:bySeller[k].qty, revenue:bySeller[k].revenue}; })
+      .sort(function(a,b){ return b.revenue-a.revenue; });
+    document.getElementById('emptyRank').hidden = sellers.length>0;
+    document.getElementById('rankVendedores').innerHTML = sellers.slice(0,8).map(function(s){
+      return '<div class="rank-row">'+
+        '<div class="rank-avatar">'+escapeHtml(initials(s.name))+'</div>'+
+        '<div class="rank-name">'+escapeHtml(s.name)+'<div class="rank-meta">'+fmtInt(s.qty)+' item(ns)</div></div>'+
+        '<div class="rank-val">'+fmtMoney(s.revenue)+'</div>'+
+        '</div>';
+    }).join('');
+
+    // feed recentes
+    var recent = state.sales.slice().sort(function(a,b){ return (b.ts||0)-(a.ts||0); }).slice(0,8);
+    document.getElementById('emptyFeed').hidden = recent.length>0;
+    document.getElementById('feedRecentes').innerHTML = recent.map(feedItemHtml).join('');
+  }
+
+  function feedItemHtml(s){
+    return '<div class="feed-item">'+
+      '<div><div>'+escapeHtml(s.product_name)+' <span class="qty-badge">x'+fmtInt(s.qty)+'</span></div>'+
+      '<div class="who">'+escapeHtml(s.seller||'—')+' · '+fmtDateBR(s.date)+'</div></div>'+
+      '<div class="amt">'+fmtMoney(s.total)+'</div>'+
+      '</div>';
+  }
+
+  /* ---------- render: VENDER ---------- */
+  function populateProdutoSelect(sel, keepValue){
+    var cur = keepValue!==undefined ? keepValue : sel.value;
+    var active = state.products.filter(function(p){ return p.active!==false; });
+    var placeholder = '<option value="">'+(active.length ? 'Selecione um produto…' : 'Nenhum produto cadastrado')+'</option>';
+    sel.innerHTML = placeholder + active.map(function(p){
+      var st = productStats(p);
+      return '<option value="'+p.id+'" data-price="'+p.price+'">'+escapeHtml(p.name)+' — '+fmtMoney(p.price)+' ('+fmtInt(st.available)+' disp.)</option>';
+    }).join('');
+    sel.value = cur || '';
+  }
+
+  /* ---------- clientes (lidos ao vivo da planilha externa) ---------- */
+  function customerLabel(c){ return c.id+' - '+c.name; }
+  function populateClienteDatalist(){
+    var dl = document.getElementById('vClienteList');
+    dl.innerHTML = state.customers.map(function(c){ return '<option value="'+escapeHtml(customerLabel(c))+'">'; }).join('');
+  }
+  // Casa o texto digitado/escolhido no campo Cliente com um cliente da planilha.
+  // Não encontrando nada (campo em branco ou texto que não bate), a venda segue avulsa.
+  function matchCustomer(typed){
+    typed = (typed||'').trim();
+    if(!typed) return null;
+    var exact = state.customers.find(function(c){ return customerLabel(c)===typed; });
+    if(exact) return exact;
+    var byId = state.customers.find(function(c){ return String(c.id)===typed; });
+    if(byId) return byId;
+    return null;
+  }
+
+  function prefillVendaForm(){
+    populateProdutoSelect(document.getElementById('vProduto'));
+    populateClienteDatalist();
+    var savedSeller = '';
+    try{ savedSeller = localStorage.getItem('ce_vendedor') || ''; }catch(e){}
+    var vv = document.getElementById('vVendedor');
+    if(!vv.value) vv.value = savedSeller;
+    if(!document.getElementById('vData').value) document.getElementById('vData').value = todayISO();
+    syncPrecoFromProduto();
+    updateVendaTotal();
+    renderFeedVender();
+  }
+  function syncPrecoFromProduto(){
+    var sel = document.getElementById('vProduto');
+    var opt = sel.options[sel.selectedIndex];
+    if(opt && opt.dataset.price){ document.getElementById('vPreco').value = toDecimalStr(opt.dataset.price); }
+  }
+
+  /* ---------- carrinho: mais de um produto por venda ---------- */
+  var cart = [];
+  function cartTotal(){ return cart.reduce(function(a,it){ return a+it.subtotal; }, 0); }
+  // Lê o que está preenchido em Produto/Qtd/Preço agora. Retorna null se não dá
+  // pra formar um item válido (nenhum produto escolhido, qtd/preço inválidos).
+  function currentDraft(){
+    var sel = document.getElementById('vProduto');
+    var productId = sel.value;
+    if(!productId) return null;
+    var product = state.products.find(function(p){ return p.id===productId; });
+    if(!product) return null;
+    var qty = Number(document.getElementById('vQtd').value);
+    var price = parseDecimal(document.getElementById('vPreco').value);
+    if(!qty || qty<=0 || isNaN(price) || price<0) return null;
+    return { product_id: product.id, product_name: product.name, qty: qty, unit_price: price, subtotal: qty*price };
+  }
+  function renderCart(){
+    document.getElementById('cartField').hidden = cart.length===0;
+    document.getElementById('cartList').innerHTML = cart.map(function(it, idx){
+      return '<div class="cart-item">'+
+        '<span class="cart-item-name">'+fmtInt(it.qty)+'× '+escapeHtml(it.product_name)+'</span>'+
+        '<span class="cart-item-sub">'+fmtMoney(it.subtotal)+'</span>'+
+        '<button type="button" class="cart-item-remove" data-idx="'+idx+'" title="Remover item">×</button>'+
+        '</div>';
+    }).join('');
+  }
+  // Adiciona o item preenchido em Produto/Qtd/Preço ao carrinho e limpa esses
+  // campos pra receber o próximo produto (ou pra sinalizar que não há mais nada
+  // pendente de adicionar).
+  function addCurrentItemToCart(showErrors){
+    var draft = currentDraft();
+    if(!draft){
+      if(showErrors) showToast('Selecione um produto e informe quantidade/preço válidos para adicionar.', true);
+      return false;
+    }
+    cart.push(draft);
+    document.getElementById('vProduto').value = '';
+    document.getElementById('vQtd').value = 1;
+    document.getElementById('vPreco').value = '';
+    renderCart();
+    updateVendaTotal();
+    return true;
+  }
+  function resetCart(){
+    cart = [];
+    renderCart();
+  }
+  document.getElementById('btnAddItem').addEventListener('click', function(){ addCurrentItemToCart(true); });
+  document.getElementById('cartList').addEventListener('click', function(e){
+    var btn = e.target.closest('.cart-item-remove'); if(!btn) return;
+    cart.splice(Number(btn.getAttribute('data-idx')), 1);
+    renderCart();
+    updateVendaTotal();
+  });
+
+  function updateVendaTotal(){
+    var draft = currentDraft();
+    var total = cartTotal() + (draft ? draft.subtotal : 0);
+    document.getElementById('vTotal').textContent = fmtMoney(total);
+    // Soma a quantidade pedida de cada produto (carrinho + o que está sendo
+    // digitado agora) pra avisar se, juntando tudo, passa do estoque disponível.
+    var qtyByProduct = {};
+    cart.forEach(function(it){ qtyByProduct[it.product_id] = (qtyByProduct[it.product_id]||0) + it.qty; });
+    if(draft){ qtyByProduct[draft.product_id] = (qtyByProduct[draft.product_id]||0) + draft.qty; }
+    var over = Object.keys(qtyByProduct).some(function(pid){
+      var p = state.products.find(function(x){ return x.id===pid; });
+      return p && qtyByProduct[pid] > productStats(p).available;
+    });
+    document.getElementById('vAvisoEstoque').style.display = over ? 'block' : 'none';
+  }
+  document.getElementById('vProduto').addEventListener('change', function(){ syncPrecoFromProduto(); updateVendaTotal(); });
+  document.getElementById('vQtd').addEventListener('input', updateVendaTotal);
+  document.getElementById('vPreco').addEventListener('input', updateVendaTotal);
+
+  /* ---------- payment method picker (Vender form) ---------- */
+  var selectedPaymentMethod = '';
+  function setPaymentMethod(method){
+    selectedPaymentMethod = method;
+    Array.prototype.forEach.call(document.querySelectorAll('#paymethodGroup .paymethod-btn'), function(b){
+      b.classList.toggle('active', b.getAttribute('data-method')===method);
+    });
+    // A comprovante makes sense for anything except a gift (nothing was paid).
+    document.getElementById('comprovanteField').hidden = (method==='presente' || method==='');
+    // Pix precisa de comprovante obrigatório; nos demais métodos fica opcional.
+    document.getElementById('comprovanteLabel').textContent = (method==='pix') ? 'Comprovante de pagamento (obrigatório)' : 'Comprovante de pagamento (opcional)';
+    document.getElementById('vComprovante').required = (method==='pix');
+    // "Valor já recebido" só faz sentido pra uma venda a receber (entrada + saldo devedor).
+    document.getElementById('entradaField').hidden = (method!=='a_receber');
+  }
+  document.getElementById('paymethodGroup').addEventListener('click', function(e){
+    var btn = e.target.closest('.paymethod-btn'); if(!btn) return;
+    setPaymentMethod(btn.getAttribute('data-method'));
+  });
+  function resetPaymentMethod(){
+    selectedPaymentMethod = '';
+    Array.prototype.forEach.call(document.querySelectorAll('#paymethodGroup .paymethod-btn'), function(b){ b.classList.remove('active'); });
+    document.getElementById('comprovanteField').hidden = true;
+    document.getElementById('comprovanteLabel').textContent = 'Comprovante de pagamento (opcional)';
+    document.getElementById('vComprovante').required = false;
+    document.getElementById('vComprovante').value = '';
+    document.getElementById('vComprovanteStatus').hidden = true;
+    document.getElementById('entradaField').hidden = true;
+    document.getElementById('vEntrada').value = '';
+  }
+
+  function renderFeedVender(){
+    var recent = state.sales.slice().sort(function(a,b){ return (b.ts||0)-(a.ts||0); }).slice(0,5);
+    document.getElementById('emptyFeedVender').hidden = recent.length>0;
+    document.getElementById('feedVenderRecentes').innerHTML = recent.map(feedItemHtml).join('');
+  }
+
+  document.getElementById('formVenda').addEventListener('submit', function(e){
+    e.preventDefault();
+    // Junta o que já foi adicionado ao carrinho com o que está preenchido agora
+    // em Produto/Qtd/Preço, SEM alterar o carrinho ainda — assim, vender um
+    // produto só continua sendo simplesmente preencher os campos e clicar em
+    // Registrar venda, e se a venda for bloqueada por outro motivo (forma de
+    // pagamento, comprovante etc.) nada se perde nem duplica: os campos e o
+    // carrinho continuam do jeito que a pessoa deixou, prontos pra corrigir e
+    // reenviar, em vez de ir empilhando itens fantasmas a cada tentativa.
+    var draftAtual = currentDraft();
+    var items = cart.slice();
+    if(draftAtual) items.push(draftAtual);
+    if(items.length===0){ showToast('Selecione um produto e informe quantidade/preço válidos para registrar a venda.', true); return; }
+
+    var seller = document.getElementById('vVendedor').value.trim();
+    var date = document.getElementById('vData').value || todayISO();
+    var obs = document.getElementById('vObs').value.trim();
+    var clienteRaw = document.getElementById('vCliente').value.trim();
+    var customer = matchCustomer(clienteRaw);
+    var clienteNaoEncontrado = !!(clienteRaw && !customer);
+    if(!seller){ showToast('Informe o nome de quem vendeu.', true); return; }
+    if(!selectedPaymentMethod){ showToast('Escolha a forma de pagamento (Pix, Dinheiro, Brinde ou A receber).', true); return; }
+
+    var total = items.reduce(function(a,it){ return a+it.subtotal; }, 0);
+    var receiptFile = document.getElementById('vComprovante').files[0] || null;
+    if(selectedPaymentMethod==='pix' && !receiptFile){
+      showToast('Anexe o comprovante de pagamento — obrigatório para vendas no Pix.', true);
+      return;
+    }
+
+    var paidAmount = total;
+    if(selectedPaymentMethod==='a_receber'){
+      var entradaRaw = document.getElementById('vEntrada').value.trim();
+      paidAmount = entradaRaw==='' ? 0 : parseDecimal(entradaRaw);
+      if(isNaN(paidAmount) || paidAmount<0){ showToast('Informe um valor de entrada válido (ex.: 20,00) ou deixe em branco.', true); return; }
+      if(paidAmount>total){ showToast('O valor de entrada não pode ser maior que o total da venda.', true); return; }
+    } else if(selectedPaymentMethod==='presente'){
+      paidAmount = 0;
+    }
+
+    // Uma venda com vários produtos vira uma linha por produto na planilha
+    // (compatível com tudo que já existe: estoque, brindes, clientes, etc.),
+    // todas com o mesmo order_id pra ficarem reconhecíveis como a mesma venda.
+    // A entrada (quando "A receber") é distribuída proporcionalmente ao valor
+    // de cada item, com o arredondamento ajustado no último item.
+    var itemPaid = items.map(function(it){
+      if(selectedPaymentMethod==='a_receber') return total>0 ? Math.round(paidAmount*(it.subtotal/total)*100)/100 : 0;
+      return selectedPaymentMethod==='presente' ? 0 : it.subtotal;
+    });
+    if(selectedPaymentMethod==='a_receber' && items.length){
+      var somaParcial = itemPaid.slice(0,-1).reduce(function(a,v){ return a+v; }, 0);
+      itemPaid[itemPaid.length-1] = Math.round((paidAmount-somaParcial)*100)/100;
+    }
+    var orderId = uid();
+
+    var btn = document.getElementById('btnRegistrar');
+    btn.disabled = true;
+    var btnLabel = btn.textContent;
+    var receiptStageDone = false;
+    uploadReceiptIfAny(receiptFile, function(txt){ btn.textContent = txt; }).then(function(receiptUrl){
+      receiptStageDone = true;
+      btn.textContent = 'Registrando venda…';
+      var chain = Promise.resolve();
+      items.forEach(function(it, idx){
+        chain = chain.then(function(){
+          var payload = {
+            id: uid(), order_id: orderId,
+            product_id: it.product_id, product_name: it.product_name,
+            qty: it.qty, unit_price: it.unit_price, total: it.subtotal,
+            seller: seller, date: date, note: obs, ts: Date.now(),
+            payment_method: selectedPaymentMethod, comprovante_url: receiptUrl || '',
+            paid_amount: itemPaid[idx],
+            customer_id: customer ? customer.id : '', customer_name: customer ? customer.name : ''
+          };
+          return apiPost('addSale', payload);
+        });
+      });
+      return chain;
+    }).then(function(){
+      try{ localStorage.setItem('ce_vendedor', seller); }catch(err){}
+      var baseMsg = items.length>1 ? ('Venda registrada com sucesso ('+items.length+' itens, '+fmtMoney(total)+').') : 'Venda registrada com sucesso.';
+      showToast(clienteNaoEncontrado ? (baseMsg+' Cliente "'+clienteRaw+'" não encontrado — ficou avulsa.') : baseMsg);
+      resetCart();
+      document.getElementById('vProduto').value = '';
+      document.getElementById('vQtd').value = 1;
+      document.getElementById('vPreco').value = '';
+      document.getElementById('vObs').value = '';
+      document.getElementById('vCliente').value = '';
+      resetPaymentMethod();
+      updateVendaTotal();
+      return refreshAll(false);
+    }).catch(function(err){
+      if(!receiptStageDone){
+        // Falhou no comprovante: nenhuma venda foi gravada, o formulário fica como estava.
+        var st = document.getElementById('vComprovanteStatus');
+        st.hidden = false; st.className = 'upload-status bad';
+        st.textContent = err.message;
+        showToast('Venda NÃO registrada: ' + err.message + ' Nada foi salvo — é só tentar de novo.', true);
+        return;
+      }
+      showToast('Não foi possível concluir a venda (' + err.message + '). Confira a aba Vendas — alguns itens podem já ter sido salvos.', true);
+      return refreshAll(false);
+    }).then(function(){ btn.disabled = false; btn.textContent = btnLabel; });
+  });
+
+  /* ---------- render: ESTOQUE ---------- */
+  document.getElementById('formProduto').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('pNome').value.trim();
+    var price = parseDecimal(document.getElementById('pPreco').value);
+    var costRaw = document.getElementById('pCusto').value;
+    var cost = costRaw.trim()==='' ? null : parseDecimal(costRaw);
+    var initialStock = Number(document.getElementById('pEstoque').value)||0;
+    if(!name){ showToast('Informe o nome do produto.', true); return; }
+    if(isNaN(price) || price<0){ showToast('Informe um preço válido (ex.: 39,90).', true); return; }
+    if(cost!=null && isNaN(cost)){ showToast('Informe um custo válido (ex.: 20,00) ou deixe em branco.', true); return; }
+
+    var id = uid();
+    var productDoc = { id:id, name:name, price:price, cost:cost, active:true, ts:Date.now() };
+    var movementId = uid();
+    var movementDoc = initialStock>0 ? {
+      id:movementId, product_id:id, type:'entrada', qty:initialStock, note:'Estoque inicial', ts:Date.now(), date:todayISO()
+    } : null;
+
+    var submitBtn = e.target.querySelector('button[type=submit]');
+    submitBtn.disabled = true;
+
+    apiPost('addProduct', productDoc).then(function(){
+      return movementDoc ? apiPost('addMovement', movementDoc) : null;
+    }).then(function(){
+      showToast('Produto "'+name+'" cadastrado — já disponível na aba Vender.');
+      document.getElementById('formProduto').reset();
+      document.getElementById('pEstoque').value = 0;
+      return refreshAll(false);
+    }).catch(function(err){
+      showToast('Não foi possível salvar o produto (' + err.message + '). Tente novamente.', true);
+    }).finally(function(){ submitBtn.disabled = false; });
+  });
+
+  function renderEstoque(){
+    var a = allStats();
+    var tb = document.querySelector('#tblEstoqueGerenciar tbody');
+    document.getElementById('emptyProdutosEstoque').hidden = a.list.length>0;
+    tb.innerHTML = a.list.map(function(x){
+      var p = x.p, st = x.st;
+      var inactive = p.active===false;
+      var pillCls = st.status==='out'?'out':(st.status==='low'?'low':'ok');
+      var pillTxt = st.status==='out'?'Esgotado':(st.status==='low'?'Baixo':'OK');
+      return '<tr style="'+(inactive?'opacity:.5;':'')+'">'+
+        '<td>'+escapeHtml(p.name)+(inactive?' <span class="hint" style="font-size:11px;">(inativo)</span>':'')+'</td>'+
+        '<td class="num-cell">'+fmtMoney(p.price)+'</td>'+
+        '<td class="num-cell">'+fmtInt(st.sold)+'</td>'+
+        '<td><span class="status-pill '+pillCls+'">'+pillTxt+'</span> <span class="num" style="font-size:12.5px;">'+fmtInt(st.available)+'</span></td>'+
+        '<td class="num-cell">'+fmtMoney(st.stockValue)+'</td>'+
+        '<td>'+
+          '<div class="row-flex">'+
+          '<input type="number" min="1" step="1" placeholder="Qtd" style="width:64px; padding:6px 7px;" class="repoInput" data-id="'+p.id+'">'+
+          '<button class="btn btn-ghost btn-sm repoBtn" data-id="'+p.id+'">Repor</button>'+
+          '<button class="btn btn-ghost btn-sm toggleBtn" data-id="'+p.id+'" data-active="'+(p.active!==false)+'">'+(inactive?'Ativar':'Desativar')+'</button>'+
+          '</div>'+
+        '</td>'+
+        '</tr>';
+    }).join('');
+  }
+
+  document.querySelector('#tblEstoqueGerenciar tbody').addEventListener('click', function(e){
+    var repoBtn = e.target.closest('.repoBtn');
+    var toggleBtn = e.target.closest('.toggleBtn');
+    if(repoBtn){
+      var id = repoBtn.getAttribute('data-id');
+      var input = document.querySelector('.repoInput[data-id="'+id+'"]');
+      var qty = Number(input.value);
+      if(!qty || qty<=0){ showToast('Informe uma quantidade para repor.', true); return; }
+      repoBtn.disabled = true;
+      apiPost('addMovement', {
+        id: uid(), product_id:id, type:'entrada', qty:qty, note:'Reposição de estoque', ts:Date.now(), date:todayISO()
+      }).then(function(){ showToast('Estoque reposto.'); input.value=''; return refreshAll(false); })
+        .catch(function(err){ showToast('Erro ao repor estoque (' + err.message + ').', true); })
+        .finally(function(){ repoBtn.disabled = false; });
+    }
+    if(toggleBtn){
+      var pid = toggleBtn.getAttribute('data-id');
+      var isActive = toggleBtn.getAttribute('data-active')==='true';
+      toggleBtn.disabled = true;
+      apiPost('updateProduct', { active: !isActive }, pid).then(function(){
+        showToast(isActive ? 'Produto desativado.' : 'Produto ativado.');
+        return refreshAll(false);
+      }).catch(function(err){ showToast('Erro ao atualizar produto (' + err.message + ').', true); })
+        .finally(function(){ toggleBtn.disabled = false; });
+    }
+  });
+
+  /* ---------- render: VENDAS ---------- */
+  function populateFilters(){
+    var fv = document.getElementById('fVendedor'), fp = document.getElementById('fProduto');
+    var curV = fv.value, curP = fp.value;
+    var sellersSet = {};
+    state.sales.forEach(function(s){ if(s.seller) sellersSet[s.seller]=true; });
+    var sellers = Object.keys(sellersSet).sort();
+    fv.innerHTML = '<option value="">Todos vendedores</option>' + sellers.map(function(s){ return '<option value="'+escapeHtml(s)+'">'+escapeHtml(s)+'</option>'; }).join('');
+    fv.value = curV;
+    fp.innerHTML = '<option value="">Todos produtos</option>' + state.products.map(function(p){ return '<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>'; }).join('');
+    fp.value = curP;
+  }
+
+  function filteredSales(){
+    var fv = document.getElementById('fVendedor').value;
+    var fp = document.getElementById('fProduto').value;
+    var fde = document.getElementById('fDe').value;
+    var fate = document.getElementById('fAte').value;
+    var fbusca = document.getElementById('fBusca').value.trim().toLowerCase();
+    return state.sales.filter(function(s){
+      if(fv && s.seller!==fv) return false;
+      if(fp && s.product_id!==fp) return false;
+      if(fde && s.date < fde) return false;
+      if(fate && s.date > fate) return false;
+      if(fbusca && !(String(s.note||'').toLowerCase().indexOf(fbusca)>-1) && !(String(s.customer_name||'').toLowerCase().indexOf(fbusca)>-1)) return false;
+      return true;
+    }).sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+  }
+
+  function renderVendas(){
+    populateFilters();
+    var rows = filteredSales();
+    document.getElementById('emptyVendas').hidden = rows.length>0;
+    var tb = document.querySelector('#tblVendas tbody');
+    tb.innerHTML = rows.map(function(s){
+      return '<tr>'+
+        '<td>'+fmtDateBR(s.date)+'</td>'+
+        '<td>'+escapeHtml(s.product_name)+'</td>'+
+        '<td class="num-cell">'+fmtInt(s.qty)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(s.unit_price)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(s.total)+'</td>'+
+        '<td>'+escapeHtml(s.customer_name||'—')+'</td>'+
+        '<td>'+escapeHtml(s.seller)+'</td>'+
+        '<td>'+paymentPillHtml(s)+'</td>'+
+        '<td style="color:var(--ink-faint); font-size:12.5px;">'+escapeHtml(s.note||'')+'</td>'+
+        '<td><button class="btn btn-ghost btn-sm delBtn" data-id="'+s.id+'">Excluir</button></td>'+
+        '</tr>';
+    }).join('');
+    var totQty = rows.reduce(function(a,s){ return a+(Number(s.qty)||0); },0);
+    var totVal = rows.reduce(function(a,s){ return a+(Number(s.total)||0); },0);
+    var tf = document.querySelector('#tblVendas tfoot');
+    tf.innerHTML = rows.length ? ('<tr class="footfoot"><td colspan="2">Total ('+fmtInt(rows.length)+' venda(s))</td><td class="num-cell">'+fmtInt(totQty)+'</td><td></td><td class="num-cell">'+fmtMoney(totVal)+'</td><td colspan="5"></td></tr>') : '';
+  }
+
+  ['fVendedor','fProduto','fDe','fAte'].forEach(function(id){ document.getElementById(id).addEventListener('change', renderVendas); });
+  document.getElementById('fBusca').addEventListener('input', renderVendas);
+  document.getElementById('btnLimparFiltro').addEventListener('click', function(){
+    document.getElementById('fVendedor').value='';
+    document.getElementById('fProduto').value='';
+    document.getElementById('fDe').value='';
+    document.getElementById('fAte').value='';
+    document.getElementById('fBusca').value='';
+    renderVendas();
+  });
+
+  document.querySelector('#tblVendas tbody').addEventListener('click', function(e){
+    var btn = e.target.closest('.delBtn'); if(!btn) return;
+    var id = btn.getAttribute('data-id');
+    if(btn.dataset.confirm==='1'){
+      btn.disabled = true;
+      apiPost('deleteSale', null, id).then(function(){ showToast('Venda excluída.'); return refreshAll(false); })
+        .catch(function(err){ showToast('Erro ao excluir venda (' + err.message + ').', true); })
+        .finally(function(){ if(btn){ btn.disabled = false; } });
+    } else {
+      btn.dataset.confirm='1'; btn.textContent='Confirmar exclusão';
+      setTimeout(function(){ if(btn){ btn.dataset.confirm='0'; btn.textContent='Excluir'; } }, 3000);
+    }
+  });
+
+  /* ---------- render: BRINDES ---------- */
+  function renderBrindes(){
+    var rows = state.sales.filter(isGift).slice().sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+    document.getElementById('emptyBrindes').hidden = rows.length>0;
+    var tb = document.querySelector('#tblBrindes tbody');
+    tb.innerHTML = rows.map(function(s){
+      return '<tr>'+
+        '<td>'+fmtDateBR(s.date)+'</td>'+
+        '<td>'+escapeHtml(s.product_name)+'</td>'+
+        '<td class="num-cell">'+fmtInt(s.qty)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(s.total)+'</td>'+
+        '<td>'+escapeHtml(s.seller)+'</td>'+
+        '<td style="color:var(--ink-faint); font-size:12.5px;">'+escapeHtml(s.note||'')+'</td>'+
+        '</tr>';
+    }).join('');
+    var totQty = rows.reduce(function(a,s){ return a+(Number(s.qty)||0); },0);
+    var totVal = rows.reduce(function(a,s){ return a+(Number(s.total)||0); },0);
+    var tf = document.querySelector('#tblBrindes tfoot');
+    tf.innerHTML = rows.length ? ('<tr class="footfoot"><td colspan="2">Total ('+fmtInt(rows.length)+' brinde(s))</td><td class="num-cell">'+fmtInt(totQty)+'</td><td class="num-cell">'+fmtMoney(totVal)+'</td><td colspan="2"></td></tr>') : '';
+    document.getElementById('brindesCount').textContent = rows.length ? fmtInt(rows.length)+' brinde(s) registrado(s)' : '';
+  }
+
+  /* ---------- render: A RECEBER ---------- */
+  // Agrupa as vendas pendentes por order_id (vendas com vários produtos viram
+  // uma venda só, feita com o novo carrinho) — vendas antigas sem order_id
+  // (ou avulsas de um produto só) formam um grupo de 1 item, sem diferença
+  // visual. Cada grupo tem sua lista de ids, pra "Quitar restante" e "anexar
+  // comprovante" agirem em todos os itens da venda de uma vez.
+  function receberGroups(){
+    var groupsMap = {}, order = [];
+    state.sales.filter(isPending).forEach(function(s){
+      var key = s.order_id || s.id;
+      if(!groupsMap[key]){
+        groupsMap[key] = { key:key, ids:[], products:[], qty:0, total:0, paid:0, falta:0, date:s.date, seller:s.seller, customer_name:s.customer_name, note:s.note, comprovante_url:'', ts:0 };
+        order.push(key);
+      }
+      var g = groupsMap[key];
+      g.ids.push(s.id);
+      g.products.push(fmtInt(s.qty)+'× '+escapeHtml(s.product_name));
+      g.qty += Number(s.qty)||0;
+      g.total += Number(s.total)||0;
+      g.paid += paidAmountOf(s);
+      g.falta += pendingAmountOf(s);
+      if(s.comprovante_url && !g.comprovante_url) g.comprovante_url = s.comprovante_url;
+      if((s.ts||0) > g.ts) g.ts = s.ts||0;
+    });
+    return order.map(function(k){ return groupsMap[k]; }).sort(function(a,b){ return b.ts-a.ts; });
+  }
+
+  function renderReceber(){
+    var groups = receberGroups();
+    document.getElementById('emptyReceber').hidden = groups.length>0;
+    var tb = document.querySelector('#tblReceber tbody');
+    tb.innerHTML = groups.map(function(g){
+      var comprovanteHtml = g.comprovante_url
+        ? '<a class="receipt-link" href="'+escapeHtml(g.comprovante_url)+'" target="_blank" rel="noopener">ver comprovante</a>'
+        : (receberUploadKey===g.ids.join(',')
+            ? '<span class="receipt-link" style="color:var(--ink-faint);">enviando comprovante…</span>'
+            : '<button type="button" class="receipt-link receberAnexarBtn" style="background:none;border:none;padding:0;cursor:pointer;font-family:inherit;" data-ids="'+g.ids.join(',')+'">anexar comprovante</button>');
+      return '<tr>'+
+        '<td>'+fmtDateBR(g.date)+'</td>'+
+        '<td>'+g.products.join(', ')+'</td>'+
+        '<td class="num-cell">'+fmtInt(g.qty)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(g.total)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(g.paid)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(g.falta)+'</td>'+
+        '<td>'+escapeHtml(g.customer_name||'—')+'</td>'+
+        '<td>'+escapeHtml(g.seller)+'</td>'+
+        '<td style="color:var(--ink-faint); font-size:12.5px;">'+escapeHtml(g.note||'')+'</td>'+
+        '<td><div class="row-flex" style="gap:6px; flex-wrap:wrap;">'+
+          '<button class="btn btn-primary btn-sm receberBtn" data-ids="'+g.ids.join(',')+'" data-method="pix">Quitar restante via Pix</button>'+
+          '<button class="btn btn-ghost btn-sm receberBtn" data-ids="'+g.ids.join(',')+'" data-method="dinheiro">Quitar restante em Dinheiro</button>'+
+          comprovanteHtml+
+        '</div></td>'+
+        '</tr>';
+    }).join('');
+    var totFalta = groups.reduce(function(a,g){ return a+g.falta; },0);
+    var tf = document.querySelector('#tblReceber tfoot');
+    tf.innerHTML = groups.length ? ('<tr class="footfoot"><td colspan="5">Total ainda pendente ('+fmtInt(groups.length)+')</td><td class="num-cell">'+fmtMoney(totFalta)+'</td><td colspan="4"></td></tr>') : '';
+    document.getElementById('receberCount').textContent = groups.length ? fmtInt(groups.length)+' venda(s) pendente(s)' : '';
+    var badge = document.getElementById('tabBadgeReceber');
+    badge.textContent = fmtInt(groups.length);
+    badge.hidden = groups.length===0;
+  }
+
+  document.querySelector('#tblReceber tbody').addEventListener('click', function(e){
+    var btn = e.target.closest('.receberBtn'); if(!btn) return;
+    var ids = btn.getAttribute('data-ids').split(',');
+    var method = btn.getAttribute('data-method');
+    var row = btn.closest('tr');
+    Array.prototype.forEach.call(row.querySelectorAll('.receberBtn'), function(b){ b.disabled = true; });
+    var chain = Promise.resolve();
+    ids.forEach(function(id){
+      chain = chain.then(function(){
+        var s = state.sales.find(function(x){ return x.id===id; });
+        var itemTotal = s ? Number(s.total)||0 : 0;
+        return apiPost('updateSale', { payment_method: method, paid_amount: itemTotal, received_at: new Date().toISOString() }, id);
+      });
+    });
+    chain.then(function(){
+      showToast('Venda quitada ('+(method==='pix'?'Pix':'Dinheiro')+').');
+      return refreshAll(false);
+    }).catch(function(err){
+      showToast('Não foi possível confirmar o recebimento (' + err.message + ').', true);
+      Array.prototype.forEach.call(row.querySelectorAll('.receberBtn'), function(b){ b.disabled = false; });
+    });
+  });
+
+  // "anexar comprovante" na aba A receber: o botão da linha só guarda QUAIS vendas
+  // vão receber o comprovante e abre o seletor de arquivo fixo (#receberFileInput),
+  // que fica fora da tabela e por isso sobrevive às atualizações automáticas.
+  var receberPendingIds = null;   // ids da linha cujo seletor está aberto
+  var receberUploadKey = '';      // linha que está enviando agora (mostra "enviando…")
+  var receberFileInput = document.getElementById('receberFileInput');
+
+  document.querySelector('#tblReceber tbody').addEventListener('click', function(e){
+    var btn = e.target.closest('.receberAnexarBtn'); if(!btn) return;
+    if(receberUploadKey){ showToast('Aguarde o envio do comprovante anterior terminar.', true); return; }
+    receberPendingIds = btn.getAttribute('data-ids');
+    receberFileInput.value = '';
+    receberFileInput.click();
+  });
+
+  receberFileInput.addEventListener('change', function(){
+    var file = receberFileInput.files && receberFileInput.files[0];
+    var key = receberPendingIds;
+    if(!file || !key) return;
+    var ids = key.split(',');
+    receberUploadKey = key;
+    renderReceber();
+    showToast('Enviando comprovante…');
+    uploadReceiptIfAny(file).then(function(url){
+      if(!url) return;
+      var chain = Promise.resolve();
+      ids.forEach(function(id){
+        chain = chain.then(function(){ return apiPost('updateSale', { comprovante_url: url }, id, { timeoutMs: 60000 }); });
+      });
+      return chain;
+    }).then(function(){
+      receberUploadKey = ''; receberPendingIds = null;
+      showToast('Comprovante anexado.');
+      return refreshAll(false);
+    }).catch(function(err){
+      receberUploadKey = ''; receberPendingIds = null;
+      renderReceber();
+      showToast('Não foi possível anexar o comprovante: ' + err.message, true);
+    });
+  });
+
+  /* ---------- render: CLIENTES ---------- */
+  function customerStats(c){
+    var itens=0, total=0, pago=0, deve=0;
+    // Compara como texto (e sem espaços sobrando): o Google Sheets às vezes
+    // guarda um customer_id como número (ex.: 12 em vez de "12") quando a
+    // coluna está com formato "Automático", mesmo a gente tendo enviado uma
+    // string — comparar com === direto perderia essas vendas na conta do
+    // cliente. String(...) dos dois lados resolve isso.
+    var cid = String(c.id==null?'':c.id).trim();
+    state.sales.forEach(function(s){
+      if(String(s.customer_id==null?'':s.customer_id).trim()===cid && cid!==''){
+        itens += Number(s.qty)||0;
+        total += Number(s.total)||0;
+        pago += paidAmountOf(s);
+        if(isPending(s)) deve += pendingAmountOf(s);
+      }
+    });
+    return { itens:itens, total:total, pago:pago, deve:deve };
+  }
+  function renderClientes(){
+    var semConexao = !!state.customersError;
+    document.getElementById('clientesSemConexao').hidden = !semConexao;
+    if(semConexao){
+      document.getElementById('emptyClientes').hidden = true;
+      document.querySelector('#tblClientes tbody').innerHTML = '';
+      document.getElementById('clientesCount').textContent = '';
+      return;
+    }
+    var busca = document.getElementById('fCliente').value.trim().toLowerCase();
+    var list = state.customers.filter(function(c){
+      if(!busca) return true;
+      return String(c.name||'').toLowerCase().indexOf(busca)>-1 || String(c.id||'').toLowerCase().indexOf(busca)>-1;
+    }).sort(function(a,b){ return String(a.name).localeCompare(String(b.name), 'pt-BR'); });
+    document.getElementById('emptyClientes').hidden = list.length>0;
+    var tb = document.querySelector('#tblClientes tbody');
+    tb.innerHTML = list.map(function(c){
+      var st = customerStats(c);
+      return '<tr>'+
+        '<td>'+escapeHtml(c.id)+'</td>'+
+        '<td>'+escapeHtml(c.name)+'</td>'+
+        '<td class="num-cell">'+fmtInt(st.itens)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(st.total)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(st.pago)+'</td>'+
+        '<td class="num-cell">'+(st.deve>0 ? '<span class="status-pill pending">'+fmtMoney(st.deve)+'</span>' : fmtMoney(0))+'</td>'+
+        '</tr>';
+    }).join('');
+    document.getElementById('clientesCount').textContent = state.customers.length ? fmtInt(list.length)+' de '+fmtInt(state.customers.length)+' cliente(s)' : '';
+  }
+  document.getElementById('fCliente').addEventListener('input', renderClientes);
+
+  /* ---------- master render ---------- */
+  function renderAll(){
+    renderPainel();
+    renderEstoque();
+    renderVendas();
+    renderBrindes();
+    renderReceber();
+    renderClientes();
+    var sel = document.getElementById('vProduto');
+    populateProdutoSelect(sel, sel.value);
+    populateClienteDatalist();
+    updateVendaTotal();
+    renderFeedVender();
+  }
+
+  /* ---------- connection status ---------- */
+  function setConn(status){
+    var dot = document.getElementById('connDot'), label = document.getElementById('connLabel');
+    dot.className = 'conn-dot ' + (status==='on'?'on':(status==='off'?'off':(status==='reconnecting'?'reconnecting':'')));
+    label.textContent = status==='on' ? 'Sincronizado' : (status==='off' ? 'Sem conexão com a planilha' : (status==='reconnecting' ? 'Reconectando…' : 'Conectando…'));
+  }
+
+  /* ---------- sync with the Apps Script backend ---------- */
+  // No realtime push here (it's a plain HTTP API over a spreadsheet), so we
+  // poll periodically, refresh right after every write, refresh when the
+  // tab regains focus, and offer a manual "Atualizar" button.
+  function refreshAll(showFeedback){
+    return apiGet().then(function(res){
+      if(!res.ok) throw new Error(res.error || 'Erro desconhecido');
+      state.products = res.products || [];
+      state.sales = res.sales || [];
+      state.movements = res.movements || [];
+      state.customers = res.customers || [];
+      state.customersError = res.customers_error || '';
+      apiOk = true;
+      setConn('on');
+      renderAll();
+      if(showFeedback) showToast('Dados atualizados.');
+    }).catch(function(err){
+      apiOk = false;
+      setConn('off');
+      if(showFeedback) showToast('Não foi possível atualizar agora (' + err.message + ').', true);
+    });
+  }
+
+  document.getElementById('btnRefresh').addEventListener('click', function(){ refreshAll(true); });
+
+  // Avisa quem abriu o link dentro do WhatsApp/Instagram/Facebook: o navegador
+  // embutido desses apps costuma falhar ao escolher e enviar arquivos.
+  function checkInAppBrowser(){
+    var ua = navigator.userAgent || '';
+    var name = /WhatsApp/i.test(ua) ? 'WhatsApp' : /Instagram/i.test(ua) ? 'Instagram'
+      : /FBAN|FBAV|FB_IAB/i.test(ua) ? 'Facebook' : /\bwv\)/.test(ua) ? 'app' : '';
+    if(!name) return;
+    try{ if(sessionStorage.getItem('gda_inapp_ok')) return; }catch(e){}
+    document.getElementById('inappName').textContent = name;
+    document.getElementById('inappBanner').hidden = false;
+    document.getElementById('inappClose').addEventListener('click', function(){
+      document.getElementById('inappBanner').hidden = true;
+      try{ sessionStorage.setItem('gda_inapp_ok','1'); }catch(e){}
+    });
+  }
+
+  function init(){
+    checkInAppBrowser();
+    if(!API_URL || API_URL.indexOf('COLE_AQUI')>-1){
+      document.getElementById('setupOverlay').hidden = false;
+      setConn('off');
+      return;
+    }
+    document.getElementById('vData').value = todayISO();
+    renderAll();
+    refreshAll(false);
+    setInterval(function(){ refreshAll(false); }, 20000);
+    document.addEventListener('visibilitychange', function(){
+      if(document.visibilityState==='visible'){ refreshAll(false); }
+    });
+  }
+
+  // Só abre para a diretoria (login do /admin).
+  window.gdaAdmin.exigir(function(){ init(); });
+})();
+</script>
+</body>
+</html>

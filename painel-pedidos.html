@@ -1,62 +1,55 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Painel de Pedidos — Camisa Oficial GDA</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-  body{margin:0;background:#14110F;}
+  body{margin:0;background:var(--g-bg);}
   a{text-decoration:none;}
   a:hover{opacity:0.85;}
   button{cursor:pointer;}
 </style>
+<meta name="theme-color" content="#14110F">
+<link rel="stylesheet" href="/css/gda-admin.css">
+<script src="/js/gda-admin.js"></script>
 </head>
 <body>
-<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: var(--g-bg); font-family: 'Manrope', sans-serif;">
 
-  <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
-    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
-      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: auto; display: block;">
-    </a>
-    <div style="display: flex; align-items: center; gap: 20px;">
-      <a href="painel-cadastros.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Painel de cadastros</a>
-      <a href="painel-adesivos.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Adesivos de reposição</a>
-      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Área restrita</span>
-      <button id="btn-logout" type="button" style="padding: 8px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Sair</button>
-    </div>
-  </header>
+<div id="gda-admin-bar" data-pagina="pedidos"></div>
 
   <section style="padding: 60px 40px; box-sizing: border-box; flex: 1;">
     <div style="max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
-        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: #F5F1EA;">Pedidos — Camisa Oficial GDA (3ª remessa)</h1>
-        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos com Pix não pago ficam como “Aguardando Pix” (no parcelado, o Pix é da entrada de 50%): use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho. No parcelado, depois da entrada o pedido fica como “Entrada paga ✓” até você marcar a 2ª parcela como recebida.</p>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-am-txt);">Painel administrativo</span>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: var(--g-txt);">Pedidos — Camisa Oficial GDA (3ª remessa)</h1>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: var(--g-txt3);">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos com Pix não pago ficam como “Aguardando Pix” (no parcelado, o Pix é da entrada de 50%): use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho. No parcelado, depois da entrada o pedido fica como “Entrada paga ✓” até você marcar a 2ª parcela como recebida.</p>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 14px 18px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 14px;">
+      <div style="display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 14px 18px; background: var(--g-card); border: 1px solid rgba(var(--g-ink-rgb),0.08); border-radius: 14px;">
         <div style="display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 240px;">
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">GDA Vendas</span>
-          <span id="sync-resumo" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">Pedidos pagos e entradas pagas entram como venda no GDA Vendas (camisa e balaclava separadas).</span>
+          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: var(--g-txt);">GDA Vendas</span>
+          <span id="sync-resumo" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: var(--g-txt3);">Pedidos pagos e entradas pagas entram como venda no GDA Vendas (camisa e balaclava separadas).</span>
         </div>
-        <button id="btn-sync" type="button" style="padding: 11px 20px; border-radius: 999px; background: #FFDB00; color: #14110F; border: none; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">Lançar vendas no GDA Vendas</button>
+        <button id="btn-sync" type="button" style="padding: 11px 20px; border-radius: 999px; background: var(--g-am); color: var(--g-on-am); border: none; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">Lançar vendas no GDA Vendas</button>
       </div>
 
-      <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando pedidos…</div>
+      <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--g-txt3);">Carregando pedidos…</div>
 
-      <div id="tabela-wrap" style="background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px; overflow-x: auto; display: none;">
+      <div id="tabela-wrap" style="background: var(--g-card); border: 1px solid rgba(var(--g-ink-rgb),0.08); border-radius: 16px; overflow-x: auto; display: none;">
         <div style="min-width: 1080px;">
-        <div style="display: grid; grid-template-columns: 1.2fr 0.5fr 1fr 1fr 0.55fr 0.6fr 0.8fr 1.3fr; gap: 12px; padding: 14px 22px; background: #171310; border-bottom: 1px solid rgba(245,241,234,0.08);">
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Nome</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Piloto</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">WhatsApp</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Item</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Camisas</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Balaclavas</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Pagamento</span>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Situação</span>
+        <div style="display: grid; grid-template-columns: 1.2fr 0.5fr 1fr 1fr 0.55fr 0.6fr 0.8fr 1.3fr; gap: 12px; padding: 14px 22px; background: var(--g-campo); border-bottom: 1px solid rgba(var(--g-ink-rgb),0.08);">
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Nome</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Piloto</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">WhatsApp</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Item</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Camisas</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Balaclavas</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Pagamento</span>
+          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Situação</span>
         </div>
         <div id="linhas-container"></div>
         </div>
@@ -68,7 +61,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
-<script src="js/auth-guard.js"></script>
 <script>
 (function () {
   'use strict';
@@ -129,37 +121,37 @@
     return '<span style="display: inline-block; width: fit-content; padding: 4px 10px; border-radius: 999px; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px; color: ' + cor + '; background: ' + fundo + ';">' + texto + '</span>';
   }
   function marcarPagoBtn(p, texto) {
-    return '<button type="button" data-marcar-pago="' + escapeHtml(String(p.id)) + '" data-texto="' + escapeHtml(texto) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(127,217,154,0.5); color: #7FD99A;">' + escapeHtml(texto) + '</button>';
+    return '<button type="button" data-marcar-pago="' + escapeHtml(String(p.id)) + '" data-texto="' + escapeHtml(texto) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(var(--g-ok-rgb),0.5); color: var(--g-ok);">' + escapeHtml(texto) + '</button>';
   }
 
   // Excluir: só para pedidos que ainda aguardam pagamento (status "pendente").
   function excluirBtn(p) {
     if (p.status !== 'pendente') return '';
-    return '<button type="button" data-excluir="' + escapeHtml(String(p.id)) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(232,128,111,0.5); color: #E8806F;">Excluir pedido</button>';
+    return '<button type="button" data-excluir="' + escapeHtml(String(p.id)) + '" style="' + BTN + 'background: transparent; border: 1px solid rgba(var(--g-erro2-rgb),0.5); color: var(--g-erro2);">Excluir pedido</button>';
   }
 
   function gdaVendasHtml(p) {
     if (p.status !== 'pago' && p.status !== 'entrada_paga') return '';
     var ok = p.gda_vendas_status === p.status;
-    return '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: ' + (ok ? '#7A7369' : '#E8806F') + ';">' +
+    return '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: ' + (ok ? 'var(--g-txt-mute)' : 'var(--g-erro2)') + ';">' +
       (ok ? 'Lançado no GDA Vendas ✓' : 'Ainda não lançado no GDA Vendas') + '</span>';
   }
 
   function situacaoHtml(p) {
     var total = totalPedido(p);
     var metade = total / 2;
-    if (p.status === 'pago') return '<div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">' + badge('Pago ✓', '#7FD99A', 'rgba(127,217,154,0.12)') + gdaVendasHtml(p) + '</div>';
-    if (p.status === 'cancelado') return badge('Cancelado', '#A89C8E', 'rgba(168,156,142,0.14)');
+    if (p.status === 'pago') return '<div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">' + badge('Pago ✓', 'var(--g-ok)', 'rgba(var(--g-ok-rgb),0.12)') + gdaVendasHtml(p) + '</div>';
+    if (p.status === 'cancelado') return badge('Cancelado', 'var(--g-txt3)', 'rgba(var(--g-mute-rgb),0.14)');
     if (p.status === 'entrada_paga') {
       var wa2 = waLink(p.whatsapp);
       var msg2 = 'Olá! Sua entrada da Camisa Oficial GDA já está confirmada. Falta a 2ª parcela de ' + brl(metade) + ', com prazo até 22/10. Como prefere pagar?';
       var cobrar = wa2
-        ? '<a href="' + wa2 + '?text=' + encodeURIComponent(msg2) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Cobrar 2ª parcela no WhatsApp</a>'
+        ? '<a href="' + wa2 + '?text=' + encodeURIComponent(msg2) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(var(--g-am-rgb),0.5); color: var(--g-am-txt);">Cobrar 2ª parcela no WhatsApp</a>'
         : '';
       return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
-        badge('Entrada paga ✓', '#7FD99A', 'rgba(127,217,154,0.12)') +
+        badge('Entrada paga ✓', 'var(--g-ok)', 'rgba(var(--g-ok-rgb),0.12)') +
         gdaVendasHtml(p) +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #D8D2C7;">Falta a 2ª parcela: ' + brl(metade) + '</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: var(--g-txt2);">Falta a 2ª parcela: ' + brl(metade) + '</span>' +
         marcarPagoBtn(p, 'Marcar 2ª parcela como paga') +
         cobrar +
         '</div>';
@@ -170,56 +162,56 @@
       var parc = p.forma_pagamento === 'parcelado';
       var msg = 'Olá! Seu pedido da Camisa Oficial GDA está aguardando o pagamento' + (parc ? ' da entrada (' + brl(metade) + ')' : '') + '. Para pagar com Pix, é só abrir este link: ' + link;
       var lembrar = wa
-        ? '<a href="' + wa + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(255,219,0,0.5); color: #FFDB00;">Lembrar no WhatsApp</a>'
+        ? '<a href="' + wa + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(var(--g-am-rgb),0.5); color: var(--g-am-txt);">Lembrar no WhatsApp</a>'
         : '';
       return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
-        badge(parc ? 'Aguardando Pix (entrada)' : 'Aguardando Pix', '#FFDB00', 'rgba(255,219,0,0.12)') +
-        '<button type="button" data-copiar-link="' + escapeHtml(link) + '" style="' + BTN + 'background: #FFDB00; color: #14110F; border: none;">Copiar link de pagamento</button>' +
+        badge(parc ? 'Aguardando Pix (entrada)' : 'Aguardando Pix', 'var(--g-am-txt)', 'rgba(var(--g-am-rgb),0.12)') +
+        '<button type="button" data-copiar-link="' + escapeHtml(link) + '" style="' + BTN + 'background: var(--g-am); color: var(--g-on-am); border: none;">Copiar link de pagamento</button>' +
         lembrar +
         excluirBtn(p) +
         '</div>';
     }
     if (p.status === 'pendente') {
       return '<div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">' +
-        badge('Pendente (combinar no WhatsApp)', '#D8D2C7', 'rgba(216,210,199,0.10)') +
+        badge('Pendente (combinar no WhatsApp)', 'var(--g-txt2)', 'rgba(var(--g-txt2-rgb),0.10)') +
         marcarPagoBtn(p, 'Marcar como pago') +
         excluirBtn(p) +
         '</div>';
     }
-    return badge(escapeHtml(p.status || '—'), '#D8D2C7', 'rgba(216,210,199,0.10)');
+    return badge(escapeHtml(p.status || '—'), 'var(--g-txt2)', 'rgba(var(--g-txt2-rgb),0.10)');
   }
 
   function pagamentoHtml(p) {
     var total = totalPedido(p);
     if (p.forma_pagamento === 'parcelado') {
-      return 'Parcelado<br><span style="font-size: 12px; color: #A89C8E;">entrada ' + brl(total / 2) + ' + ' + brl(total / 2) + '</span>';
+      return 'Parcelado<br><span style="font-size: 12px; color: var(--g-txt3);">entrada ' + brl(total / 2) + ' + ' + brl(total / 2) + '</span>';
     }
     var base = pagamentoLabel[p.forma_pagamento] || escapeHtml(p.forma_pagamento);
-    return base + (total > 0 ? '<br><span style="font-size: 12px; color: #A89C8E;">' + brl(total) + '</span>' : '');
+    return base + (total > 0 ? '<br><span style="font-size: 12px; color: var(--g-txt3);">' + brl(total) + '</span>' : '');
   }
 
   function qtdHtml(n) {
     n = Number(n) || 0;
-    return '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 17px; color: ' + (n > 0 ? '#F5F1EA' : '#56504A') + ';">' + n + '</span>';
+    return '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 17px; color: ' + (n > 0 ? 'var(--g-txt)' : 'var(--g-txt5)') + ';">' + n + '</span>';
   }
 
   function linhaHtml(p) {
     var nome = p.identificacao || '—';
-    var estampa = p.nome_estampa ? '<br><span style="font-size: 12px; color: #A89C8E;">Estampa: ' + escapeHtml(p.nome_estampa) + '</span>' : '';
+    var estampa = p.nome_estampa ? '<br><span style="font-size: 12px; color: var(--g-txt3);">Estampa: ' + escapeHtml(p.nome_estampa) + '</span>' : '';
     var link = waLink(p.whatsapp);
     var waHtml = link
-      ? '<a href="' + link + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-family: \'Manrope\', sans-serif; font-size: 14px; font-weight: 600; color: #FFDB00;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + escapeHtml(p.whatsapp) + '</a>'
-      : '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #6B655C;">—</span>';
+      ? '<a href="' + link + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-family: \'Manrope\', sans-serif; font-size: 14px; font-weight: 600; color: var(--g-am-txt);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + escapeHtml(p.whatsapp) + '</a>'
+      : '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: var(--g-txt4);">—</span>';
 
     return (
-      '<div style="display: grid; grid-template-columns: 1.2fr 0.5fr 1fr 1fr 0.55fr 0.6fr 0.8fr 1.3fr; gap: 12px; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(245,241,234,0.06);">' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + escapeHtml(nome) + estampa + '</span>' +
-        '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 16px; color: #FFDB00;">' + (p.piloto ? escapeHtml(p.piloto) : '<span style="color: #56504A;">—</span>') + '</span>' +
+      '<div style="display: grid; grid-template-columns: 1.2fr 0.5fr 1fr 1fr 0.55fr 0.6fr 0.8fr 1.3fr; gap: 12px; align-items: center; padding: 16px 22px; border-top: 1px solid rgba(var(--g-ink-rgb),0.06);">' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: var(--g-txt2);">' + escapeHtml(nome) + estampa + '</span>' +
+        '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 16px; color: var(--g-am-txt);">' + (p.piloto ? escapeHtml(p.piloto) : '<span style="color: var(--g-txt5);">—</span>') + '</span>' +
         waHtml +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + itemHtml(p) + '</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: var(--g-txt2);">' + itemHtml(p) + '</span>' +
         qtdHtml(p.quantidade_camisa) +
         qtdHtml(p.quantidade_balaclava) +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #D8D2C7;">' + pagamentoHtml(p) + '</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: var(--g-txt2);">' + pagamentoHtml(p) + '</span>' +
         situacaoHtml(p) +
       '</div>'
     );
@@ -365,7 +357,7 @@
     el.textContent = faltam
       ? (faltam + ' de ' + pagos.length + ' pedido(s) pago(s) ainda não lançado(s) no GDA Vendas.')
       : ('Todos os ' + pagos.length + ' pedido(s) pago(s) já estão no GDA Vendas ✓');
-    el.style.color = faltam ? '#FFDB00' : '#7FD99A';
+    el.style.color = faltam ? 'var(--g-am-txt)' : 'var(--g-ok)';
   }
 
   // Chama a função do Supabase (verificar-pix) que manda os pedidos para o GDA Vendas.
@@ -397,7 +389,7 @@
     });
   });
 
-  window.gdaRequireAuth(function () {
+  window.gdaAdmin.exigir(function () {
     // Cancela pedidos à vista com Pix que ninguém pagou em 48 h (se a função ainda não existir no banco, ignora).
     var limpeza = window.gdaSupabase.rpc('cancelar_pedidos_pix_antigos', { p_horas: 48 });
     Promise.resolve(limpeza).catch(function () {}).then(function () { carregarPedidos(); });

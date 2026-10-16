@@ -1,81 +1,68 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Painel de Cadastros — Equipe GDA</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-  body{margin:0;background:#14110F;}
+  body{margin:0;background:var(--g-bg);}
   a{text-decoration:none;}
   a:hover{opacity:0.85;}
   button{cursor:pointer;}
-  /* links dos painéis: cada um com sua cor, todas claras para destacar no fundo escuro */
-  .gda-nav{display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;color:var(--cor);background:var(--fundo);border:1px solid var(--borda);white-space:nowrap;}
-  .gda-nav:hover{opacity:1;filter:brightness(1.15);}
-  .gda-nav.atual{background:var(--cor);color:#14110F;border-color:var(--cor);}
-  @media (max-width:760px){ header{flex-wrap:wrap;padding:14px 16px !important;} }
   /* ---- cadastro manual ---- */
   [hidden]{display:none !important;}
   .cm-fundo{position:fixed;inset:0;z-index:80;background:rgba(10,8,6,.8);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 14px;}
   .cm-fundo.aberto{display:flex;}
-  .cm{width:100%;max-width:680px;background:#1A1512;border:1px solid rgba(245,241,234,0.12);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:16px;font-family:'Manrope',sans-serif;color:#F5F1EA;}
+  .cm{width:100%;max-width:680px;background:var(--g-bg2);border:1px solid rgba(var(--g-ink-rgb),0.12);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:16px;font-family:'Manrope',sans-serif;color:var(--g-txt);}
   .cm h2{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:24px;}
-  .cm .sec{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FFDB00;margin-top:6px;}
+  .cm .sec{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g-am-txt);margin-top:6px;}
   .cm .grade{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .cm .inteira{grid-column:1/-1;}
-  .cm label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:#D8D2C7;}
-  .cm input,.cm select{font-family:'Manrope',sans-serif;font-size:15px;color:#F5F1EA;background:#171310;border:1px solid rgba(245,241,234,0.16);border-radius:10px;padding:11px 13px;outline:none;width:100%;box-sizing:border-box;}
-  .cm input:focus,.cm select:focus{border-color:#FFDB00;}
-  .cm .dica{font-size:12px;color:#7A7369;font-weight:500;line-height:1.5;}
-  .cm .erro{color:#FF8A7A;font-size:13px;font-weight:700;line-height:1.5;}
-  .cm .ok{color:#7FD99A;font-size:13px;font-weight:700;}
+  .cm label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--g-txt2);}
+  .cm input,.cm select{font-family:'Manrope',sans-serif;font-size:15px;color:var(--g-txt);background:var(--g-campo);border:1px solid rgba(var(--g-ink-rgb),0.16);border-radius:10px;padding:11px 13px;outline:none;width:100%;box-sizing:border-box;}
+  .cm input:focus,.cm select:focus{border-color:var(--g-am);}
+  .cm .dica{font-size:12px;color:var(--g-txt-mute);font-weight:500;line-height:1.5;}
+  .cm .erro{color:var(--g-erro);font-size:13px;font-weight:700;line-height:1.5;}
+  .cm .ok{color:var(--g-ok);font-size:13px;font-weight:700;}
   .cm .check{flex-direction:row;align-items:center;gap:10px;}
-  .cm .check input{width:18px;height:18px;accent-color:#FFDB00;}
+  .cm .check input{width:18px;height:18px;accent-color:var(--g-am-txt);}
   .cm .acoes{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
-  .cm .b1{padding:13px 24px;border-radius:999px;border:none;background:#FFDB00;color:#14110F;font-weight:800;font-size:14px;font-family:'Manrope',sans-serif;cursor:pointer;}
-  .cm .b2{padding:13px 22px;border-radius:999px;background:transparent;border:1px solid rgba(245,241,234,0.18);color:#D8D2C7;font-weight:600;font-size:14px;font-family:'Manrope',sans-serif;cursor:pointer;}
+  .cm .b1{padding:13px 24px;border-radius:999px;border:none;background:var(--g-am);color:var(--g-on-am);font-weight:800;font-size:14px;font-family:'Manrope',sans-serif;cursor:pointer;}
+  .cm .b2{padding:13px 22px;border-radius:999px;background:transparent;border:1px solid rgba(var(--g-ink-rgb),0.18);color:var(--g-txt2);font-weight:600;font-size:14px;font-family:'Manrope',sans-serif;cursor:pointer;}
   .cm .b1:disabled{opacity:.55;cursor:default;}
-  .cm .doc{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#171310;border:1px dashed rgba(245,241,234,0.2);border-radius:12px;font-size:13px;color:#A89C8E;}
+  .cm .doc{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--g-campo);border:1px dashed rgba(var(--g-ink-rgb),0.2);border-radius:12px;font-size:13px;color:var(--g-txt3);}
   .cm .doc img{width:64px;height:64px;object-fit:cover;border-radius:8px;}
   @media (max-width:600px){ .cm .grade{grid-template-columns:1fr;} }
 </style>
+<meta name="theme-color" content="#14110F">
+<link rel="stylesheet" href="/css/gda-admin.css">
+<script src="/js/gda-admin.js"></script>
 </head>
 <body>
-<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: var(--g-bg); font-family: 'Manrope', sans-serif;">
 
-  <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
-    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
-      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: auto; display: block;">
-    </a>
-    <nav style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
-      <a href="credenciamento.html?previa=1" target="_blank" rel="noopener" class="gda-nav" style="--cor: #FFDB00; --fundo: rgba(255,219,0,0.12); --borda: rgba(255,219,0,0.40);">Prévia do credenciamento</a>
-      <a href="painel-pedidos.html" class="gda-nav" style="--cor: #7FD99A; --fundo: rgba(127,217,154,0.12); --borda: rgba(127,217,154,0.40);">Painel de pedidos</a>
-      <a href="painel-adesivos.html" class="gda-nav" style="--cor: #7CC4FF; --fundo: rgba(124,196,255,0.12); --borda: rgba(124,196,255,0.40);">Adesivos de reposição</a>
-      <a href="pilotos-admin.html" class="gda-nav" style="--cor: #FF9E8A; --fundo: rgba(255,158,138,0.12); --borda: rgba(255,158,138,0.40);">Pilotos</a>
-      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B655C;">Área restrita</span>
-      <button id="btn-logout" type="button" style="padding: 8px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 12px;">Sair</button>
-    </nav>
-  </header>
+<div id="gda-admin-bar" data-pagina="recrutamento"></div>
 
   <section style="padding: 60px 40px; box-sizing: border-box; flex: 1;">
     <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Painel administrativo</span>
-        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: #F5F1EA;">Cadastros de novos membros</h1>
-        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Toda vez que alguém termina o cadastro (Passo 1 e Passo 2), o card aparece aqui pra revisão. Clique em Aprovar ou Recusar depois de conferir os dados; o WhatsApp da pessoa já abre pronto pra você confirmar direto com ela.</p>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-am-txt);">Painel administrativo</span>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: var(--g-txt);">Cadastros de novos membros</h1>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: var(--g-txt3);">Toda vez que alguém termina o cadastro (Passo 1 e Passo 2), o card aparece aqui pra revisão. Clique em Aprovar ou Recusar depois de conferir os dados; o WhatsApp da pessoa já abre pronto pra você confirmar direto com ela.</p>
       </div>
 
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button data-filtro="pendente" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Pendentes</button>
-        <button data-filtro="aprovado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Aprovados</button>
-        <button data-filtro="recusado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Recusados</button>
-        <button data-filtro="incompletos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Credenciamento incompleto</button>
-        <button data-filtro="todos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Todos</button>
-        <button id="btn-cad-manual" type="button" style="margin-left: auto; padding: 8px 18px; border-radius: 999px; border: none; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">+ Novo cadastro manual</button>
+        <button data-filtro="pendente" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Pendentes</button>
+        <button data-filtro="aprovado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Aprovados</button>
+        <button data-filtro="recusado" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Recusados</button>
+        <button data-filtro="incompletos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Credenciamento incompleto</button>
+        <button data-filtro="todos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Todos</button>
+        <button id="btn-cad-manual" type="button" style="margin-left: auto; padding: 8px 18px; border-radius: 999px; border: none; background: var(--g-am); color: var(--g-on-am); font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">+ Novo cadastro manual</button>
       </div>
 
-      <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: #A89C8E;">Carregando cadastros…</div>
+      <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--g-txt3);">Carregando cadastros…</div>
 
       <div id="cards-container" style="display: flex; flex-direction: column; gap: 20px;"></div>
     </div>
@@ -156,15 +143,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
-<script src="js/auth-guard.js"></script>
 <script>
 (function () {
   'use strict';
 
   var statusMap = {
-    pendente: { label: 'Pendente', bg: 'rgba(255,219,0,0.14)', color: '#FFDB00' },
-    aprovado: { label: 'Aprovado', bg: 'rgba(90,200,120,0.14)', color: '#5AC878' },
-    recusado: { label: 'Recusado', bg: 'rgba(220,90,90,0.14)', color: '#DC5A5A' }
+    pendente: { label: 'Pendente', bg: 'rgba(var(--g-am-rgb),0.14)', color: 'var(--g-am-txt)' },
+    aprovado: { label: 'Aprovado', bg: 'rgba(var(--g-ok2-rgb),0.14)', color: 'var(--g-ok2)' },
+    recusado: { label: 'Recusado', bg: 'rgba(var(--g-erro3-rgb),0.14)', color: 'var(--g-erro3)' }
   };
 
   var simNaoLabel = function (v) { return v === 'sim' ? 'Sim' : (v === 'nao' ? 'Não' : null); };
@@ -222,25 +208,25 @@
     if (c.status !== 'aprovado') return '';
     var conteudo;
     if (!aceitesPorCadastro) {
-      conteudo = '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #6B655C;">Não foi possível consultar os aceites.</span>';
+      conteudo = '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: var(--g-txt4);">Não foi possível consultar os aceites.</span>';
     } else {
       var meus = aceitesPorCadastro[String(c.id)] || {};
       conteudo = GRUPOS_REGRAS.map(function (g) {
         var quando = meus[g[0]];
         if (g[0] === 'instagram') {
-          if (!quando) return badgeAdesivo('Instagram — não confirmou', '#A89C8E', 'rgba(168,156,142,0.14)');
+          if (!quando) return badgeAdesivo('Instagram — não confirmou', 'var(--g-txt3)', 'rgba(var(--g-mute-rgb),0.14)');
           var u = meus.instagramUsuario ? String(meus.instagramUsuario) : '';
           return u
-            ? '<a href="https://www.instagram.com/' + encodeURIComponent(u) + '/" target="_blank" rel="noopener" style="padding: 5px 12px; border-radius: 999px; background: rgba(90,200,120,0.14); color: #5AC878; font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; text-decoration: underline;">Instagram ✓ @' + escapeHtml(u) + '</a>'
-            : badgeAdesivo('Instagram ✓', '#5AC878', 'rgba(90,200,120,0.14)');
+            ? '<a href="https://www.instagram.com/' + encodeURIComponent(u) + '/" target="_blank" rel="noopener" style="padding: 5px 12px; border-radius: 999px; background: rgba(var(--g-ok2-rgb),0.14); color: var(--g-ok2); font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; text-decoration: underline;">Instagram ✓ @' + escapeHtml(u) + '</a>'
+            : badgeAdesivo('Instagram ✓', 'var(--g-ok2)', 'rgba(var(--g-ok2-rgb),0.14)');
         }
         return quando
-          ? badgeAdesivo(g[1] + ' ✓ ' + dataHoraCurta(quando), '#5AC878', 'rgba(90,200,120,0.14)')
-          : badgeAdesivo(g[1] + ' — não aceitou', '#A89C8E', 'rgba(168,156,142,0.14)');
+          ? badgeAdesivo(g[1] + ' ✓ ' + dataHoraCurta(quando), 'var(--g-ok2)', 'rgba(var(--g-ok2-rgb),0.14)')
+          : badgeAdesivo(g[1] + ' — não aceitou', 'var(--g-txt3)', 'rgba(var(--g-mute-rgb),0.14)');
       }).join('');
     }
     return '<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">' +
-      '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Instagram e regras dos grupos</span>' +
+      '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Instagram e regras dos grupos</span>' +
       '<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">' + conteudo + '</div>' +
     '</div>';
   }
@@ -299,18 +285,18 @@
     if (c.status !== 'aprovado') return '';
     var pend = pendencias(c);
     if (!pend.length) {
-      return '<div style="margin-top: 4px;">' + badgeAdesivo('Credenciamento completo ✓', '#5AC878', 'rgba(90,200,120,0.14)') + '</div>';
+      return '<div style="margin-top: 4px;">' + badgeAdesivo('Credenciamento completo ✓', 'var(--g-ok2)', 'rgba(var(--g-ok2-rgb),0.14)') + '</div>';
     }
     var wa = String(c.whatsapp || '').replace(/\D/g, '');
     var botao = wa
-      ? '<a href="https://wa.me/' + waDigits(c.whatsapp) + '?text=' + encodeURIComponent(mensagemLembrete(c, pend)) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 10px 18px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 800; font-size: 13px;">' +
-          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#14110F" stroke-width="2"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>Lembrar no WhatsApp</a>'
+      ? '<a href="https://wa.me/' + waDigits(c.whatsapp) + '?text=' + encodeURIComponent(mensagemLembrete(c, pend)) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 10px 18px; border-radius: 999px; background: var(--g-am); color: var(--g-on-am); font-family: \'Manrope\', sans-serif; font-weight: 800; font-size: 13px;">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>Lembrar no WhatsApp</a>'
       : '';
-    return '<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(245,241,234,0.08);">' +
-      '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #FFDB00;">Falta concluir</span>' +
-      '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' + pend.map(function (p) { return badgeAdesivo(p.curto, '#FFDB00', 'rgba(255,219,0,0.12)'); }).join('') + '</div>' +
+    return '<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(var(--g-ink-rgb),0.08);">' +
+      '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-am-txt);">Falta concluir</span>' +
+      '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' + pend.map(function (p) { return badgeAdesivo(p.curto, 'var(--g-am-txt)', 'rgba(var(--g-am-rgb),0.12)'); }).join('') + '</div>' +
       '<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">' + botao +
-        '<button type="button" data-copiar-cred="' + escapeHtml(linkCredenciamento(c)) + '" style="padding: 9px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.2); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px;">Copiar link do credenciamento</button>' +
+        '<button type="button" data-copiar-cred="' + escapeHtml(linkCredenciamento(c)) + '" style="padding: 9px 16px; border-radius: 999px; background: transparent; border: 1px solid rgba(var(--g-ink-rgb),0.2); color: var(--g-txt2); font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 12px;">Copiar link do credenciamento</button>' +
       '</div>' +
     '</div>';
   }
@@ -320,27 +306,27 @@
     var pago = adesivoPago(c);
     var BTN = "display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 13px; ";
     var pagamento, retirada = '';
-    if (pago === true) pagamento = badgeAdesivo('Adesivo pago ✓', '#5AC878', 'rgba(90,200,120,0.14)');
-    else if (pago === false) pagamento = badgeAdesivo('Aguardando pagamento do adesivo', '#FFDB00', 'rgba(255,219,0,0.14)');
-    else pagamento = badgeAdesivo('Pagamento: não foi possível verificar', '#A89C8E', 'rgba(168,156,142,0.14)');
+    if (pago === true) pagamento = badgeAdesivo('Adesivo pago ✓', 'var(--g-ok2)', 'rgba(var(--g-ok2-rgb),0.14)');
+    else if (pago === false) pagamento = badgeAdesivo('Aguardando pagamento do adesivo', 'var(--g-am-txt)', 'rgba(var(--g-am-rgb),0.14)');
+    else pagamento = badgeAdesivo('Pagamento: não foi possível verificar', 'var(--g-txt3)', 'rgba(var(--g-mute-rgb),0.14)');
 
     if (c.adesivo_retirado) {
       var quando = c.adesivo_retirado_em ? ' em ' + dataHoraCurta(c.adesivo_retirado_em) : '';
-      retirada = badgeAdesivo('Adesivo retirado ✓' + quando, '#5AC878', 'rgba(90,200,120,0.14)') +
-        '<button data-acao="desfazer-retirada" data-id="' + c.id + '" type="button" style="padding: 4px 8px; background: transparent; border: none; color: #7A7369; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px; text-decoration: underline;">Desfazer</button>';
+      retirada = badgeAdesivo('Adesivo retirado ✓' + quando, 'var(--g-ok2)', 'rgba(var(--g-ok2-rgb),0.14)') +
+        '<button data-acao="desfazer-retirada" data-id="' + c.id + '" type="button" style="padding: 4px 8px; background: transparent; border: none; color: var(--g-txt-mute); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 12px; text-decoration: underline;">Desfazer</button>';
     } else if (pago === true) {
-      retirada = '<button data-acao="marcar-retirado" data-id="' + c.id + '" type="button" style="' + BTN + 'background: #FFDB00; color: #14110F; border: none;">Marcar adesivo como retirado</button>';
+      retirada = '<button data-acao="marcar-retirado" data-id="' + c.id + '" type="button" style="' + BTN + 'background: var(--g-am); color: var(--g-on-am); border: none;">Marcar adesivo como retirado</button>';
     } else {
-      retirada = '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: #6B655C;">A retirada é liberada depois do pagamento.</span>';
+      retirada = '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; color: var(--g-txt4);">A retirada é liberada depois do pagamento.</span>';
     }
 
     return (
-      '<div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; background: #171310; border: 1px solid rgba(245,241,234,0.08); border-radius: 12px;">' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Credenciamento</span>' +
+      '<div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; background: var(--g-campo); border: 1px solid rgba(var(--g-ink-rgb),0.08); border-radius: 12px;">' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Credenciamento</span>' +
         '<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">' + pagamento + retirada + '</div>' +
         regrasHtml(c) +
         pendenciasHtml(c) +
-        '<span data-retirada-erro="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;"></span>' +
+        '<span data-retirada-erro="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: var(--g-erro3);"></span>' +
       '</div>'
     );
   }
@@ -402,7 +388,7 @@
   }
 
   function pill(texto) {
-    return '<span style="padding: 6px 14px; border-radius: 999px; background: #171310; border: 1px solid rgba(245,241,234,0.14); font-family: \'Manrope\', sans-serif; font-size: 13px; color: #D8D2C7;">' + texto + '</span>';
+    return '<span style="padding: 6px 14px; border-radius: 999px; background: var(--g-campo); border: 1px solid rgba(var(--g-ink-rgb),0.14); font-family: \'Manrope\', sans-serif; font-size: 13px; color: var(--g-txt2);">' + texto + '</span>';
   }
 
   function escapeHtml(s) {
@@ -440,12 +426,12 @@
     if (!nome && !whatsapp) return '';
     return (
       '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #D8D2C7;">' +
-          '<span style="color: #6B655C;">Contato ' + numero + ':</span> ' + escapeHtml(nome) +
-          (parentesco ? ' <span style="color: #6B655C;">(' + escapeHtml(parentesco) + ')</span>' : '') +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: var(--g-txt2);">' +
+          '<span style="color: var(--g-txt4);">Contato ' + numero + ':</span> ' + escapeHtml(nome) +
+          (parentesco ? ' <span style="color: var(--g-txt4);">(' + escapeHtml(parentesco) + ')</span>' : '') +
         '</span>' +
         (whatsapp
-          ? '<a href="' + waLink(whatsapp) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: #FFDB00;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + escapeHtml(whatsapp) + '</a>'
+          ? '<a href="' + waLink(whatsapp) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: var(--g-am-txt);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' + escapeHtml(whatsapp) + '</a>'
           : '') +
       '</div>'
     );
@@ -457,7 +443,7 @@
     if (!linhas) return '';
     return (
       '<div style="display: flex; flex-direction: column; gap: 10px;">' +
-        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Contatos de emergência</span>' +
+        '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Contatos de emergência</span>' +
         '<div style="display: flex; flex-direction: column; gap: 8px;">' + linhas + '</div>' +
       '</div>'
     );
@@ -466,7 +452,7 @@
   function documentoHtml(c) {
     if (!c.documento_cnh_path) return '';
     return (
-      '<button data-acao="ver-documento" data-id="' + c.id + '" data-doc="' + escapeHtml(c.documento_cnh_path) + '" type="button" style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 8px 16px; border-radius: 999px; background: #171310; border: 1px solid rgba(245,241,234,0.14); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 13px;">📄 Ver documento (CNH)</button>'
+      '<button data-acao="ver-documento" data-id="' + c.id + '" data-doc="' + escapeHtml(c.documento_cnh_path) + '" type="button" style="display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; padding: 8px 16px; border-radius: 999px; background: var(--g-campo); border: 1px solid rgba(var(--g-ink-rgb),0.14); color: var(--g-txt2); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 13px;">📄 Ver documento (CNH)</button>'
     );
   }
 
@@ -479,44 +465,44 @@
     var acoes = c.status === 'pendente'
       ? '<div class="gda-pending-actions" style="display: flex; flex-direction: column; gap: 12px; margin-top: 4px;">' +
           '<div style="display: flex; flex-direction: column; gap: 8px;">' +
-            '<label for="piloto-' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Número de piloto <span style="color: #6B655C; font-weight: 500;">(obrigatório pra aprovar)</span> *</label>' +
-            '<input id="piloto-' + c.id + '" data-piloto-input="' + c.id + '" type="text" inputmode="numeric" placeholder="Ex: 113" value="' + escapeHtml(valorSugerido) + '" style="width: 160px; box-sizing: border-box; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(245,241,234,0.16); background: #171310; color: #F5F1EA; font-family: \'Manrope\', sans-serif; font-size: 14px;">' +
-            '<span data-piloto-nota="' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-style: italic; font-size: 12px; color: #6B655C;">' + notaSugestao + '</span>' +
-            '<span data-piloto-error="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: #DC5A5A;">Digite o número de piloto antes de aprovar.</span>' +
+            '<label for="piloto-' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: var(--g-txt2);">Número de piloto <span style="color: var(--g-txt4); font-weight: 500;">(obrigatório pra aprovar)</span> *</label>' +
+            '<input id="piloto-' + c.id + '" data-piloto-input="' + c.id + '" type="text" inputmode="numeric" placeholder="Ex: 113" value="' + escapeHtml(valorSugerido) + '" style="width: 160px; box-sizing: border-box; padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(var(--g-ink-rgb),0.16); background: var(--g-campo); color: var(--g-txt); font-family: \'Manrope\', sans-serif; font-size: 14px;">' +
+            '<span data-piloto-nota="' + c.id + '" style="font-family: \'Manrope\', sans-serif; font-style: italic; font-size: 12px; color: var(--g-txt4);">' + notaSugestao + '</span>' +
+            '<span data-piloto-error="' + c.id + '" style="display: none; font-family: \'Manrope\', sans-serif; font-size: 12px; color: var(--g-erro3);">Digite o número de piloto antes de aprovar.</span>' +
           '</div>' +
           '<div style="display: flex; gap: 12px;">' +
-            '<button data-acao="aprovar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px; border: none;">Aprovar</button>' +
-            '<button data-acao="recusar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 14px;">Recusar</button>' +
+            '<button data-acao="aprovar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background-color: var(--g-am); color: var(--g-on-am); font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px; border: none;">Aprovar</button>' +
+            '<button data-acao="recusar" data-id="' + c.id + '" type="button" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(var(--g-ink-rgb),0.16); color: var(--g-txt2); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 14px;">Recusar</button>' +
           '</div>' +
         '</div>'
       : '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; flex-wrap: wrap;">' +
-          '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #6B655C;">Decisão registrada.' + (c.status === 'aprovado' && c.numero_piloto ? ' Número de piloto: <strong style="color: #D8D2C7;">' + escapeHtml(c.numero_piloto) + '</strong>' : '') + '</span>' +
-          '<button data-acao="resetar" data-id="' + c.id + '" type="button" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 13px;">Desfazer</button>' +
+          '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: var(--g-txt4);">Decisão registrada.' + (c.status === 'aprovado' && c.numero_piloto ? ' Número de piloto: <strong style="color: var(--g-txt2);">' + escapeHtml(c.numero_piloto) + '</strong>' : '') + '</span>' +
+          '<button data-acao="resetar" data-id="' + c.id + '" type="button" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; background: transparent; border: 1px solid rgba(var(--g-ink-rgb),0.16); color: var(--g-txt2); font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 13px;">Desfazer</button>' +
         '</div>';
 
     return (
-      '<div style="background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 16px; padding: 26px 26px; display: flex; flex-direction: column; gap: 20px;">' +
+      '<div style="background: var(--g-card); border: 1px solid rgba(var(--g-ink-rgb),0.08); border-radius: 16px; padding: 26px 26px; display: flex; flex-direction: column; gap: 20px;">' +
         '<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;">' +
           '<div style="display: flex; flex-direction: column; gap: 4px;">' +
-            '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 19px; color: #F5F1EA;">' + escapeHtml(c.nome) + (c.apelido ? ' <span style="color: #6B655C; font-weight: 400; font-size: 14px;">"' + escapeHtml(c.apelido) + '"</span>' : '') + '</span>' +
-            '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: #7A7369;">Nascimento: ' + escapeHtml(c.nascimento) + ' · Tipo sanguíneo: ' + escapeHtml(c.tipo_sanguineo) + '</span>' +
-            (c.cadastro_manual ? '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; color: #C9A7FF;">Cadastro manual' + (c.cadastrado_por ? ' — por ' + escapeHtml(c.cadastrado_por) : '') + '</span>' : '') +
+            '<span style="font-family: \'Oswald\', sans-serif; font-weight: 600; font-size: 19px; color: var(--g-txt);">' + escapeHtml(c.nome) + (c.apelido ? ' <span style="color: var(--g-txt4); font-weight: 400; font-size: 14px;">"' + escapeHtml(c.apelido) + '"</span>' : '') + '</span>' +
+            '<span style="font-family: \'Manrope\', sans-serif; font-size: 13px; color: var(--g-txt-mute);">Nascimento: ' + escapeHtml(c.nascimento) + ' · Tipo sanguíneo: ' + escapeHtml(c.tipo_sanguineo) + '</span>' +
+            (c.cadastro_manual ? '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; color: var(--g-roxo);">Cadastro manual' + (c.cadastrado_por ? ' — por ' + escapeHtml(c.cadastrado_por) : '') + '</span>' : '') +
           '</div>' +
           '<span style="padding: 6px 14px; border-radius: 999px; background: ' + st.bg + '; color: ' + st.color + '; font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">' + st.label + '</span>' +
         '</div>' +
         '<div style="display: flex; gap: 20px; flex-wrap: wrap;">' +
-          '<a href="' + waLink(c.whatsapp) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; font-family: \'Manrope\', sans-serif; font-size: 14px; font-weight: 600; color: #FFDB00;">' +
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFDB00" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' +
+          '<a href="' + waLink(c.whatsapp) + '" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; font-family: \'Manrope\', sans-serif; font-size: 14px; font-weight: 600; color: var(--g-am-txt);">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20l1.4-4.2A8 8 0 1 1 9 18.5L4 20Z"></path></svg>' +
             escapeHtml(c.whatsapp) +
           '</a>' +
-          '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: #A89C8E;">' + escapeHtml(c.email) + '</span>' +
+          '<span style="font-family: \'Manrope\', sans-serif; font-size: 14px; color: var(--g-txt3);">' + escapeHtml(c.email) + '</span>' +
         '</div>' +
         documentoHtml(c) +
-        '<div style="height: 1px; background: rgba(245,241,234,0.08);"></div>' +
+        '<div style="height: 1px; background: rgba(var(--g-ink-rgb),0.08);"></div>' +
         contatosEmergenciaHtml(c) +
-        '<div style="height: 1px; background: rgba(245,241,234,0.08);"></div>' +
+        '<div style="height: 1px; background: rgba(var(--g-ink-rgb),0.08);"></div>' +
         '<div style="display: flex; flex-direction: column; gap: 10px;">' +
-          '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #7A7369;">Perfil profissional</span>' +
+          '<span style="font-family: \'Manrope\', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-txt-mute);">Perfil profissional</span>' +
           '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' + perfilPills(c) + '</div>' +
         '</div>' +
         adesivoHtml(c) +
@@ -575,7 +561,7 @@
           var erroEl = document.querySelector('[data-piloto-error="' + id + '"]');
           if (!numeroPiloto) {
             if (erroEl) erroEl.style.display = '';
-            if (input) input.style.borderColor = '#DC5A5A';
+            if (input) input.style.borderColor = 'var(--g-erro3)';
             return;
           }
           var c = cadastros.filter(function (x) { return String(x.id) === String(id); })[0];
@@ -590,9 +576,9 @@
 
     Array.prototype.slice.call(document.querySelectorAll('.gda-filtro-btn')).forEach(function (b) {
       var ativo = b.getAttribute('data-filtro') === filtroAtual;
-      b.style.background = ativo ? '#FFDB00' : '#171310';
-      b.style.color = ativo ? '#14110F' : '#D8D2C7';
-      b.style.borderColor = ativo ? '#FFDB00' : 'rgba(245,241,234,0.16)';
+      b.style.background = ativo ? 'var(--g-am)' : 'var(--g-campo)';
+      b.style.color = ativo ? 'var(--g-on-am)' : 'var(--g-txt2)';
+      b.style.borderColor = ativo ? 'var(--g-am)' : 'rgba(var(--g-ink-rgb),0.16)';
     });
   }
 
@@ -624,7 +610,7 @@
             : 'Não foi possível aprovar agora: ' + msg;
           erroEl.style.display = '';
         }
-        if (input) { input.style.borderColor = '#DC5A5A'; input.focus(); }
+        if (input) { input.style.borderColor = 'var(--g-erro3)'; input.focus(); }
         return;
       }
       carregarClientes(); // atualiza a sugestão do próximo número
@@ -700,7 +686,7 @@
     function aviso(texto) {
       var t = document.createElement('div');
       t.textContent = texto;
-      t.setAttribute('style', "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;max-width:90%;padding:14px 22px;border-radius:14px;background:#1F3A28;border:1px solid #5AC878;color:#E6F7EA;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.4);");
+      t.setAttribute('style', "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;max-width:90%;padding:14px 22px;border-radius:14px;background:#1F3A28;border:1px solid var(--g-ok2);color:#E6F7EA;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.4);");
       document.body.appendChild(t);
       setTimeout(function () { t.remove(); }, 6000);
     }
@@ -818,7 +804,7 @@
     });
   })();
 
-  window.gdaRequireAuth(function () {
+  window.gdaAdmin.exigir(function () {
     carregarCadastros();
     carregarClientes();
   });

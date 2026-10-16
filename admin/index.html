@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14110F">
+<title>Admin — Equipe GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/gda-admin.css">
+<script src="/js/gda-admin.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  body{margin:0;font-family:'Manrope',sans-serif;min-height:100vh;}
+  main{max-width:1180px;margin:0 auto;padding:56px 32px 80px;}
+  .kicker{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g-am-txt);}
+  h1{margin:8px 0 0;font-family:'Oswald',sans-serif;font-weight:700;font-size:56px;line-height:1.02;text-transform:uppercase;color:var(--g-txt);}
+  .sub{margin:12px 0 0;font-size:16px;color:var(--g-txt3);}
+
+  /* login */
+  .login{max-width:420px;margin:24px auto 0;background:var(--g-card);border:1px solid rgba(var(--g-ink-rgb),.10);border-radius:20px;padding:28px 24px;display:flex;flex-direction:column;gap:16px;}
+  .login label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--g-txt2);}
+  .login input{font-family:'Manrope',sans-serif;font-size:16px;color:var(--g-txt);background:var(--g-campo);border:1px solid rgba(var(--g-ink-rgb),.16);border-radius:10px;padding:12px 14px;outline:none;width:100%;}
+  .login input:focus{border-color:var(--g-am-txt);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 22px;border-radius:999px;border:none;background:var(--g-am);color:var(--g-on-am);font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;cursor:pointer;}
+  .btn:disabled{opacity:.6;cursor:default;}
+  .erro{color:var(--g-erro);font-size:13px;font-weight:700;}
+  .topo-login{max-width:420px;margin:0 auto;}
+  .topo-login h1{font-size:34px;text-transform:none;}
+  .topo-login .sub{font-size:14px;line-height:1.6;}
+
+  /* áreas */
+  .areas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px;margin-top:40px;}
+  .area{--c:var(--g-txt2-rgb);display:flex;flex-direction:column;gap:18px;padding:22px 24px;border-radius:18px;background:var(--g-card);border:1px solid rgba(var(--c),.40);text-decoration:none;min-height:150px;transition:transform .12s, border-color .12s;}
+  :root[data-theme="light"] .area{border-color:rgba(var(--c),.30);}
+  .area:hover{transform:translateY(-2px);border-color:rgb(var(--c));}
+  .area .ic{width:48px;height:48px;border-radius:12px;background:rgba(var(--c),.12);display:flex;align-items:center;justify-content:center;color:rgb(var(--c));}
+  .area .topo{display:flex;justify-content:space-between;align-items:flex-start;}
+  .area .nome{font-family:'Oswald',sans-serif;font-weight:600;font-size:22px;color:rgb(var(--c));}
+  .area .desc{font-size:14px;color:var(--g-txt3);margin-top:4px;}
+  .area .novo{font-size:10px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:rgb(var(--c));color:var(--g-on-cor);}
+  .a-vendas{--c:var(--g-teal-rgb);} .a-recrutamento{--c:var(--g-roxo-rgb);} .a-pilotos{--c:var(--g-coral-rgb);}
+  .a-pedidos{--c:var(--g-verde-rgb);} .a-adesivos{--c:var(--g-azul-rgb);}
+
+  .carregando{text-align:center;color:var(--g-txt3);padding:80px 20px;font-size:14px;}
+
+  @media (max-width:760px){
+    main{padding:28px 16px 60px;}
+    h1{font-size:40px;}
+    .areas{grid-template-columns:1fr;gap:10px;margin-top:22px;}
+    .area{flex-direction:row;align-items:center;min-height:76px;padding:14px 16px;gap:14px;}
+    .area .topo{display:contents;}
+    .area .ic{width:44px;height:44px;flex:none;}
+    .area .txt{flex:1;}
+    .area .nome{font-size:19px;}
+    .area .desc{font-size:13px;margin-top:2px;}
+    .area .novo{order:3;}
+  }
+</style>
+</head>
+<body>
+<div id="gda-admin-bar" data-pagina="inicio" data-sem-atalhos></div>
+
+<div class="carregando" id="tela-carregando">Carregando…</div>
+
+<!-- LOGIN -->
+<main id="tela-login" hidden>
+  <div class="topo-login">
+    <span class="kicker">Painel administrativo</span>
+    <h1>Entrar no painel</h1>
+    <p class="sub">Acesso exclusivo da diretoria. Use o mesmo e-mail e senha de sempre dos painéis.</p>
+  </div>
+  <form class="login" id="form-login">
+    <label>E-mail<input id="login-email" type="email" autocomplete="username" required></label>
+    <label>Senha<input id="login-senha" type="password" autocomplete="current-password" required></label>
+    <span class="erro" id="login-erro" hidden></span>
+    <button class="btn" type="submit" id="btn-entrar">Entrar</button>
+  </form>
+</main>
+
+<!-- BOAS-VINDAS -->
+<main id="tela-inicio" hidden>
+  <span class="kicker">Diretoria · Equipe GDA</span>
+  <h1>O que faremos hoje?</h1>
+  <p class="sub">Escolha a área da administração que deseja abrir.</p>
+
+  <nav class="areas" aria-label="Áreas da administração">
+    <a class="area a-vendas" href="/gda-vendas.html">
+      <span class="topo">
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l2.4 12.2a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"></path><circle cx="9" cy="20" r="1.4"></circle><circle cx="18" cy="20" r="1.4"></circle></svg></span>
+        <span class="novo">NOVO</span>
+      </span>
+      <span class="txt"><span class="nome">GDA Vendas</span><span class="desc" style="display:block">Vendas, estoque e caixa</span></span>
+    </a>
+    <a class="area a-recrutamento" href="/painel-cadastros.html">
+      <span class="topo"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3v2h6V3M9 11h6M9 15h4"></path></svg></span></span>
+      <span class="txt"><span class="nome">Recrutamento</span><span class="desc" style="display:block">Novos membros e pagamentos</span></span>
+    </a>
+    <a class="area a-pilotos" href="/pilotos-admin.html">
+      <span class="topo"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.2 3.2 0 0 1 0 6.3M21 20c0-2.6-1.7-4.8-4-5.6"></path></svg></span></span>
+      <span class="txt"><span class="nome">Pilotos</span><span class="desc" style="display:block">Numeração e fichas dos pilotos</span></span>
+    </a>
+    <a class="area a-pedidos" href="/painel-pedidos.html">
+      <span class="topo"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3l-5 3 2 5 3-1v11h8V10l3 1 2-5-5-3c-.5 1.7-2 3-4 3S8.5 4.7 8 3z"></path></svg></span></span>
+      <span class="txt"><span class="nome">Pedidos de camisa</span><span class="desc" style="display:block">Camisa Oficial — 3ª remessa</span></span>
+    </a>
+    <a class="area a-adesivos" href="/painel-adesivos.html">
+      <span class="topo"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"></path><circle cx="7.5" cy="7.5" r="1.3"></circle></svg></span></span>
+      <span class="txt"><span class="nome">Adesivos de reposição</span><span class="desc" style="display:block">Pedidos e entregas</span></span>
+    </a>
+  </nav>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-client.js"></script>
+<script>
+(function () {
+  'use strict';
+  var sb = window.gdaSupabase;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function mostrar(tela) {
+    ['tela-carregando', 'tela-login', 'tela-inicio'].forEach(function (t) { $(t).hidden = t !== tela; });
+  }
+
+  // Para onde voltar depois do login (só páginas deste site).
+  function destinoVolta() {
+    var v = new URLSearchParams(location.search).get('volta') || '';
+    return (/^\/(?!\/)/.test(v) && v.indexOf('/admin') !== 0) ? v : '';
+  }
+
+  function entrouComSessao(sessao) {
+    window.gdaAdmin.verificarAcesso(sessao).then(function (nivel) {
+      if (nivel !== 'admin') { mostrar(''); mostrarSemAcesso(sessao); return; }
+      var volta = destinoVolta();
+      if (volta) { location.replace(volta); return; }
+      window.gdaAdmin.montarBarra();
+      var quem = $('gda-quem'); if (quem) quem.textContent = sessao.user && sessao.user.email || '';
+      var sair = $('gda-btn-sair'); if (sair) sair.hidden = false;
+      mostrar('tela-inicio');
+    });
+  }
+
+  function mostrarSemAcesso(sessao) {
+    var box = document.createElement('div');
+    box.className = 'gda-negado';
+    box.innerHTML = '<h2>Sem acesso à administração</h2><p></p><button type="button">Entrar com outro e-mail</button>';
+    box.querySelector('p').textContent = 'O login ' + (sessao.user && sessao.user.email || '') + ' não está na lista da diretoria. Se você é da diretoria, peça para incluírem seu e-mail na tabela gda_admins do Supabase.';
+    box.querySelector('button').addEventListener('click', function () {
+      sb.auth.signOut().then(function () { box.remove(); mostrar('tela-login'); });
+    });
+    document.body.appendChild(box);
+  }
+
+  if (!sb || !sb.auth) { $('tela-carregando').textContent = 'Não foi possível carregar o sistema. Atualize a página.'; return; }
+
+  sb.auth.getSession().then(function (r) {
+    var s = r && r.data && r.data.session;
+    if (s) entrouComSessao(s); else mostrar('tela-login');
+  });
+
+  $('form-login').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('btn-entrar'), erro = $('login-erro');
+    btn.disabled = true; btn.textContent = 'Entrando…'; erro.hidden = true;
+    sb.auth.signInWithPassword({ email: $('login-email').value.trim(), password: $('login-senha').value }).then(function (r) {
+      btn.disabled = false; btn.textContent = 'Entrar';
+      if (r.error || !r.data || !r.data.session) { erro.textContent = 'E-mail ou senha incorretos.'; erro.hidden = false; return; }
+      entrouComSessao(r.data.session);
+    }, function () {
+      btn.disabled = false; btn.textContent = 'Entrar';
+      erro.textContent = 'Sem conexão agora. Tente de novo.'; erro.hidden = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

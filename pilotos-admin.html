@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,22 +7,18 @@
 <title>Pilotos — Painel Equipe GDA</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-  :root{--bg:#14110F;--bg2:#1A1512;--card:#211B17;--campo:#171310;--linha:rgba(245,241,234,0.10);--txt:#F5F1EA;--txt2:#D8D2C7;--txt3:#A89C8E;--txt4:#6B655C;--am:#FFDB00;--ok:#7FD99A;--erro:#FF8A7A;--alerta:#F2B35B;}
+  :root{--bg:var(--g-bg);--bg2:var(--g-bg2);--card:var(--g-card);--campo:var(--g-campo);--linha:rgba(var(--g-ink-rgb),0.10);--txt:var(--g-txt);--txt2:var(--g-txt2);--txt3:var(--g-txt3);--txt4:var(--g-txt4);--am:var(--g-am-txt);--ok:var(--g-ok);--erro:var(--g-erro);--alerta:var(--g-alerta);}
   *{box-sizing:border-box;}
   [hidden]{display:none !important;}
   body{margin:0;background:var(--bg);color:var(--txt);font-family:'Manrope',sans-serif;}
   a{color:inherit;text-decoration:none;}
   button{cursor:pointer;font-family:'Manrope',sans-serif;}
-  input,select,textarea{font-family:'Manrope',sans-serif;font-size:15px;color:var(--txt);background:var(--campo);border:1px solid rgba(245,241,234,0.16);border-radius:10px;padding:11px 14px;outline:none;width:100%;}
+  input,select,textarea{font-family:'Manrope',sans-serif;font-size:15px;color:var(--txt);background:var(--campo);border:1px solid rgba(var(--g-ink-rgb),0.16);border-radius:10px;padding:11px 14px;outline:none;width:100%;}
   input:focus,select:focus,textarea:focus{border-color:var(--am);}
   textarea{resize:vertical;min-height:70px;}
-  header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;background:rgba(20,17,15,0.95);border-bottom:1px solid var(--linha);backdrop-filter:blur(6px);}
-  header .marca{display:flex;align-items:center;gap:12px;}
-  header h1{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;}
-  .quem{font-size:13px;color:var(--txt3);display:flex;align-items:center;gap:12px;}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;border:none;background:var(--am);color:#14110F;font-weight:800;font-size:14px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;border:none;background:var(--g-am);color:var(--g-on-am);font-weight:800;font-size:14px;}
   .btn:disabled{opacity:.55;cursor:default;}
-  .btn-sec{background:transparent;border:1px solid rgba(245,241,234,0.18);color:var(--txt2);font-weight:600;}
+  .btn-sec{background:transparent;border:1px solid rgba(var(--g-ink-rgb),0.18);color:var(--txt2);font-weight:600;}
   .btn-peq{padding:7px 14px;font-size:13px;}
   main{max-width:1180px;margin:0 auto;padding:24px 20px 80px;}
   .resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
@@ -36,17 +32,17 @@
   .tabela{background:var(--card);border:1px solid var(--linha);border-radius:16px;overflow:hidden;}
   table{width:100%;border-collapse:collapse;}
   th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt3);text-align:left;padding:12px 14px;border-bottom:1px solid var(--linha);font-weight:700;}
-  td{padding:11px 14px;border-bottom:1px solid rgba(245,241,234,0.05);font-size:14px;vertical-align:middle;}
+  td{padding:11px 14px;border-bottom:1px solid rgba(var(--g-ink-rgb),0.05);font-size:14px;vertical-align:middle;}
   tbody tr{cursor:pointer;}
-  tbody tr:hover{background:rgba(245,241,234,0.03);}
+  tbody tr:hover{background:rgba(var(--g-ink-rgb),0.03);}
   .num{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;color:var(--am);white-space:nowrap;}
   .sub{font-size:12px;color:var(--txt3);}
   .tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.03em;white-space:nowrap;}
-  .t-credenciado{background:rgba(127,217,154,.12);color:var(--ok);}
-  .t-sem_numero,.t-pendente{background:rgba(242,179,91,.12);color:var(--alerta);}
-  .t-livre{background:rgba(245,241,234,.08);color:var(--txt2);}
-  .t-bloqueado,.t-indisponivel{background:rgba(255,138,122,.10);color:var(--erro);}
-  .t-reservado{background:rgba(255,219,0,.10);color:var(--am);}
+  .t-credenciado{background:rgba(var(--g-ok-rgb),.12);color:var(--ok);}
+  .t-sem_numero,.t-pendente{background:rgba(var(--g-alerta-rgb),.12);color:var(--alerta);}
+  .t-livre{background:rgba(var(--g-ink-rgb),.08);color:var(--txt2);}
+  .t-bloqueado,.t-indisponivel{background:rgba(var(--g-erro-rgb),.10);color:var(--erro);}
+  .t-reservado{background:rgba(var(--g-am-rgb),.10);color:var(--am);}
   .aviso{color:var(--alerta);font-size:12px;font-weight:700;}
   .vazio{padding:40px;text-align:center;color:var(--txt3);}
   .mais{display:flex;justify-content:center;padding:14px;}
@@ -70,7 +66,7 @@
   .secao{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--am);margin-top:6px;}
   .rodape-gaveta{display:flex;gap:10px;justify-content:space-between;align-items:center;position:sticky;bottom:-40px;background:var(--bg2);padding:14px 0 10px;border-top:1px solid var(--linha);}
   .meta{font-size:12px;color:var(--txt4);}
-  .pedidos{background:var(--card);border:1px solid rgba(255,219,0,0.35);border-radius:16px;padding:18px;margin-bottom:20px;display:flex;flex-direction:column;gap:14px;}
+  .pedidos{background:var(--card);border:1px solid rgba(var(--g-am-rgb),0.35);border-radius:16px;padding:18px;margin-bottom:20px;display:flex;flex-direction:column;gap:14px;}
   .pedidos-topo{display:flex;justify-content:space-between;align-items:center;gap:12px;}
   .pedido{background:var(--campo);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
   .pedido-cab{display:flex;align-items:center;gap:12px;}
@@ -80,40 +76,22 @@
   .acesso-box{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:14px 16px;background:var(--campo);border-radius:12px;}
   .acesso-box details{width:100%;font-size:13px;color:var(--txt2);}
   .acesso-box summary{cursor:pointer;font-weight:700;color:var(--txt2);}
-  .hist{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(245,241,234,0.06);font-size:12px;}
+  .hist{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(var(--g-ink-rgb),0.06);font-size:12px;}
   .hist .c{color:var(--txt3);} .hist .v{text-align:right;}
-  .nav-paineis{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;flex:1;}
-  .gda-nav{display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;color:var(--cor);background:var(--fundo);border:1px solid var(--borda);white-space:nowrap;}
-  .gda-nav:hover{filter:brightness(1.15);}
-  .gda-nav.atual{background:var(--cor);color:#14110F;border-color:var(--cor);}
   @media (max-width:760px){
     .pedido-grade{grid-template-columns:1fr;}
-    header{flex-wrap:wrap;} .nav-paineis{order:3;flex-basis:100%;justify-content:flex-start;}
-    header{padding:12px 16px;} main{padding:16px 12px 60px;}
+    main{padding:16px 12px 60px;}
     .col-tel,.col-sang,.col-ades{display:none;}
     .grade{grid-template-columns:1fr;}
   }
 </style>
+<meta name="theme-color" content="#14110F">
+<link rel="stylesheet" href="/css/gda-admin.css">
+<script src="/js/gda-admin.js"></script>
 </head>
 <body>
 
-<header>
-  <div class="marca">
-    <a href="index.html"><img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height:30px;width:auto;display:block;"></a>
-    <h1>Pilotos</h1>
-  </div>
-  <nav class="nav-paineis">
-    <a href="painel-cadastros.html" class="gda-nav" style="--cor:#C9A7FF;--fundo:rgba(201,167,255,0.12);--borda:rgba(201,167,255,0.40);">Cadastros</a>
-    <a href="credenciamento.html?previa=1" target="_blank" rel="noopener" class="gda-nav" style="--cor:#FFDB00;--fundo:rgba(255,219,0,0.12);--borda:rgba(255,219,0,0.40);">Prévia do credenciamento</a>
-    <a href="painel-pedidos.html" class="gda-nav" style="--cor:#7FD99A;--fundo:rgba(127,217,154,0.12);--borda:rgba(127,217,154,0.40);">Painel de pedidos</a>
-    <a href="painel-adesivos.html" class="gda-nav" style="--cor:#7CC4FF;--fundo:rgba(124,196,255,0.12);--borda:rgba(124,196,255,0.40);">Adesivos de reposição</a>
-    <a href="pilotos-admin.html" class="gda-nav atual" aria-current="page" style="--cor:#FF9E8A;--fundo:rgba(255,158,138,0.12);--borda:rgba(255,158,138,0.40);">Pilotos</a>
-  </nav>
-  <div class="quem" id="quem" hidden>
-    <span id="quem-email"></span>
-    <button class="btn btn-sec btn-peq" id="btn-sair" type="button">Sair</button>
-  </div>
-</header>
+<div id="gda-admin-bar" data-pagina="pilotos"></div>
 
 <!-- LOGIN -->
 <div id="tela-login" hidden>
@@ -279,15 +257,11 @@
   function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
 
   // ---------- sessão ----------
+  // Login e acesso agora são controlados pelo /admin (js/gda-admin.js):
+  // sem login vai para equipegda.com.br/admin e volta pra cá depois de entrar.
   function iniciar() {
-    if (!sb || !sb.auth) { document.body.innerHTML = '<p style="padding:40px;color:#FF8A7A">Não foi possível carregar o Supabase. Atualize a página.</p>'; return; }
-    sb.auth.getSession().then(function (r) {
-      var s = r && r.data && r.data.session;
-      if (!s) { mostrar('tela-login'); $('quem').hidden = true; return; }
-      $('quem-email').textContent = s.user && s.user.email || '';
-      $('quem').hidden = false;
-      carregar();
-    });
+    if (!sb || !sb.auth) { document.body.innerHTML = '<p style="padding:40px;color:var(--g-erro)">Não foi possível carregar o Supabase. Atualize a página.</p>'; return; }
+    window.gdaAdmin.exigir(function () { carregar(); });
   }
 
   $('form-login').addEventListener('submit', function (e) {
@@ -299,8 +273,7 @@
       iniciar();
     });
   });
-  function sair() { sb.auth.signOut().then(function () { todos = []; iniciar(); }); }
-  $('btn-sair').addEventListener('click', sair);
+  function sair() { window.gdaAdmin.sair(); }
   $('btn-sair-2').addEventListener('click', sair);
 
   // ---------- dados ----------
