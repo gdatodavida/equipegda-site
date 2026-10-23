@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista de interesse — Camisa Oficial GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  body{margin:0;background:#14110F;}
+  a{text-decoration:none;}
+  a:hover{opacity:0.85;}
+  input{outline:none;}
+  input:focus{border-color:#FFDB00;}
+  button{cursor:pointer;}
+  button:disabled{opacity:0.7;cursor:default;}
+  input.gda-invalid{border-color:#FF8A7A !important;}
+  .gda-req{color:#FFDB00;}
+  [hidden]{display:none !important;}
+  .gda-campo{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:10px;border:1px solid rgba(245,241,234,0.16);background:#171310;color:#F5F1EA;font-family:'Manrope',sans-serif;font-size:15px;}
+  .gda-lbl{font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;color:#D8D2C7;}
+  .gda-err{display:none;font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;line-height:1.4;color:#FF8A7A;}
+  @media (max-width: 760px){
+    .gda-topo{padding:56px 20px 40px !important;min-height:0 !important;}
+    .gda-topo h1{font-size:34px !important;}
+    .gda-corpo{padding:20px 16px 72px !important;}
+    .gda-cartao{padding:28px 20px !important;}
+    header{padding:14px 20px !important;}
+  }
+</style>
+</head>
+<body>
+<div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
+
+  <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
+    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+      <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: auto; display: block;">
+    </a>
+    <a href="index.html#remessa" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">← Voltar ao portal</a>
+  </header>
+
+  <!-- TELA 1: formulário -->
+  <div id="tela-form" style="display: flex; flex-direction: column; flex: 1;">
+    <section class="gda-topo" style="position: relative; display: flex; align-items: center; min-height: 340px; padding: 90px 40px 60px; box-sizing: border-box; background: linear-gradient(160deg, #1D1712 0%, #14110F 48%, #100D0B 100%); overflow: hidden;">
+      <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
+      <div style="position: relative; max-width: 640px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;">
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">3ª Remessa <span style="color: #FF6B5E;">finalizada</span> · Camisa Oficial GDA</span>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.1; color: #F5F1EA;">Quero a minha camisa</h1>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 480px;">A 3ª remessa foi finalizada. Deixe seus dados e você será avisado no WhatsApp assim que a próxima abrir.</p>
+      </div>
+    </section>
+
+    <section class="gda-corpo" style="padding: 20px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+      <form id="form-interesse" novalidate class="gda-cartao" style="max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; padding: 40px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
+
+        <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Lista de interesse · próxima remessa</span>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label for="identificacao" class="gda-lbl">Seu Nome Completo <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="identificacao" class="gda-campo" name="identificacao" type="text" required minlength="7" autocomplete="name" aria-describedby="err-identificacao" placeholder="Digite seu nome">
+          <span id="err-identificacao" class="gda-err" role="alert"></span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label for="piloto" class="gda-lbl">Número de piloto <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="piloto" class="gda-campo" name="piloto" type="text" required inputmode="numeric" maxlength="6" aria-describedby="err-piloto" placeholder="Digite seu número de piloto">
+          <span id="err-piloto" class="gda-err" role="alert"></span>
+          <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">[Se não tem número de piloto, <a href="https://wa.me/557331914501" target="_blank" rel="noopener" style="color: #A89C8E; text-decoration: underline;">fale com o suporte</a> agora mesmo.]</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label for="whatsapp" class="gda-lbl">Número de WhatsApp <span class="gda-req" aria-hidden="true">*</span></label>
+          <input id="whatsapp" class="gda-campo" name="whatsapp" type="tel" required inputmode="numeric" autocomplete="tel-national" maxlength="15" aria-describedby="err-whatsapp" placeholder="(73) 91234-5678">
+          <span id="err-whatsapp" class="gda-err" role="alert"></span>
+        </div>
+
+        <span id="err-envio" class="gda-err" role="alert"></span>
+
+        <button id="btn-enviar" type="submit" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Entrar na lista</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- TELA 2: confirmação -->
+  <div id="tela-ok" hidden style="flex-direction: column; flex: 1;">
+    <section class="gda-corpo" style="padding: 20px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
+      <div class="gda-cartao" style="max-width: 520px; margin: 60px auto 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; padding: 44px 36px; background: #211B17; border: 1px solid rgba(255,219,0,0.35); border-radius: 20px; box-sizing: border-box;">
+        <div style="width: 56px; height: 56px; border-radius: 999px; background: rgba(127,217,154,0.14); display: flex; align-items: center; justify-content: center;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7FD99A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7"></polyline></svg>
+        </div>
+        <h2 id="ok-titulo" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 26px; line-height: 1.25; color: #F5F1EA;">Pronto, você está na lista!</h2>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: #D8D2C7;">Quando a próxima remessa abrir, o suporte chama você no WhatsApp.</p>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #A89C8E;">Isso não é um pedido e não gera pagamento.</p>
+        <a href="index.html" style="display: inline-flex; align-items: center; justify-content: center; margin-top: 8px; padding: 13px 26px; border-radius: 999px; border: 1px solid rgba(245,241,234,0.2); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Voltar ao portal</a>
+      </div>
+    </section>
+  </div>
+
+  <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">2024 © Equipe GDA. Todos os direitos reservados.</span>
+      <a href="index.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
+    </div>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var enviando = false;
+
+  function soDigitos(v) { return String(v || '').replace(/\D/g, ''); }
+
+  function setErro(id, msg) {
+    var input = $(id), err = $('err-' + id);
+    if (msg) {
+      if (input) { input.classList.add('gda-invalid'); input.setAttribute('aria-invalid', 'true'); }
+      err.textContent = msg; err.style.display = 'block';
+    } else {
+      if (input) { input.classList.remove('gda-invalid'); input.removeAttribute('aria-invalid'); }
+      err.textContent = ''; err.style.display = 'none';
+    }
+  }
+
+  function formatarWhatsapp(v) {
+    var d = soDigitos(v).slice(0, 11);
+    if (d.length === 0) return '';
+    if (d.length <= 2) return '(' + d;
+    if (d.length <= 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+    if (d.length <= 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+  }
+
+  function erroNome(v) {
+    v = String(v || '').trim();
+    if (!v) return 'Digite seu nome.';
+    if (v.replace(/\s+/g, ' ').length < 7) return 'Nome muito curto — digite seu nome completo (mínimo 7 caracteres).';
+    return '';
+  }
+  function erroPiloto(v) {
+    v = String(v || '').trim();
+    if (!v) return 'Digite seu número de piloto.';
+    if (!/^\d{1,6}$/.test(v)) return 'Use só números, ex.: 113.';
+    return '';
+  }
+  function erroWhatsapp(v) {
+    var d = soDigitos(v);
+    if (!d) return 'Digite seu número de WhatsApp.';
+    if (d.length < 11) return 'Número incompleto — falta DDD ou dígitos';
+    if (d.charAt(2) !== '9') return 'Confira o número — depois do DDD deve começar com 9';
+    return '';
+  }
+
+  var validadores = { identificacao: erroNome, piloto: erroPiloto, whatsapp: erroWhatsapp };
+
+  $('identificacao').addEventListener('input', function (e) {
+    if (e.target.classList.contains('gda-invalid')) setErro('identificacao', erroNome(e.target.value));
+  });
+  $('piloto').addEventListener('input', function (e) {
+    var v = e.target.value.replace(/\D/g, '').slice(0, 6);
+    if (e.target.value !== v) e.target.value = v;
+    if (e.target.classList.contains('gda-invalid')) setErro('piloto', erroPiloto(v));
+  });
+  $('whatsapp').addEventListener('input', function (e) {
+    var f = formatarWhatsapp(e.target.value);
+    if (e.target.value !== f) e.target.value = f;
+    if (e.target.classList.contains('gda-invalid')) setErro('whatsapp', erroWhatsapp(f));
+  });
+
+  function validar() {
+    var primeiro = null;
+    ['identificacao', 'piloto', 'whatsapp'].forEach(function (id) {
+      var msg = validadores[id]($(id).value);
+      setErro(id, msg);
+      if (msg && !primeiro) primeiro = id;
+    });
+    if (primeiro) { $(primeiro).focus(); return false; }
+    return true;
+  }
+
+  // Mesma conferência do pedido: número e nome batem com a tabela pilotos.
+  // Devolve { encontrado, confere } ou null se não deu para conferir (não trava a inscrição).
+  function conferirPiloto(num, nome) {
+    if (!window.gdaSupabase) return Promise.resolve(null);
+    var limite = new Promise(function (ok) { setTimeout(function () { ok(null); }, 5000); });
+    var consulta = Promise.resolve(window.gdaSupabase.rpc('conferir_piloto', { p_num: num, p_nome: nome }))
+      .then(function (r) {
+        if (!r || r.error) return null;
+        var linha = Array.isArray(r.data) ? r.data[0] : r.data;
+        return linha ? { encontrado: !!linha.encontrado, confere: !!linha.confere } : null;
+      }, function () { return null; });
+    return Promise.race([consulta, limite]);
+  }
+
+  function registrar(num, nome, whatsapp) {
+    if (!window.gdaSupabase) return Promise.reject(new Error('sem conexão'));
+    return Promise.resolve(window.gdaSupabase.rpc('registrar_interesse_camisa', {
+      p_num: num, p_nome: nome, p_whatsapp: whatsapp
+    })).then(function (r) { if (!r || r.error) throw (r && r.error) || new Error('falhou'); return r.data; });
+  }
+
+  function terminarEnvio() {
+    enviando = false;
+    $('btn-enviar').disabled = false;
+    $('btn-enviar').textContent = 'Entrar na lista';
+  }
+
+  $('form-interesse').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (enviando) return;
+    setErro('envio', '');
+    if (!validar()) return;
+
+    var nome = $('identificacao').value.trim().replace(/\s+/g, ' ');
+    var num = String(parseInt($('piloto').value, 10));
+    var whatsapp = soDigitos($('whatsapp').value);
+
+    enviando = true;
+    $('btn-enviar').disabled = true;
+    $('btn-enviar').textContent = 'Verificando…';
+
+    conferirPiloto(num, nome).then(function (res) {
+      if (res && !res.encontrado) {
+        terminarEnvio();
+        setErro('piloto', 'Não encontramos o Número de Piloto ' + num + '. Confira o número ou fale com o suporte.');
+        $('piloto').focus();
+        return;
+      }
+      if (res && !res.confere) {
+        terminarEnvio();
+        setErro('identificacao', 'O nome não confere com o cadastro do Piloto ' + num + '. Digite o nome como está no seu cadastro, ou fale com o suporte.');
+        $('identificacao').focus();
+        return;
+      }
+      $('btn-enviar').textContent = 'Enviando…';
+      return registrar(num, nome, whatsapp).then(function () {
+        var primeiro = nome.split(' ')[0];
+        $('ok-titulo').textContent = 'Pronto, ' + primeiro + ', você está na lista!';
+        $('tela-form').hidden = true;
+        $('tela-ok').hidden = false;
+        $('tela-ok').style.display = 'flex';
+        try { window.scrollTo(0, 0); } catch (err) {}
+      }, function (err) {
+        console.error('[GDA] lista de interesse:', err);
+        terminarEnvio();
+        setErro('envio', 'Não conseguimos registrar agora. Tente de novo em instantes ou fale com o suporte no WhatsApp (73) 3191-4501.');
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
