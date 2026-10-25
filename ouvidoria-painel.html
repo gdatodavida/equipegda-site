@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14110F">
+<title>Painel da Ouvidoria — Conselho GDA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/css/gda-admin.css">
+<!-- só para o modo dia/noite (não exige login do /admin) -->
+<script src="/js/gda-admin.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  body{margin:0;font-family:'Manrope',sans-serif;min-height:100vh;}
+  button{font-family:'Manrope',sans-serif;cursor:pointer;}
+  input,select,textarea{font-family:'Manrope',sans-serif;outline:none;}
+  a{color:inherit;text-decoration:none;}
+
+  /* cores por tipo/status (usam as cores dia/noite do admin) */
+  .t-reclamacao{--c:var(--g-coral-rgb);} .t-sugestao{--c:var(--g-azul-rgb);} .t-elogio{--c:var(--g-verde-rgb);}
+  .s-novo{--c:var(--g-am-rgb);} .s-em_analise{--c:var(--g-alerta-rgb);} .s-resolvido{--c:var(--g-ok-rgb);} .s-encerrado{--c:var(--g-mute-rgb);}
+
+  /* cabeçalho */
+  .barra{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;padding:14px 32px;background:rgba(var(--g-bg-rgb),.94);border-bottom:1px solid rgba(var(--g-ink-rgb),.10);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+  .barra .logo{display:flex;align-items:center;flex:none;}
+  .barra .logo img{height:30px;display:block;}
+  :root[data-theme="light"] .barra .logo{background:#14110F;padding:6px 10px;border-radius:10px;}
+  .barra .nome-painel{font-family:'Oswald',sans-serif;font-weight:600;font-size:17px;color:var(--g-txt);white-space:nowrap;}
+  .barra .nome-painel span{color:var(--g-am-txt);}
+  .barra .acoes{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .quem{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid rgba(var(--g-ink-rgb),.14);background:transparent;color:var(--g-txt2);font-size:12px;font-weight:700;max-width:180px;}
+  .quem span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .btn-ic{width:40px;height:40px;border-radius:999px;border:1px solid rgba(var(--g-ink-rgb),.16);background:transparent;color:var(--g-txt2);display:inline-flex;align-items:center;justify-content:center;padding:0;}
+  .btn-ic:hover,.quem:hover{border-color:rgba(var(--g-ink-rgb),.35);}
+  .btn-sair{padding:9px 16px;border-radius:999px;border:1px solid rgba(var(--g-ink-rgb),.16);background:transparent;color:var(--g-txt2);font-weight:600;font-size:12px;}
+
+  main{max-width:1180px;margin:0 auto;padding:40px 32px 80px;}
+  .kicker{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g-am-txt);}
+  h1{margin:8px 0 0;font-family:'Oswald',sans-serif;font-weight:700;font-size:48px;line-height:1.02;text-transform:uppercase;color:var(--g-txt);}
+  .sub{margin:10px 0 0;font-size:14px;color:var(--g-txt3);}
+
+  /* login */
+  .login-box{max-width:420px;margin:30px auto 0;}
+  .login-box h1{font-size:34px;text-transform:none;}
+  .login{margin-top:22px;background:var(--g-card);border:1px solid rgba(var(--g-ink-rgb),.10);border-radius:20px;padding:26px 24px;display:flex;flex-direction:column;gap:16px;}
+  .login label.campo{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--g-txt2);}
+  .ent{font-size:15px;color:var(--g-txt);background:var(--g-campo);border:1px solid rgba(var(--g-ink-rgb),.16);border-radius:10px;padding:12px 14px;width:100%;}
+  .ent:focus{border-color:var(--g-am-txt);}
+  .ent::placeholder{color:var(--g-txt4);}
+  .dica{font-size:12px;color:var(--g-txt4);font-weight:500;}
+  .check{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--g-txt2);cursor:pointer;}
+  .check input{width:17px;height:17px;accent-color:var(--g-am);margin:0;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;border:none;background:var(--g-am);color:var(--g-on-am);font-weight:800;font-size:15px;}
+  .btn:disabled{opacity:.6;cursor:default;}
+  .btn-leve{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid rgba(var(--g-ink-rgb),.16);background:transparent;color:var(--g-txt2);font-weight:700;font-size:13px;}
+  .btn-leve:hover{border-color:rgba(var(--g-ink-rgb),.35);}
+  .erro{color:var(--g-erro);font-size:13px;font-weight:700;}
+
+  /* topo do painel */
+  .topo-painel{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;}
+
+  /* contadores */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px;}
+  .kpi{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border-radius:16px;background:var(--g-card);border:1px solid rgba(var(--c),.35);text-align:left;color:var(--g-txt);transition:transform .12s,border-color .12s,background .12s;}
+  .kpi:hover{transform:translateY(-1px);border-color:rgb(var(--c));}
+  .kpi .n{font-family:'Oswald',sans-serif;font-weight:700;font-size:34px;line-height:1;color:rgb(var(--c));}
+  .kpi .r{font-size:13px;font-weight:700;color:var(--g-txt2);}
+  .kpi[aria-pressed="true"]{background:rgba(var(--c),.12);border-color:rgb(var(--c));}
+
+  /* filtros */
+  .filtros{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px;}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  .tab{--c:var(--g-txt2-rgb);padding:8px 14px;border-radius:999px;border:1px solid rgba(var(--c),.35);background:transparent;color:rgb(var(--c));font-size:13px;font-weight:700;}
+  .tab[aria-pressed="true"]{background:rgb(var(--c));border-color:rgb(var(--c));color:var(--g-on-cor);}
+  .tab b{font-weight:800;opacity:.8;margin-left:4px;}
+  .filtros .ent{width:auto;padding:9px 12px;font-size:13px;}
+  .filtros .busca{flex:1;min-width:200px;}
+
+  /* lista */
+  .lista{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+  .item{display:grid;grid-template-columns:6px 1fr auto;gap:0 16px;align-items:stretch;padding:0;border-radius:16px;background:var(--g-card);border:1px solid rgba(var(--g-ink-rgb),.10);text-align:left;color:var(--g-txt);overflow:hidden;transition:border-color .12s,transform .12s;}
+  .item:hover{border-color:rgba(var(--g-ink-rgb),.30);transform:translateY(-1px);}
+  .item .faixa{background:rgb(var(--c));}
+  .item .meio{padding:14px 0;display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .item .linha1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .item .tit{font-family:'Oswald',sans-serif;font-weight:600;font-size:18px;line-height:1.25;color:var(--g-txt);}
+  .item .trecho{font-size:13px;line-height:1.45;color:var(--g-txt3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .item .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--g-txt4);}
+  .item .meta b{color:var(--g-txt2);font-weight:700;}
+  .item .lado{padding:14px 18px 14px 0;display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;}
+  .item.novo-item{border-color:rgba(var(--g-am-rgb),.45);}
+  .proto{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;letter-spacing:.05em;color:var(--g-txt3);}
+  .selo{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;background:rgba(var(--c),.14);color:rgb(var(--c));white-space:nowrap;}
+  .selo.cheio{background:rgb(var(--c));color:var(--g-on-cor);}
+  :root[data-theme="dark"] .s-novo.selo.cheio, :root:not([data-theme]) .s-novo.selo.cheio{color:#14110F;}
+  .vazio{padding:60px 20px;text-align:center;color:var(--g-txt3);font-size:14px;background:var(--g-card);border-radius:16px;border:1px dashed rgba(var(--g-ink-rgb),.16);}
+  .carregando{text-align:center;color:var(--g-txt3);padding:70px 20px;font-size:14px;}
+
+  /* detalhe (gaveta) */
+  .fundo{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;justify-content:flex-end;}
+  .gaveta{width:min(640px,100%);height:100%;overflow-y:auto;background:var(--g-bg2);border-left:1px solid rgba(var(--g-ink-rgb),.12);display:flex;flex-direction:column;}
+  .g-topo{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:14px 20px;background:var(--g-bg2);border-bottom:1px solid rgba(var(--g-ink-rgb),.10);}
+  .g-topo .proto{font-size:16px;color:var(--g-txt);}
+  .g-topo .btn-ic{margin-left:auto;}
+  .g-corpo{padding:20px 22px 40px;display:flex;flex-direction:column;gap:18px;}
+  .g-corpo h2{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:26px;line-height:1.2;color:var(--g-txt);}
+  .relato{margin:0;font-size:15px;line-height:1.65;color:var(--g-txt2);white-space:pre-wrap;word-wrap:break-word;}
+  .cartao{background:var(--g-card);border:1px solid rgba(var(--g-ink-rgb),.08);border-radius:16px;padding:16px 18px;}
+  .cartao-tit{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--g-txt3);margin-bottom:12px;}
+  .infos{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;}
+  .info span{display:block;font-size:11.5px;color:var(--g-txt4);font-weight:600;}
+  .info b{display:block;margin-top:2px;font-size:14px;color:var(--g-txt);font-weight:700;word-break:break-word;}
+  .info .ok{color:var(--g-ok);} .info .ruim{color:var(--g-erro);}
+  .anexos{display:flex;gap:10px;flex-wrap:wrap;}
+  .anexos button{width:96px;height:96px;padding:0;border-radius:12px;overflow:hidden;border:1px solid rgba(var(--g-ink-rgb),.14);background:var(--g-campo);cursor:zoom-in;}
+  .anexos img{width:100%;height:100%;object-fit:cover;display:block;}
+  .status-opcoes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .st-op{padding:10px 6px;border-radius:12px;border:1.5px solid rgba(var(--c),.35);background:transparent;color:rgb(var(--c));font-size:12.5px;font-weight:800;}
+  .st-op[aria-pressed="true"]{background:rgb(var(--c));color:var(--g-on-cor);border-color:rgb(var(--c));}
+  :root[data-theme="dark"] .s-novo.st-op[aria-pressed="true"]{color:#14110F;}
+  textarea.ent{min-height:100px;resize:vertical;line-height:1.5;}
+  .linha-botoes{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .btn-whats{background:#25D366;color:#0B2A17;}
+  .hist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;}
+  .hist li{position:relative;padding-left:18px;}
+  .hist li::before{content:"";position:absolute;left:0;top:6px;width:8px;height:8px;border-radius:999px;background:rgba(var(--g-ink-rgb),.3);}
+  .hist .quem-h{font-size:12.5px;color:var(--g-txt3);}
+  .hist .quem-h b{color:var(--g-txt);}
+  .hist .txt-h{margin-top:4px;font-size:14px;line-height:1.55;color:var(--g-txt2);white-space:pre-wrap;word-wrap:break-word;}
+  .aviso{font-size:12px;color:var(--g-txt4);}
+
+  .luz{position:fixed;inset:0;z-index:80;background:rgba(10,8,7,.92);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;}
+  .luz img{max-width:100%;max-height:100%;border-radius:10px;}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;padding:12px 18px;border-radius:999px;background:var(--g-txt);color:var(--g-bg);font-size:13px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.3);}
+
+  @media (max-width:760px){
+    .barra{padding:12px 16px;gap:10px;}
+    .barra .nome-painel{display:none;}
+    .quem{max-width:120px;}
+    main{padding:24px 14px 60px;}
+    h1{font-size:36px;}
+    .kpis{grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;}
+    .kpi{padding:12px 14px;}
+    .kpi .n{font-size:28px;}
+    .filtros .ent{flex:1;}
+    .item{grid-template-columns:5px 1fr;}
+    .item .lado{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;padding:0 14px 14px 0;}
+    .item .meio{padding-right:14px;}
+    .gaveta{border-left:none;}
+    .g-corpo{padding:16px 16px 40px;}
+    .infos{grid-template-columns:1fr;}
+    .status-opcoes{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <a href="/" class="logo" aria-label="Portal da Equipe GDA"><img src="/img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA"></a>
+  <span class="nome-painel">Ouvidoria · <span>Conselho</span></span>
+  <div class="acoes">
+    <button type="button" class="quem" id="btn-quem" title="Trocar nome" hidden>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span id="quem-nome"></span>
+    </button>
+    <button type="button" class="btn-ic" id="btn-tema"></button>
+    <button type="button" class="btn-sair" id="btn-sair" hidden>Sair</button>
+  </div>
+</header>
+
+<!-- ============ LOGIN ============ -->
+<main id="tela-login" hidden>
+  <div class="login-box">
+    <span class="kicker">Conselho GDA</span>
+    <h1>Painel da Ouvidoria</h1>
+    <p class="sub">Reclamações, sugestões e elogios enviados pelo site. Acesso só do conselho.</p>
+    <form class="login" id="form-login">
+      <label class="campo">Senha do conselho
+        <input id="senha" class="ent" type="password" autocomplete="current-password" required>
+      </label>
+      <label class="campo">Seu nome
+        <input id="nome" class="ent" type="text" maxlength="60" autocomplete="name" placeholder="Ex.: Allan" required>
+        <span class="dica">Fica registrado em cada resposta e mudança de status que você fizer.</span>
+      </label>
+      <label class="check"><input type="checkbox" id="lembrar" checked> Lembrar neste aparelho</label>
+      <span class="erro" id="erro-login" role="alert"></span>
+      <button type="submit" class="btn" id="btn-entrar">Entrar</button>
+    </form>
+  </div>
+</main>
+
+<!-- ============ PAINEL ============ -->
+<main id="tela-painel" hidden>
+  <div class="topo-painel">
+    <div>
+      <span class="kicker">Painel do Conselho</span>
+      <h1>Ouvidoria</h1>
+      <p class="sub" id="atualizado">Carregando…</p>
+    </div>
+    <button type="button" class="btn-leve" id="btn-atualizar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5"/></svg>
+      Atualizar
+    </button>
+  </div>
+
+  <div class="kpis" id="kpis">
+    <button type="button" class="kpi s-novo" data-status="novo" aria-pressed="false"><span class="n" id="k-novo">0</span><span class="r">Novas</span></button>
+    <button type="button" class="kpi s-em_analise" data-status="em_analise" aria-pressed="false"><span class="n" id="k-em_analise">0</span><span class="r">Em análise</span></button>
+    <button type="button" class="kpi s-resolvido" data-status="resolvido" aria-pressed="false"><span class="n" id="k-resolvido">0</span><span class="r">Resolvidas</span></button>
+    <button type="button" class="kpi s-encerrado" data-status="encerrado" aria-pressed="false"><span class="n" id="k-encerrado">0</span><span class="r">Encerradas</span></button>
+  </div>
+
+  <div class="filtros">
+    <div class="tabs" id="tabs-tipo">
+      <button type="button" class="tab" data-tipo="" aria-pressed="true">Todas<b id="t-todas">0</b></button>
+      <button type="button" class="tab t-reclamacao" data-tipo="reclamacao" aria-pressed="false">Reclamações<b id="t-reclamacao">0</b></button>
+      <button type="button" class="tab t-sugestao" data-tipo="sugestao" aria-pressed="false">Sugestões<b id="t-sugestao">0</b></button>
+      <button type="button" class="tab t-elogio" data-tipo="elogio" aria-pressed="false">Elogios<b id="t-elogio">0</b></button>
+    </div>
+  </div>
+  <div class="filtros">
+    <input type="search" class="ent busca" id="busca" placeholder="Buscar por protocolo, nome, número, WhatsApp ou texto…">
+    <select class="ent" id="f-perfil" aria-label="Quem enviou">
+      <option value="">Membros e passageiros</option>
+      <option value="membro">Só membros</option>
+      <option value="passageiro">Só passageiros</option>
+    </select>
+    <select class="ent" id="f-status" aria-label="Status">
+      <option value="">Todos os status</option>
+      <option value="abertas">Em aberto (novas + em análise)</option>
+      <option value="novo">Novas</option>
+      <option value="em_analise">Em análise</option>
+      <option value="resolvido">Resolvidas</option>
+      <option value="encerrado">Encerradas</option>
+    </select>
+  </div>
+
+  <div class="lista" id="lista"><div class="carregando">Carregando…</div></div>
+</main>
+
+<!-- ============ DETALHE ============ -->
+<div class="fundo" id="fundo" hidden>
+  <aside class="gaveta" role="dialog" aria-modal="true" aria-labelledby="d-titulo">
+    <div class="g-topo">
+      <span class="proto" id="d-proto"></span>
+      <span id="d-selos" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+      <button type="button" class="btn-ic" id="btn-fechar" aria-label="Fechar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="g-corpo" id="d-corpo"><div class="carregando">Carregando…</div></div>
+  </aside>
+</div>
+
+<div class="luz" id="luz" hidden><img id="luz-img" alt="Anexo ampliado"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-client.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var CHAVE = 'gda_ouvidoria_conselho';
+  var TIPO = { reclamacao: 'Reclamação', sugestao: 'Sugestão', elogio: 'Elogio' };
+  var STATUS = { novo: 'Nova', em_analise: 'Em análise', resolvido: 'Resolvida', encerrado: 'Encerrada' };
+
+  var acesso = null;          // { senha, nome }
+  var itens = [];
+  var filtro = { tipo: '', status: '', perfil: '', busca: '' };
+  var aberto = null;          // detalhe aberto { manifestacao, anexos, historico }
+  var statusEscolhido = '';
+  var timerAuto = null;
+
+  function $(id) { return document.getElementById(id); }
+  function sb() { return window.gdaSupabase; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function soDig(v) { return String(v || '').replace(/\D/g, ''); }
+  function fone(v) {
+    var d = soDig(v); if (!d) return '';
+    if (d.length === 11) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+    if (d.length === 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return d;
+  }
+  function data(iso, curta) {
+    var d = new Date(iso); if (isNaN(d)) return '';
+    if (curta) {
+      var seg = (Date.now() - d.getTime()) / 1000;
+      if (seg < 60) return 'agora';
+      if (seg < 3600) return 'há ' + Math.floor(seg / 60) + ' min';
+      if (seg < 86400) return 'há ' + Math.floor(seg / 3600) + ' h';
+      if (seg < 86400 * 7) { var n = Math.floor(seg / 86400); return 'há ' + n + (n === 1 ? ' dia' : ' dias'); }
+      return d.toLocaleDateString('pt-BR');
+    }
+    return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function toast(msg) {
+    var t = $('toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+  function quemEnviou(m) {
+    if (m.perfil === 'membro') return (m.membro_nome || 'Membro') + ' · Nº ' + (m.membro_numero || '?');
+    return [m.contato_nome, fone(m.whatsapp)].filter(Boolean).join(' · ') || 'sem identificação';
+  }
+
+  // ------------------------------------------------------------
+  // Tema dia/noite (mesmo do /admin, escolha salva no aparelho)
+  // ------------------------------------------------------------
+  var SOL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>';
+  var LUA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>';
+  function iconeTema() {
+    var claro = document.documentElement.getAttribute('data-theme') === 'light';
+    var b = $('btn-tema');
+    b.innerHTML = claro ? LUA : SOL;
+    b.style.color = claro ? 'var(--g-txt2)' : 'var(--g-am-txt)';
+    b.setAttribute('aria-label', claro ? 'Mudar para o modo noite' : 'Mudar para o modo dia');
+    b.title = claro ? 'Modo noite' : 'Modo dia';
+  }
+  $('btn-tema').addEventListener('click', function () {
+    if (window.gdaAdmin) window.gdaAdmin.alternarTema();
+    else document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    iconeTema();
+  });
+  window.addEventListener('storage', function () { setTimeout(iconeTema, 0); });
+  iconeTema();
+
+  // ------------------------------------------------------------
+  // Acesso
+  // ------------------------------------------------------------
+  function lerAcesso() {
+    try {
+      var a = JSON.parse(localStorage.getItem(CHAVE) || sessionStorage.getItem(CHAVE) || 'null');
+      if (a && a.senha && a.nome) return a;
+    } catch (e) {}
+    return null;
+  }
+  function guardarAcesso(a, lembrar) {
+    try { localStorage.removeItem(CHAVE); sessionStorage.removeItem(CHAVE); } catch (e) {}
+    try { (lembrar ? localStorage : sessionStorage).setItem(CHAVE, JSON.stringify(a)); } catch (e) {}
+  }
+  function esquecerAcesso() { try { localStorage.removeItem(CHAVE); sessionStorage.removeItem(CHAVE); } catch (e) {} }
+
+  function mostrarLogin(msg) {
+    acesso = null; clearInterval(timerAuto);
+    $('tela-painel').hidden = true; $('tela-login').hidden = false;
+    $('btn-quem').hidden = true; $('btn-sair').hidden = true;
+    $('erro-login').textContent = msg || '';
+    var antigo = lerAcesso(); if (antigo && antigo.nome) $('nome').value = antigo.nome;
+    setTimeout(function () { $('senha').focus(); }, 50);
+  }
+  function mostrarPainel() {
+    $('tela-login').hidden = true; $('tela-painel').hidden = false;
+    $('btn-quem').hidden = false; $('btn-sair').hidden = false;
+    $('quem-nome').textContent = acesso.nome;
+    carregar();
+    clearInterval(timerAuto);
+    timerAuto = setInterval(function () { if (!document.hidden) carregar(true); }, 60000);
+  }
+
+  $('form-login').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var senha = $('senha').value, nome = $('nome').value.trim().replace(/\s+/g, ' ');
+    if (nome.length < 2) { $('erro-login').textContent = 'Digite seu nome.'; $('nome').focus(); return; }
+    if (!sb()) { $('erro-login').textContent = 'Sem conexão com o servidor.'; return; }
+    $('btn-entrar').disabled = true; $('btn-entrar').textContent = 'Entrando…'; $('erro-login').textContent = '';
+    Promise.resolve(sb().rpc('ouvidoria_painel_entrar', { p_senha: senha })).then(function (r) {
+      $('btn-entrar').disabled = false; $('btn-entrar').textContent = 'Entrar';
+      if (!r || r.error) throw r && r.error;
+      if (r.data !== true) { $('erro-login').textContent = 'Senha incorreta.'; $('senha').select(); return; }
+      acesso = { senha: senha, nome: nome };
+      guardarAcesso(acesso, $('lembrar').checked);
+      $('senha').value = '';
+      mostrarPainel();
+    }).catch(function () {
+      $('btn-entrar').disabled = false; $('btn-entrar').textContent = 'Entrar';
+      $('erro-login').textContent = 'Não foi possível conectar. Tente de novo.';
+    });
+  });
+  $('btn-sair').addEventListener('click', function () { esquecerAcesso(); fecharDetalhe(); mostrarLogin(); });
+  $('btn-quem').addEventListener('click', function () {
+    var n = prompt('Seu nome (fica registrado nas respostas):', acesso.nome);
+    if (n == null) return;
+    n = n.trim().replace(/\s+/g, ' ').slice(0, 60);
+    if (n.length < 2) return;
+    acesso.nome = n; $('quem-nome').textContent = n;
+    guardarAcesso(acesso, !!localStorage.getItem(CHAVE));
+  });
+
+  function falhaSenha(err) {
+    var m = err && err.message ? String(err.message) : '';
+    if (m.indexOf('senha_invalida') >= 0) { esquecerAcesso(); fecharDetalhe(); mostrarLogin('A senha do painel mudou. Entre de novo.'); return true; }
+    return false;
+  }
+
+  // ------------------------------------------------------------
+  // Lista
+  // ------------------------------------------------------------
+  function carregar(silencioso) {
+    if (!acesso) return;
+    if (!silencioso) $('atualizado').textContent = 'Carregando…';
+    Promise.resolve(sb().rpc('ouvidoria_painel_listar', { p_senha: acesso.senha })).then(function (r) {
+      if (!r || r.error) throw r && r.error;
+      itens = Array.isArray(r.data) ? r.data : [];
+      $('atualizado').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' · atualiza sozinho a cada minuto';
+      render();
+    }).catch(function (e) {
+      if (falhaSenha(e)) return;
+      $('atualizado').textContent = 'Não foi possível carregar. Verifique a internet e toque em Atualizar.';
+      if (!itens.length) $('lista').innerHTML = '<div class="vazio">Não foi possível carregar as manifestações.</div>';
+    });
+  }
+  $('btn-atualizar').addEventListener('click', function () { carregar(); });
+
+  function contar() {
+    var c = { novo: 0, em_analise: 0, resolvido: 0, encerrado: 0, reclamacao: 0, sugestao: 0, elogio: 0 };
+    itens.forEach(function (m) { c[m.status] = (c[m.status] || 0) + 1; c[m.tipo] = (c[m.tipo] || 0) + 1; });
+    ['novo', 'em_analise', 'resolvido', 'encerrado'].forEach(function (k) { $('k-' + k).textContent = c[k]; });
+    $('t-todas').textContent = itens.length;
+    ['reclamacao', 'sugestao', 'elogio'].forEach(function (k) { $('t-' + k).textContent = c[k]; });
+  }
+
+  function passa(m) {
+    if (filtro.tipo && m.tipo !== filtro.tipo) return false;
+    if (filtro.perfil && m.perfil !== filtro.perfil) return false;
+    if (filtro.status === 'abertas' && !(m.status === 'novo' || m.status === 'em_analise')) return false;
+    if (filtro.status && filtro.status !== 'abertas' && m.status !== filtro.status) return false;
+    if (filtro.busca) {
+      var alvo = [m.protocolo, m.titulo, m.relato, m.membro_nome, m.membro_numero, m.contato_nome, m.whatsapp, m.piloto_envolvido, m.categoria].join(' ').toLowerCase();
+      var termos = filtro.busca.toLowerCase().split(/\s+/).filter(Boolean);
+      for (var i = 0; i < termos.length; i++) {
+        var t = termos[i], td = soDig(t);
+        if (alvo.indexOf(t) < 0 && !(td && td.length >= 3 && soDig(alvo).indexOf(td) >= 0)) return false;
+      }
+    }
+    return true;
+  }
+
+  function render() {
+    contar();
+    Array.prototype.forEach.call(document.querySelectorAll('.kpi'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-status') === filtro.status)); });
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-tipo') === filtro.tipo)); });
+    $('f-status').value = filtro.status;
+
+    var lista = itens.filter(passa);
+    if (!itens.length) { $('lista').innerHTML = '<div class="vazio">Nenhuma manifestação recebida ainda.</div>'; return; }
+    if (!lista.length) { $('lista').innerHTML = '<div class="vazio">Nada encontrado com esses filtros.</div>'; return; }
+    $('lista').innerHTML = lista.map(function (m) {
+      var meta = [];
+      meta.push('<span><b>' + (m.perfil === 'membro' ? 'Membro' : 'Passageiro') + ':</b> ' + esc(quemEnviou(m)) + '</span>');
+      if (m.categoria) meta.push('<span>' + esc(m.categoria) + '</span>');
+      if (m.piloto_envolvido) meta.push('<span><b>' + (m.tipo === 'elogio' ? 'Elogiado' : 'Envolvido') + ':</b> Nº ' + esc(m.piloto_envolvido) + '</span>');
+      if (m.qtd_anexos) meta.push('<span>📎 ' + m.qtd_anexos + '</span>');
+      if (m.ultima_acao) meta.push('<span>Última ação: ' + esc(m.ultima_acao.autor) + ', ' + data(m.ultima_acao.criado_em, true) + '</span>');
+      return '<button type="button" class="item t-' + m.tipo + (m.status === 'novo' ? ' novo-item' : '') + '" data-id="' + esc(m.id) + '">' +
+        '<span class="faixa"></span>' +
+        '<span class="meio">' +
+          '<span class="linha1"><span class="selo t-' + m.tipo + '">' + TIPO[m.tipo] + '</span><span class="proto">' + esc(m.protocolo) + '</span></span>' +
+          '<span class="tit">' + esc(m.titulo) + '</span>' +
+          '<span class="trecho">' + esc(m.relato) + '</span>' +
+          '<span class="meta">' + meta.join('') + '</span>' +
+        '</span>' +
+        '<span class="lado"><span class="selo cheio s-' + m.status + '">' + STATUS[m.status] + '</span><span class="proto" style="font-family:Manrope,sans-serif;font-weight:600;font-size:12px;letter-spacing:0" title="' + esc(data(m.criado_em)) + '">' + data(m.criado_em, true) + '</span></span>' +
+      '</button>';
+    }).join('');
+  }
+
+  $('lista').addEventListener('click', function (ev) {
+    var b = ev.target.closest('.item'); if (b) abrirDetalhe(b.getAttribute('data-id'));
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.kpi'), function (b) {
+    b.addEventListener('click', function () { var s = b.getAttribute('data-status'); filtro.status = filtro.status === s ? '' : s; render(); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'), function (b) {
+    b.addEventListener('click', function () { filtro.tipo = b.getAttribute('data-tipo'); render(); });
+  });
+  $('f-status').addEventListener('change', function () { filtro.status = this.value; render(); });
+  $('f-perfil').addEventListener('change', function () { filtro.perfil = this.value; render(); });
+  var tBusca = null;
+  $('busca').addEventListener('input', function () { var v = this.value; clearTimeout(tBusca); tBusca = setTimeout(function () { filtro.busca = v.trim(); render(); }, 150); });
+
+  // ------------------------------------------------------------
+  // Detalhe
+  // ------------------------------------------------------------
+  function abrirDetalhe(id) {
+    var m = itens.filter(function (x) { return x.id === id; })[0];
+    aberto = null;
+    $('fundo').hidden = false;
+    document.body.style.overflow = 'hidden';
+    $('d-proto').textContent = m ? m.protocolo : '';
+    $('d-selos').innerHTML = '';
+    $('d-corpo').innerHTML = '<div class="carregando">Carregando…</div>';
+    Promise.resolve(sb().rpc('ouvidoria_painel_detalhe', { p_senha: acesso.senha, p_id: id })).then(function (r) {
+      if (!r || r.error) throw r && r.error;
+      if (!r.data) { $('d-corpo').innerHTML = '<div class="vazio">Manifestação não encontrada.</div>'; return; }
+      aberto = r.data; renderDetalhe();
+    }).catch(function (e) {
+      if (falhaSenha(e)) return;
+      $('d-corpo').innerHTML = '<div class="vazio">Não foi possível abrir. Tente de novo.</div>';
+    });
+  }
+  function fecharDetalhe() {
+    $('fundo').hidden = true; document.body.style.overflow = ''; aberto = null;
+  }
+  $('btn-fechar').addEventListener('click', fecharDetalhe);
+  $('fundo').addEventListener('click', function (ev) { if (ev.target === this) fecharDetalhe(); });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape') return;
+    if (!$('luz').hidden) { $('luz').hidden = true; return; }
+    if (!$('fundo').hidden) fecharDetalhe();
+  });
+
+  function linkWhats(m) {
+    var d = soDig(m.whatsapp); if (!d) return '';
+    var nome = m.perfil === 'membro' ? (m.membro_nome || '').split(' ')[0] : (m.contato_nome || '').split(' ')[0];
+    var msg = 'Olá' + (nome ? ', ' + nome : '') + '! Aqui é da Ouvidoria da Equipe GDA, sobre a sua ' + TIPO[m.tipo].toLowerCase() + ' (protocolo ' + m.protocolo + '). ';
+    return 'https://wa.me/55' + d + '?text=' + encodeURIComponent(msg);
+  }
+
+  function renderDetalhe() {
+    var m = aberto.manifestacao;
+    statusEscolhido = m.status;
+    $('d-proto').textContent = m.protocolo;
+    $('d-selos').innerHTML = '<span class="selo t-' + m.tipo + '">' + TIPO[m.tipo] + '</span><span class="selo cheio s-' + m.status + '">' + STATUS[m.status] + '</span>';
+
+    var infos = [];
+    function info(rot, val, cls) { if (val) infos.push('<div class="info"><span>' + rot + '</span><b' + (cls ? ' class="' + cls + '"' : '') + '>' + val + '</b></div>'); }
+    info('Enviado por', m.perfil === 'membro' ? 'Membro da equipe' : 'Passageiro');
+    info('Recebido em', esc(data(m.criado_em)));
+    if (m.perfil === 'membro') {
+      info('Nome', esc(m.membro_nome));
+      info('Nº de Piloto', esc(m.membro_numero));
+      info('Cadastro', m.membro_confere === true ? '✓ Nome confere com o número' : (m.membro_confere === false ? '✗ Nome não confere com o número' : 'Não conferido'),
+           m.membro_confere === true ? 'ok' : (m.membro_confere === false ? 'ruim' : ''));
+    } else {
+      info('Nome', m.contato_nome ? esc(m.contato_nome) : '<i style="font-style:normal;color:var(--g-txt4)">Não informou</i>');
+    }
+    info('WhatsApp', m.whatsapp ? esc(fone(m.whatsapp)) : '<i style="font-style:normal;color:var(--g-txt4)">Não informou</i>');
+    if (m.whatsapp) info('Quer retorno pelo WhatsApp?', m.receber_whatsapp ? 'Sim' : 'Não', m.receber_whatsapp ? 'ok' : '');
+    if (m.categoria) info('Assunto', esc(m.categoria));
+    if (m.piloto_envolvido) info(m.tipo === 'elogio' ? 'Nº elogiado' : 'Nº envolvido', esc(m.piloto_envolvido));
+
+    var anexos = (aberto.anexos || []).filter(function (a) { return /^data:image\//.test(a); });
+    var hist = (aberto.historico || []).slice().reverse();
+    var wa = linkWhats(m);
+
+    $('d-corpo').innerHTML =
+      '<h2 id="d-titulo">' + esc(m.titulo) + '</h2>' +
+      '<p class="relato">' + esc(m.relato) + '</p>' +
+      (anexos.length ? '<div class="cartao"><div class="cartao-tit">Anexos (' + anexos.length + ')</div><div class="anexos">' +
+        anexos.map(function (a, i) { return '<button type="button" data-anexo="' + i + '"><img src="' + esc(a) + '" alt="Anexo ' + (i + 1) + '"></button>'; }).join('') +
+      '</div></div>' : '') +
+      '<div class="cartao"><div class="cartao-tit">Dados</div><div class="infos">' + infos.join('') + '</div></div>' +
+      '<div class="cartao">' +
+        '<div class="cartao-tit">Atendimento</div>' +
+        '<div class="status-opcoes" id="d-status">' + Object.keys(STATUS).map(function (k) {
+          return '<button type="button" class="st-op s-' + k + '" data-st="' + k + '" aria-pressed="' + (k === m.status) + '">' + STATUS[k] + '</button>';
+        }).join('') + '</div>' +
+        '<label style="display:flex;flex-direction:column;gap:6px;margin-top:14px;font-size:13px;font-weight:600;color:var(--g-txt2)">Resposta / anotação interna' +
+          '<textarea class="ent" id="d-texto" maxlength="3000" placeholder="O que foi feito, com quem falaram, combinados… (só o conselho vê)"></textarea></label>' +
+        '<div class="linha-botoes" style="margin-top:12px">' +
+          '<button type="button" class="btn" id="d-salvar">Salvar</button>' +
+          (wa ? '<a class="btn btn-whats" href="' + esc(wa) + '" target="_blank" rel="noopener">Responder pelo WhatsApp</a>' : '') +
+          '<button type="button" class="btn-leve" id="d-copiar">Copiar protocolo</button>' +
+        '</div>' +
+        '<p class="aviso" style="margin:10px 0 0">Registrado como <b style="color:var(--g-txt2)">' + esc(acesso.nome) + '</b>.' +
+          (wa && !m.receber_whatsapp ? ' Atenção: esta pessoa não marcou que quer retorno pelo WhatsApp.' : '') + '</p>' +
+        '<span class="erro" id="d-erro" role="alert"></span>' +
+      '</div>' +
+      '<div class="cartao"><div class="cartao-tit">Histórico</div><ul class="hist">' + hist.map(function (h) {
+        var acao = h.status ? (h.autor === 'Sistema' ? '' : ' mudou para <b>' + esc(STATUS[h.status] || h.status) + '</b>') : (h.texto ? ' anotou' : '');
+        return '<li><div class="quem-h"><b>' + esc(h.autor) + '</b>' + acao + ' · ' + esc(data(h.criado_em)) + '</div>' + (h.texto ? '<div class="txt-h">' + esc(h.texto) + '</div>' : '') + '</li>';
+      }).join('') + '</ul></div>';
+
+    Array.prototype.forEach.call($('d-status').children, function (b) {
+      b.addEventListener('click', function () {
+        statusEscolhido = b.getAttribute('data-st');
+        Array.prototype.forEach.call($('d-status').children, function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-anexo]'), function (b) {
+      b.addEventListener('click', function () { $('luz-img').src = anexos[+b.getAttribute('data-anexo')]; $('luz').hidden = false; });
+    });
+    $('d-copiar').addEventListener('click', function () {
+      var p = m.protocolo;
+      if (navigator.clipboard) navigator.clipboard.writeText(p).then(function () { toast('Protocolo copiado'); }, function () {});
+    });
+    $('d-salvar').addEventListener('click', salvar);
+  }
+  $('luz').addEventListener('click', function () { this.hidden = true; });
+
+  function salvar() {
+    var m = aberto.manifestacao;
+    var texto = $('d-texto').value.trim();
+    var mudou = statusEscolhido !== m.status;
+    if (!mudou && !texto) { $('d-erro').textContent = 'Escolha outro status ou escreva uma anotação.'; return; }
+    $('d-erro').textContent = '';
+    var b = $('d-salvar'); b.disabled = true; b.textContent = 'Salvando…';
+    Promise.resolve(sb().rpc('ouvidoria_painel_atualizar', {
+      p_senha: acesso.senha, p_id: m.id, p_autor: acesso.nome,
+      p_status: mudou ? statusEscolhido : null, p_texto: texto || null
+    })).then(function (r) {
+      if (!r || r.error) throw r && r.error;
+      aberto = r.data; renderDetalhe();
+      toast('Salvo ✓');
+      carregar(true);
+    }).catch(function (e) {
+      if (falhaSenha(e)) return;
+      b.disabled = false; b.textContent = 'Salvar';
+      $('d-erro').textContent = 'Não foi possível salvar. Tente de novo.';
+    });
+  }
+
+  // ------------------------------------------------------------
+  // Início
+  // ------------------------------------------------------------
+  acesso = lerAcesso();
+  if (acesso) mostrarPainel(); else mostrarLogin();
+})();
+</script>
+</body>
+</html>

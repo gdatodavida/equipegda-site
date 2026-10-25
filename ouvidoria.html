@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouvidoria — Equipe GDA</title>
+<meta name="description" content="Ouvidoria da Equipe GDA: envie sua reclamação, sugestão ou elogio. Para membros da equipe e passageiros.">
+<meta name="theme-color" content="#14110F">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  *{box-sizing:border-box;}
+  [hidden]{display:none !important;}
+  body{margin:0;background:#14110F;color:#F5F1EA;font-family:'Manrope',sans-serif;}
+  a{text-decoration:none;color:inherit;}
+  a:hover{opacity:.85;}
+  button{cursor:pointer;font-family:'Manrope',sans-serif;}
+  input,textarea,select{outline:none;font-family:'Manrope',sans-serif;}
+
+  .pagina{min-height:100vh;display:flex;flex-direction:column;}
+  .topo{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 40px;background:rgba(20,17,15,.94);border-bottom:1px solid rgba(245,241,234,.10);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+  .topo img{height:32px;width:124px;display:block;}
+  .topo .voltar-portal{font-size:14px;font-weight:600;color:#D8D2C7;}
+
+  .heroi{position:relative;padding:48px 24px 26px;text-align:center;background:linear-gradient(160deg,#1D1712 0%,#14110F 48%,#100D0B 100%);overflow:hidden;}
+  .heroi::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(245,241,234,.025) 0,rgba(245,241,234,.025) 1px,transparent 1px,transparent 42px);pointer-events:none;}
+  .heroi > *{position:relative;}
+  .kicker{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#FFDB00;}
+  .heroi h1{margin:10px 0 0;font-family:'Oswald',sans-serif;font-weight:700;font-size:40px;line-height:1.1;}
+  .heroi p{margin:10px auto 0;max-width:520px;font-size:15px;line-height:1.6;color:#D8D2C7;}
+
+  .area{flex:1;padding:20px 16px 90px;background:#1A1512;}
+  .cartao{max-width:620px;margin:0 auto;background:#211B17;border:1px solid rgba(245,241,234,.08);border-radius:20px;padding:22px 26px 28px;}
+
+  /* barra de progresso */
+  .progresso{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;}
+  .btn-voltar{background:none;border:none;color:#D8D2C7;font-size:13px;font-weight:600;padding:6px 0;display:inline-flex;align-items:center;gap:6px;}
+  .btn-voltar:disabled{visibility:hidden;}
+  .trilho{display:flex;gap:6px;justify-content:center;}
+  .trilho span{width:46px;height:4px;border-radius:4px;background:rgba(245,241,234,.12);transition:background .25s;}
+  .trilho span.on{background:#FFDB00;}
+  .etapa{font-size:12px;font-weight:700;color:#A89C8E;white-space:nowrap;}
+  .rascunho{min-height:18px;margin-top:6px;text-align:right;font-size:11px;font-weight:600;color:#6B655C;}
+  .rascunho.ok{color:#7FD99A;}
+
+  h2.pergunta{margin:6px 0 0;font-family:'Oswald',sans-serif;font-weight:600;font-size:26px;line-height:1.2;text-align:center;}
+  .sub-pergunta{margin:6px 0 0;text-align:center;font-size:13px;line-height:1.5;color:#A89C8E;}
+  .sub-pergunta strong{color:#FFDB00;font-weight:700;}
+  .bloco-titulo{margin:26px 0 12px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FFDB00;}
+
+  /* escolha de perfil */
+  .perfis{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .perfil{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:18px;border-radius:16px;border:1.5px solid rgba(245,241,234,.12);background:#171310;color:#F5F1EA;text-align:left;transition:border-color .15s,background .15s;}
+  .perfil:hover{border-color:rgba(255,219,0,.45);}
+  .perfil .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,219,0,.10);color:#FFDB00;}
+  .perfil .t{font-family:'Oswald',sans-serif;font-weight:600;font-size:19px;line-height:1.2;}
+  .perfil .d{font-size:12.5px;line-height:1.45;color:#A89C8E;}
+  .perfil[aria-pressed="true"]{border-color:#FFDB00;background:rgba(255,219,0,.07);}
+
+  /* escolha de tipo */
+  .tipos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .tipo{--c:255,219,0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:14px;border:1.5px solid rgba(245,241,234,.12);background:#171310;color:#D8D2C7;font-weight:700;font-size:14px;transition:border-color .15s,background .15s,color .15s;}
+  .tipo svg{color:rgb(var(--c));}
+  .tipo:hover{border-color:rgba(var(--c),.5);}
+  .tipo[aria-pressed="true"]{border-color:rgb(var(--c));background:rgba(var(--c),.09);color:#F5F1EA;}
+  .tipo--reclamacao{--c:255,158,138;} .tipo--sugestao{--c:124,196,255;} .tipo--elogio{--c:127,217,154;}
+
+  .btn-principal{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:24px;padding:15px 28px;border-radius:999px;border:none;background:#FFDB00;color:#14110F;font-weight:800;font-size:15px;}
+  .btn-principal:disabled{opacity:.45;cursor:default;}
+  .link-sec{display:block;margin:18px auto 0;width:max-content;max-width:100%;background:none;border:none;color:#D8D2C7;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+
+  /* história */
+  .icone-grande{display:flex;justify-content:center;margin-top:14px;color:#FFDB00;}
+  .caixa-relato{margin-top:22px;border:1px solid rgba(245,241,234,.16);border-radius:14px;background:#171310;transition:border-color .15s;}
+  .caixa-relato:focus-within{border-color:#FFDB00;}
+  .caixa-relato textarea{display:block;width:100%;min-height:150px;padding:16px;border:none;background:transparent;color:#F5F1EA;font-size:15px;line-height:1.55;resize:vertical;}
+  .caixa-relato textarea::placeholder{color:#6B655C;}
+  .ferramentas{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid rgba(245,241,234,.08);}
+  .btn-ferr{width:40px;height:40px;border-radius:10px;border:1px solid rgba(245,241,234,.16);background:transparent;color:#D8D2C7;display:inline-flex;align-items:center;justify-content:center;padding:0;flex:none;}
+  .btn-ferr:hover{border-color:rgba(245,241,234,.35);}
+  .btn-ferr.gravando{border-color:#FF8A7A;color:#FF8A7A;background:rgba(255,138,122,.10);animation:pulsar 1.2s ease-in-out infinite;}
+  @keyframes pulsar{50%{box-shadow:0 0 0 6px rgba(255,138,122,.15);}}
+  .contador{margin-left:auto;font-size:11px;font-weight:600;color:#6B655C;}
+  .aviso-mic{margin-top:8px;font-size:12px;color:#FF8A7A;font-weight:600;min-height:0;}
+
+  .fotos{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .foto{position:relative;width:76px;height:76px;border-radius:12px;overflow:hidden;border:1px solid rgba(245,241,234,.14);background:#171310;}
+  .foto img{width:100%;height:100%;object-fit:cover;display:block;}
+  .foto button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:999px;border:none;background:rgba(20,17,15,.85);color:#F5F1EA;font-size:15px;line-height:1;padding:0;}
+  .foto-add{width:76px;height:76px;border-radius:12px;border:1.5px dashed rgba(245,241,234,.22);background:transparent;color:#A89C8E;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;}
+  .foto-add:hover{border-color:#FFDB00;color:#FFDB00;}
+  .foto-carregando{display:flex;align-items:center;justify-content:center;font-size:11px;color:#A89C8E;}
+
+  /* revisar */
+  .grupo{border:1px solid rgba(245,241,234,.08);border-radius:16px;padding:18px;background:#1D1814;margin-top:14px;display:flex;flex-direction:column;gap:16px;}
+  .grupo-titulo{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A89C8E;}
+  .campo{display:flex;flex-direction:column;gap:7px;}
+  .campo label,.campo .rot{font-size:13px;font-weight:600;color:#D8D2C7;}
+  .req{color:#FFDB00;}
+  .opcional{font-weight:500;color:#6B655C;}
+  .entrada{width:100%;padding:13px 15px;border-radius:10px;border:1px solid rgba(245,241,234,.16);background:#171310;color:#F5F1EA;font-size:15px;}
+  textarea.entrada{min-height:130px;line-height:1.55;resize:vertical;}
+  .entrada:focus{border-color:#FFDB00;}
+  .entrada.invalido{border-color:#FF8A7A;}
+  .entrada::placeholder{color:#6B655C;}
+  .linha-info{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;color:#6B655C;}
+  .erro{display:none;font-size:12px;font-weight:600;line-height:1.4;color:#FF8A7A;}
+  .erro.on{display:block;}
+  .dica{font-size:12px;line-height:1.5;color:#6B655C;font-style:italic;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{padding:9px 14px;border-radius:999px;border:1px solid rgba(245,241,234,.16);background:#171310;color:#D8D2C7;font-size:13px;font-weight:600;}
+  .chip[aria-pressed="true"]{border-color:#FFDB00;background:#FFDB00;color:#14110F;}
+  .dupla{display:grid;grid-template-columns:1fr 140px;gap:12px;}
+  .check{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;line-height:1.45;color:#D8D2C7;cursor:pointer;}
+  .check input{width:18px;height:18px;margin:1px 0 0;accent-color:#FFDB00;flex:none;}
+  .privacidade{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(245,241,234,.04);font-size:12.5px;line-height:1.5;color:#A89C8E;}
+  .privacidade svg{flex:none;margin-top:1px;color:#7FD99A;}
+  .erro-geral{margin-top:16px;padding:12px 14px;border-radius:10px;background:rgba(255,138,122,.08);border:1px solid rgba(255,138,122,.35);font-size:13px;}
+  .resumo-escolha{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;}
+  .selo{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(245,241,234,.06);color:#D8D2C7;}
+  .selo--reclamacao{background:rgba(255,158,138,.12);color:#FF9E8A;}
+  .selo--sugestao{background:rgba(124,196,255,.12);color:#7CC4FF;}
+  .selo--elogio{background:rgba(127,217,154,.12);color:#7FD99A;}
+
+  /* enviado */
+  .sucesso{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:10px;}
+  .sucesso .ok{width:64px;height:64px;border-radius:999px;background:rgba(127,217,154,.12);color:#7FD99A;display:flex;align-items:center;justify-content:center;}
+  .sucesso h2{margin:6px 0 0;font-family:'Oswald',sans-serif;font-size:28px;}
+  .sucesso p{margin:0;max-width:420px;font-size:14px;line-height:1.6;color:#D8D2C7;}
+  .protocolo-box{margin-top:8px;padding:16px 22px;border-radius:16px;border:1.5px dashed rgba(255,219,0,.5);background:rgba(255,219,0,.05);display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .protocolo-box span{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#A89C8E;}
+  .protocolo-box strong{font-family:'Oswald',sans-serif;font-size:34px;letter-spacing:.06em;color:#FFDB00;}
+  .btn-sec{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;border:1px solid rgba(245,241,234,.16);background:transparent;color:#D8D2C7;font-weight:600;font-size:14px;}
+  .acoes-sucesso{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px;}
+
+  /* consulta */
+  .consulta-form{display:flex;gap:10px;margin-top:22px;}
+  .consulta-form .entrada{text-transform:uppercase;letter-spacing:.06em;font-weight:700;}
+  .consulta-form button{flex:none;padding:0 22px;border-radius:999px;border:none;background:#FFDB00;color:#14110F;font-weight:800;font-size:14px;}
+  .resultado{margin-top:20px;padding:18px;border-radius:16px;background:#171310;border:1px solid rgba(245,241,234,.08);}
+  .resultado .cab{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .resultado .cab strong{font-family:'Oswald',sans-serif;font-size:22px;letter-spacing:.05em;color:#FFDB00;}
+  .linha-tempo{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:0;}
+  .linha-tempo li{position:relative;display:flex;gap:12px;padding-bottom:18px;font-size:14px;color:#6B655C;}
+  .linha-tempo li:last-child{padding-bottom:0;}
+  .linha-tempo li::before{content:"";position:absolute;left:10px;top:22px;bottom:0;width:2px;background:rgba(245,241,234,.10);}
+  .linha-tempo li:last-child::before{display:none;}
+  .linha-tempo .bol{width:22px;height:22px;flex:none;border-radius:999px;border:2px solid rgba(245,241,234,.18);background:#171310;}
+  .linha-tempo li.feito{color:#F5F1EA;}
+  .linha-tempo li.feito .bol{border-color:#7FD99A;background:#7FD99A;}
+  .linha-tempo li.feito::before{background:#7FD99A;}
+  .linha-tempo li.atual{color:#F5F1EA;}
+  .linha-tempo li.atual .bol{border-color:#FFDB00;background:#FFDB00;}
+  .linha-tempo small{display:block;font-size:12px;color:#A89C8E;margin-top:2px;}
+
+  .rodape{padding:24px 40px;background:#14110F;border-top:1px solid rgba(245,241,234,.08);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:#6B655C;}
+  .rodape a{color:#D8D2C7;font-weight:600;}
+
+  @media (max-width:760px){
+    .topo{padding:14px 20px;}
+    .heroi{padding:32px 20px 20px;}
+    .heroi h1{font-size:32px;}
+    .area{padding:14px 12px 70px;}
+    .cartao{padding:18px 16px 24px;border-radius:18px;}
+    .trilho span{width:30px;}
+    h2.pergunta{font-size:22px;}
+    .perfis{grid-template-columns:1fr;}
+    .perfil{flex-direction:row;align-items:center;padding:14px;}
+    .perfil .ic{flex:none;}
+    .tipos{gap:8px;}
+    .tipo{padding:14px 4px;font-size:13px;}
+    .dupla{grid-template-columns:1fr;}
+    .consulta-form{flex-direction:column;}
+    .consulta-form button{padding:14px;}
+    .protocolo-box strong{font-size:28px;}
+    .rodape{padding:20px;}
+  }
+</style>
+</head>
+<body>
+<div class="pagina">
+
+  <header class="topo">
+    <a href="/" aria-label="Voltar ao portal"><img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA"></a>
+    <a href="/" class="voltar-portal">← Voltar ao portal</a>
+  </header>
+
+  <section class="heroi">
+    <span class="kicker">Ouvidoria GDA</span>
+    <h1>Fale com a Equipe GDA</h1>
+    <p>Reclamação, sugestão ou elogio: tudo chega direto ao conselho da equipe.</p>
+  </section>
+
+  <main class="area">
+    <div class="cartao">
+
+      <div class="progresso" id="progresso">
+        <button type="button" class="btn-voltar" id="btn-voltar">← Voltar</button>
+        <div class="trilho" aria-hidden="true"><span></span><span></span><span></span></div>
+        <span class="etapa" id="etapa-txt">Etapa 1 de 3</span>
+      </div>
+      <div class="rascunho" id="rascunho-txt" aria-live="polite"></div>
+
+      <!-- ========== ETAPA 1: quem é e o que quer ========== -->
+      <section id="tela-inicio" data-tela>
+        <h2 class="pergunta">Como podemos te ouvir?</h2>
+        <p class="sub-pergunta">Escolha quem você é e o tipo da sua manifestação.</p>
+
+        <div class="bloco-titulo">Quem está falando?</div>
+        <div class="perfis" role="group" aria-label="Quem está falando">
+          <button type="button" class="perfil" data-perfil="membro" aria-pressed="false">
+            <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+            <span><span class="t">Sou membro da equipe</span><br><span class="d">Piloto GDA com Número de Piloto</span></span>
+          </button>
+          <button type="button" class="perfil" data-perfil="passageiro" aria-pressed="false">
+            <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+            <span><span class="t">Sou passageiro</span><br><span class="d">Já fiz ou faço corridas com pilotos GDA</span></span>
+          </button>
+        </div>
+
+        <div class="bloco-titulo">Sobre o que você quer falar?</div>
+        <div class="tipos" role="group" aria-label="Tipo de manifestação">
+          <button type="button" class="tipo tipo--reclamacao" data-tipo="reclamacao" aria-pressed="false">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v3a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+            Reclamação
+          </button>
+          <button type="button" class="tipo tipo--sugestao" data-tipo="sugestao" aria-pressed="false">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>
+            Sugestão
+          </button>
+          <button type="button" class="tipo tipo--elogio" data-tipo="elogio" aria-pressed="false">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></svg>
+            Elogio
+          </button>
+        </div>
+
+        <button type="button" class="btn-principal" id="btn-inicio" disabled>Continuar →</button>
+        <button type="button" class="link-sec" data-ir="consulta">Já enviou? Acompanhe pelo protocolo</button>
+      </section>
+
+      <!-- ========== ETAPA 2: a história ========== -->
+      <section id="tela-historia" data-tela hidden>
+        <div class="icone-grande" id="historia-icone"></div>
+        <h2 class="pergunta" id="historia-pergunta">Qual é a sua reclamação?</h2>
+        <p class="sub-pergunta" id="historia-sub"></p>
+
+        <div class="caixa-relato">
+          <label for="relato" class="sr" hidden>Seu relato</label>
+          <textarea id="relato" maxlength="5000" placeholder="Conte o que aconteceu, quando e onde…"></textarea>
+          <div class="ferramentas">
+            <button type="button" class="btn-ferr" data-add-foto title="Anexar foto ou print" aria-label="Anexar foto ou print">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.4 11.1l-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8l8.5-8.5a3.7 3.7 0 0 1 5.2 5.2l-8.5 8.5a1.8 1.8 0 0 1-2.6-2.6l7.8-7.8"/></svg>
+            </button>
+            <button type="button" class="btn-ferr" id="btn-mic" title="Falar em vez de digitar" aria-label="Falar em vez de digitar" hidden>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+            </button>
+            <span class="contador" id="contador-relato">0 caracteres</span>
+          </div>
+        </div>
+        <div class="aviso-mic" id="aviso-mic" aria-live="polite"></div>
+        <div class="erro" id="erro-relato" role="alert"></div>
+        <div class="fotos" id="fotos-historia"></div>
+
+        <button type="button" class="btn-principal" id="btn-historia">Continuar →</button>
+      </section>
+
+      <!-- ========== ETAPA 3: revisar e enviar ========== -->
+      <section id="tela-revisar" data-tela hidden>
+        <h2 class="pergunta">Complete e revise as informações</h2>
+        <div class="resumo-escolha" id="resumo-escolha"></div>
+
+        <div class="grupo">
+          <div class="campo">
+            <label for="titulo">Título <span class="req">*</span></label>
+            <input id="titulo" class="entrada" type="text" maxlength="80" placeholder="Resuma em poucas palavras">
+            <div class="linha-info"><span class="erro" id="erro-titulo" role="alert"></span><span id="contador-titulo" style="margin-left:auto">0/80</span></div>
+          </div>
+          <div class="campo">
+            <label for="relato-rev">Seu relato <span class="req">*</span></label>
+            <textarea id="relato-rev" class="entrada" maxlength="5000"></textarea>
+            <span class="erro" id="erro-relato-rev" role="alert"></span>
+          </div>
+          <div class="campo" id="campo-categoria">
+            <span class="rot">Assunto da reclamação <span class="req">*</span></span>
+            <div class="chips" id="chips-categoria" role="group" aria-label="Assunto da reclamação"></div>
+            <span class="erro" id="erro-categoria" role="alert"></span>
+          </div>
+          <div class="campo" id="campo-piloto">
+            <label for="piloto" id="rot-piloto">Número do piloto <span class="opcional">(se souber)</span></label>
+            <input id="piloto" class="entrada" type="text" inputmode="numeric" maxlength="6" placeholder="Ex.: 113">
+            <span class="dica" id="dica-piloto"></span>
+            <span class="erro" id="erro-piloto" role="alert"></span>
+          </div>
+        </div>
+
+        <div class="grupo">
+          <div class="grupo-titulo">Anexos <span class="opcional" style="text-transform:none;letter-spacing:0">(até 3 fotos ou prints)</span></div>
+          <div class="fotos" id="fotos-revisar" style="margin-top:0"></div>
+        </div>
+
+        <div class="grupo" id="grupo-membro">
+          <div class="grupo-titulo">Sua identificação</div>
+          <div class="dupla">
+            <div class="campo">
+              <label for="m-nome">Nome completo <span class="req">*</span></label>
+              <input id="m-nome" class="entrada" type="text" autocomplete="name" placeholder="Como está no seu cadastro">
+              <span class="erro" id="erro-m-nome" role="alert"></span>
+            </div>
+            <div class="campo">
+              <label for="m-numero">Nº de Piloto <span class="req">*</span></label>
+              <input id="m-numero" class="entrada" type="text" inputmode="numeric" maxlength="6" placeholder="Ex.: 113">
+              <span class="erro" id="erro-m-numero" role="alert"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grupo" id="grupo-passageiro">
+          <div class="grupo-titulo">Seu contato</div>
+          <div class="campo">
+            <label for="p-nome">Seu nome <span class="opcional">(opcional)</span></label>
+            <input id="p-nome" class="entrada" type="text" autocomplete="name" placeholder="Pode deixar em branco">
+          </div>
+        </div>
+
+        <div class="grupo">
+          <div class="campo">
+            <label for="whats" id="rot-whats">WhatsApp <span class="req">*</span></label>
+            <input id="whats" class="entrada" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="15" placeholder="(73) 91234-5678">
+            <span class="erro" id="erro-whats" role="alert"></span>
+          </div>
+          <label class="check"><input type="checkbox" id="receber" checked> <span>Quero receber o retorno da equipe pelo WhatsApp</span></label>
+        </div>
+
+        <div class="privacidade">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <span>Nada do que você enviar fica público. Só o conselho da Equipe GDA tem acesso.</span>
+        </div>
+
+        <div class="erro erro-geral" id="erro-geral" role="alert"></div>
+        <button type="button" class="btn-principal" id="btn-enviar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <span id="btn-enviar-txt">Enviar para a Ouvidoria</span>
+        </button>
+      </section>
+
+      <!-- ========== ENVIADO ========== -->
+      <section id="tela-enviado" data-tela hidden>
+        <div class="sucesso">
+          <div class="ok"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+          <h2 id="enviado-titulo">Recebemos sua manifestação!</h2>
+          <p>Guarde o número de protocolo. Com ele você acompanha o andamento aqui na Ouvidoria.</p>
+          <div class="protocolo-box"><span>Seu protocolo</span><strong id="protocolo-gerado">—</strong></div>
+          <div class="acoes-sucesso">
+            <button type="button" class="btn-sec" id="btn-copiar">Copiar protocolo</button>
+            <button type="button" class="btn-sec" id="btn-acompanhar">Acompanhar</button>
+          </div>
+          <a href="/" class="btn-principal" style="max-width:320px">Voltar ao portal</a>
+        </div>
+      </section>
+
+      <!-- ========== CONSULTA ========== -->
+      <section id="tela-consulta" data-tela hidden>
+        <div class="icone-grande"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
+        <h2 class="pergunta">Acompanhe sua manifestação</h2>
+        <p class="sub-pergunta">Digite o protocolo que você recebeu ao enviar.</p>
+        <form class="consulta-form" id="form-consulta">
+          <label for="protocolo-busca" hidden>Protocolo</label>
+          <input id="protocolo-busca" class="entrada" type="text" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="OUV-XXXXXX">
+          <button type="submit" id="btn-consultar">Consultar</button>
+        </form>
+        <span class="erro" id="erro-consulta" role="alert" style="margin-top:10px"></span>
+        <div class="resultado" id="resultado" hidden></div>
+        <button type="button" class="link-sec" data-ir="inicio">Enviar uma nova manifestação</button>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <span>2024 © Equipe GDA. Todos os direitos reservados.</span>
+    <a href="/">Voltar ao portal</a>
+  </footer>
+</div>
+
+<input type="file" id="input-foto" accept="image/*" multiple hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var CHAVE_RASCUNHO = 'gda_ouvidoria_rascunho_v1';
+  var MAX_FOTOS = 3;
+
+  var CATEGORIAS = {
+    passageiro: ['Conduta do piloto', 'Segurança na corrida', 'Valor da corrida', 'Atraso ou não apareceu', 'Atendimento do suporte', 'Outro'],
+    membro: ['Conduta de outro membro', 'Organização / diretoria', 'Eventos e motociatas', 'Loja e pedidos', 'Grupos de WhatsApp', 'Outro']
+  };
+  var TIPO_NOME = { reclamacao: 'Reclamação', sugestao: 'Sugestão', elogio: 'Elogio' };
+  var TEXTOS = {
+    reclamacao: { p: 'Qual é a sua reclamação?', s: 'Reclamações bem detalhadas e com fotos são resolvidas <strong>mais rápido</strong>.', ph: 'Conte o que aconteceu, quando e onde…' },
+    sugestao:   { p: 'Qual é a sua sugestão?', s: 'Toda ideia é lida pelo conselho da equipe.', ph: 'Conte sua ideia e como ela ajudaria a equipe ou os passageiros…' },
+    elogio:     { p: 'Quem ou o quê você quer elogiar?', s: 'Seu elogio chega direto ao conselho da equipe.', ph: 'Conte o que aconteceu de bom e, se souber, quem foi…' }
+  };
+  var ICONES = {
+    reclamacao: '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#FF9E8A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v3a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+    sugestao: '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#7CC4FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>',
+    elogio: '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#7FD99A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></svg>'
+  };
+  var ERROS_SERVIDOR = {
+    whatsapp_obrigatorio: 'Informe seu WhatsApp.',
+    whatsapp_invalido: 'WhatsApp inválido. Use DDD + número.',
+    titulo_curto: 'O título está muito curto.',
+    relato_curto: 'Conte um pouco mais no seu relato.',
+    numero_invalido: 'Número de Piloto inválido.',
+    nome_invalido: 'Digite seu nome completo.',
+    piloto_invalido: 'Número do piloto inválido.',
+    anexos_demais: 'Envie no máximo 3 fotos.',
+    anexo_invalido: 'Uma das fotos não pôde ser enviada. Remova e tente de novo.',
+    limite_diario: 'Você já enviou 5 manifestações nas últimas 24 horas. Tente de novo amanhã ou fale com o suporte no WhatsApp (73) 3191-4501.'
+  };
+
+  var st = {
+    tela: 'inicio', perfil: '', tipo: '', relato: '', titulo: '', categoria: '', piloto: '',
+    mNome: '', mNumero: '', pNome: '', whats: '', receber: true, fotos: []
+  };
+  var carregandoFotos = 0;
+  var enviando = false;
+
+  function $(id) { return document.getElementById(id); }
+  function sb() { return window.gdaSupabase; }
+  function rolarTopo() { try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); } }
+
+  // ---------------------------------------------------------------
+  // Navegação entre telas
+  // ---------------------------------------------------------------
+  var ORDEM = ['inicio', 'historia', 'revisar'];
+  function irPara(tela, semRolar) {
+    st.tela = tela;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tela]'), function (s) {
+      s.hidden = s.id !== 'tela-' + tela;
+    });
+    var idx = ORDEM.indexOf(tela);
+    var prog = $('progresso');
+    if (idx >= 0) {
+      prog.hidden = false;
+      $('btn-voltar').disabled = idx === 0;
+      $('etapa-txt').textContent = 'Etapa ' + (idx + 1) + ' de 3';
+      Array.prototype.forEach.call(prog.querySelectorAll('.trilho span'), function (s, i) { s.classList.toggle('on', i <= idx); });
+    } else {
+      prog.hidden = tela !== 'consulta';
+      if (tela === 'consulta') {
+        $('btn-voltar').disabled = false;
+        $('etapa-txt').textContent = '';
+        Array.prototype.forEach.call(prog.querySelectorAll('.trilho span'), function (s) { s.classList.remove('on'); });
+      }
+    }
+    $('rascunho-txt').hidden = idx < 0;
+    if (tela === 'historia') prepararHistoria();
+    if (tela === 'revisar') prepararRevisar();
+    if (!semRolar) rolarTopo();
+  }
+
+  $('btn-voltar').addEventListener('click', function () {
+    pararMic();
+    var idx = ORDEM.indexOf(st.tela);
+    if (st.tela === 'consulta') { irPara('inicio'); return; }
+    if (idx > 0) irPara(ORDEM[idx - 1]);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ir]'), function (b) {
+    b.addEventListener('click', function () { irPara(b.getAttribute('data-ir')); });
+  });
+
+  // ---------------------------------------------------------------
+  // Etapa 1
+  // ---------------------------------------------------------------
+  function marcarEscolhas() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-perfil]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-perfil') === st.perfil));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tipo]'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-tipo') === st.tipo));
+    });
+    $('btn-inicio').disabled = !(st.perfil && st.tipo);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-perfil]'), function (b) {
+    b.addEventListener('click', function () {
+      if (st.perfil !== b.getAttribute('data-perfil')) st.categoria = '';
+      st.perfil = b.getAttribute('data-perfil'); marcarEscolhas(); salvarRascunho();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tipo]'), function (b) {
+    b.addEventListener('click', function () {
+      if (st.tipo !== b.getAttribute('data-tipo')) st.categoria = '';
+      st.tipo = b.getAttribute('data-tipo'); marcarEscolhas(); salvarRascunho();
+    });
+  });
+  $('btn-inicio').addEventListener('click', function () { if (st.perfil && st.tipo) irPara('historia'); });
+
+  // ---------------------------------------------------------------
+  // Etapa 2
+  // ---------------------------------------------------------------
+  function prepararHistoria() {
+    var t = TEXTOS[st.tipo] || TEXTOS.reclamacao;
+    $('historia-icone').innerHTML = ICONES[st.tipo] || '';
+    $('historia-pergunta').textContent = t.p;
+    $('historia-sub').innerHTML = t.s;
+    $('relato').placeholder = t.ph;
+    $('relato').value = st.relato;
+    contarRelato();
+    renderFotos();
+    erro('erro-relato', '');
+  }
+  function contarRelato() {
+    var n = $('relato').value.length;
+    $('contador-relato').textContent = n + (n === 1 ? ' caractere' : ' caracteres');
+  }
+  $('relato').addEventListener('input', function () { st.relato = this.value; contarRelato(); erro('erro-relato', ''); salvarRascunho(); });
+  $('btn-historia').addEventListener('click', function () {
+    pararMic();
+    st.relato = $('relato').value.trim();
+    if (st.relato.length < 10) { erro('erro-relato', 'Conte um pouco mais (pelo menos 10 caracteres).'); $('relato').focus(); return; }
+    if (carregandoFotos) { erro('erro-relato', 'Aguarde as fotos terminarem de carregar.'); return; }
+    irPara('revisar');
+  });
+
+  // Microfone (ditado) — funciona no Chrome do Android e no computador
+  var Reconhecedor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = null, gravando = false;
+  if (Reconhecedor) $('btn-mic').hidden = false;
+  function pararMic() { if (rec && gravando) { try { rec.stop(); } catch (e) {} } }
+  $('btn-mic').addEventListener('click', function () {
+    if (gravando) { pararMic(); return; }
+    try {
+      rec = new Reconhecedor();
+      rec.lang = 'pt-BR';
+      rec.continuous = true;
+      rec.interimResults = false;
+      rec.onresult = function (ev) {
+        var texto = '';
+        for (var i = ev.resultIndex; i < ev.results.length; i++) if (ev.results[i].isFinal) texto += ev.results[i][0].transcript;
+        texto = texto.trim();
+        if (!texto) return;
+        var ta = $('relato');
+        ta.value = (ta.value && !/\s$/.test(ta.value) ? ta.value + ' ' : ta.value) + texto.charAt(0).toUpperCase() + texto.slice(1);
+        st.relato = ta.value; contarRelato(); salvarRascunho();
+      };
+      rec.onstart = function () { gravando = true; $('btn-mic').classList.add('gravando'); $('aviso-mic').textContent = 'Ouvindo… fale normalmente e toque no microfone de novo para parar.'; $('aviso-mic').style.color = '#A89C8E'; };
+      rec.onend = function () { gravando = false; $('btn-mic').classList.remove('gravando'); if ($('aviso-mic').style.color !== 'rgb(255, 138, 122)') $('aviso-mic').textContent = ''; };
+      rec.onerror = function (ev) {
+        var msg = ev.error === 'not-allowed' || ev.error === 'service-not-allowed'
+          ? 'Para usar o microfone, permita o acesso quando o navegador pedir.'
+          : (ev.error === 'no-speech' ? '' : 'Não consegui ouvir. Tente de novo ou digite.');
+        $('aviso-mic').textContent = msg; $('aviso-mic').style.color = '#FF8A7A';
+      };
+      $('aviso-mic').style.color = '';
+      rec.start();
+    } catch (e) {
+      $('aviso-mic').textContent = 'O ditado não funciona neste navegador. Digite seu relato.';
+      $('aviso-mic').style.color = '#FF8A7A';
+    }
+  });
+
+  // ---------------------------------------------------------------
+  // Fotos (comprimidas no próprio celular antes de enviar)
+  // ---------------------------------------------------------------
+  function comprimir(arquivo) {
+    return new Promise(function (ok, falha) {
+      var url = URL.createObjectURL(arquivo);
+      var img = new Image();
+      img.onload = function () {
+        function gerar(max, q) {
+          var esc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+          var c = document.createElement('canvas');
+          c.width = Math.round(img.naturalWidth * esc); c.height = Math.round(img.naturalHeight * esc);
+          var ctx = c.getContext('2d');
+          ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+          return c.toDataURL('image/jpeg', q);
+        }
+        var d = gerar(1400, 0.76);
+        if (d.length > 1100000) d = gerar(1100, 0.65);
+        if (d.length > 1100000) d = gerar(900, 0.55);
+        URL.revokeObjectURL(url);
+        ok(d);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); falha(new Error('imagem')); };
+      img.src = url;
+    });
+  }
+  function renderFotos() {
+    ['fotos-historia', 'fotos-revisar'].forEach(function (id) {
+      var box = $(id);
+      box.innerHTML = '';
+      st.fotos.forEach(function (src, i) {
+        var d = document.createElement('div'); d.className = 'foto';
+        var im = document.createElement('img'); im.src = src; im.alt = 'Anexo ' + (i + 1);
+        var x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remover anexo ' + (i + 1));
+        x.addEventListener('click', function () { st.fotos.splice(i, 1); renderFotos(); });
+        d.appendChild(im); d.appendChild(x); box.appendChild(d);
+      });
+      for (var k = 0; k < carregandoFotos; k++) {
+        var l = document.createElement('div'); l.className = 'foto foto-carregando'; l.textContent = 'Carregando…'; box.appendChild(l);
+      }
+      if (st.fotos.length + carregandoFotos < MAX_FOTOS && (id === 'fotos-revisar' || st.fotos.length + carregandoFotos > 0)) {
+        var a = document.createElement('button'); a.type = 'button'; a.className = 'foto-add'; a.setAttribute('data-add-foto', '');
+        a.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Foto';
+        a.addEventListener('click', abrirSeletorFoto);
+        box.appendChild(a);
+      }
+    });
+  }
+  function abrirSeletorFoto() {
+    if (st.fotos.length + carregandoFotos >= MAX_FOTOS) { erro('erro-relato', 'Você pode anexar até 3 fotos.'); return; }
+    $('input-foto').value = '';
+    $('input-foto').click();
+  }
+  document.querySelector('.ferramentas [data-add-foto]').addEventListener('click', abrirSeletorFoto);
+  $('input-foto').addEventListener('change', function () {
+    var arquivos = Array.prototype.slice.call(this.files || []).filter(function (f) { return /^image\//.test(f.type); });
+    var vagas = MAX_FOTOS - st.fotos.length - carregandoFotos;
+    if (arquivos.length > vagas) erro('erro-relato', 'Só cabem mais ' + vagas + (vagas === 1 ? ' foto.' : ' fotos.'));
+    arquivos.slice(0, Math.max(0, vagas)).forEach(function (f) {
+      carregandoFotos++; renderFotos();
+      comprimir(f).then(function (d) { carregandoFotos--; st.fotos.push(d); renderFotos(); },
+                        function () { carregandoFotos--; renderFotos(); erro('erro-relato', 'Não consegui abrir uma das imagens.'); });
+    });
+  });
+
+  // ---------------------------------------------------------------
+  // Etapa 3
+  // ---------------------------------------------------------------
+  function prepararRevisar() {
+    var membro = st.perfil === 'membro';
+    $('resumo-escolha').innerHTML =
+      '<span class="selo">' + (membro ? 'Membro da equipe' : 'Passageiro') + '</span>' +
+      '<span class="selo selo--' + st.tipo + '">' + TIPO_NOME[st.tipo] + '</span>';
+    $('titulo').value = st.titulo;
+    $('titulo').placeholder = st.tipo === 'elogio' ? 'Ex.: Piloto muito atencioso' : (st.tipo === 'sugestao' ? 'Ex.: Encontro mensal da equipe' : 'Ex.: Piloto não apareceu');
+    $('relato-rev').value = st.relato;
+    contarTitulo();
+
+    // assunto (só reclamação)
+    $('campo-categoria').hidden = st.tipo !== 'reclamacao';
+    var chips = $('chips-categoria'); chips.innerHTML = '';
+    (CATEGORIAS[st.perfil] || []).forEach(function (c) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = c;
+      b.setAttribute('aria-pressed', String(c === st.categoria));
+      b.addEventListener('click', function () { st.categoria = c; erro('erro-categoria', ''); prepararChips(); salvarRascunho(); });
+      chips.appendChild(b);
+    });
+
+    // piloto envolvido (reclamação e elogio)
+    $('campo-piloto').hidden = st.tipo === 'sugestao';
+    var quem = membro ? 'membro' : 'piloto';
+    $('rot-piloto').innerHTML = (st.tipo === 'elogio' ? 'Número do ' + quem + ' elogiado' : 'Número do ' + quem + ' envolvido') + ' <span class="opcional">(se souber)</span>';
+    $('dica-piloto').textContent = membro ? '' : 'O número fica no adesivo da moto e no colete do piloto.';
+    $('dica-piloto').hidden = membro;
+    $('piloto').value = st.piloto;
+
+    // identificação
+    $('grupo-membro').hidden = !membro;
+    $('grupo-passageiro').hidden = membro;
+    $('m-nome').value = st.mNome; $('m-numero').value = st.mNumero; $('p-nome').value = st.pNome;
+    $('rot-whats').innerHTML = 'WhatsApp ' + (membro ? '<span class="opcional">(opcional, para retorno)</span>' : '<span class="req">*</span>');
+    $('whats').value = formatarWhats(st.whats);
+    $('receber').checked = st.receber;
+    renderFotos();
+    ['erro-titulo', 'erro-relato-rev', 'erro-categoria', 'erro-piloto', 'erro-m-nome', 'erro-m-numero', 'erro-whats', 'erro-geral'].forEach(function (id) { erro(id, ''); });
+  }
+  function prepararChips() {
+    Array.prototype.forEach.call($('chips-categoria').children, function (b) { b.setAttribute('aria-pressed', String(b.textContent === st.categoria)); });
+  }
+  function contarTitulo() { $('contador-titulo').textContent = $('titulo').value.length + '/80'; }
+
+  function soDigitos(v) { return String(v || '').replace(/\D/g, ''); }
+  function formatarWhats(v) {
+    var d = soDigitos(v).slice(0, 11);
+    if (!d.length) return '';
+    if (d.length <= 2) return '(' + d;
+    if (d.length <= 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+    if (d.length <= 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+  }
+  function erro(id, msg) {
+    var el = $(id); if (!el) return;
+    el.textContent = msg || ''; el.classList.toggle('on', !!msg);
+    var campo = { 'erro-titulo': 'titulo', 'erro-relato-rev': 'relato-rev', 'erro-piloto': 'piloto', 'erro-m-nome': 'm-nome', 'erro-m-numero': 'm-numero', 'erro-whats': 'whats', 'erro-relato': null }[id];
+    if (campo && $(campo)) $(campo).classList.toggle('invalido', !!msg);
+  }
+
+  function ligar(id, chave, erroId, transformar) {
+    $(id).addEventListener('input', function () {
+      if (transformar) { var v = transformar(this.value); if (v !== this.value) this.value = v; }
+      st[chave] = this.value; if (erroId) erro(erroId, ''); erro('erro-geral', '');
+      if (id === 'titulo') contarTitulo();
+      salvarRascunho();
+    });
+  }
+  ligar('titulo', 'titulo', 'erro-titulo');
+  ligar('relato-rev', 'relato', 'erro-relato-rev');
+  ligar('piloto', 'piloto', 'erro-piloto', function (v) { return soDigitos(v).slice(0, 6); });
+  ligar('m-nome', 'mNome', 'erro-m-nome');
+  ligar('m-numero', 'mNumero', 'erro-m-numero', function (v) { return soDigitos(v).slice(0, 6); });
+  ligar('p-nome', 'pNome', null);
+  ligar('whats', 'whats', 'erro-whats', formatarWhats);
+  $('receber').addEventListener('change', function () { st.receber = this.checked; salvarRascunho(); });
+
+  function validar() {
+    var ok = true, primeiro = null;
+    function falhou(id, campo, msg) { erro(id, msg); ok = false; if (!primeiro) primeiro = campo; }
+    st.titulo = $('titulo').value.trim();
+    st.relato = $('relato-rev').value.trim();
+    if (st.titulo.length < 3) falhou('erro-titulo', 'titulo', 'Escreva um título (pelo menos 3 letras).');
+    if (st.relato.length < 10) falhou('erro-relato-rev', 'relato-rev', 'Conte um pouco mais (pelo menos 10 caracteres).');
+    if (st.tipo === 'reclamacao' && !st.categoria) falhou('erro-categoria', 'chips-categoria', 'Escolha o assunto da reclamação.');
+    var w = soDigitos(st.whats);
+    if (st.perfil === 'membro') {
+      if (st.mNome.trim().replace(/\s+/g, ' ').length < 7) falhou('erro-m-nome', 'm-nome', 'Digite seu nome completo.');
+      if (!/^\d{1,6}$/.test(st.mNumero)) falhou('erro-m-numero', 'm-numero', 'Digite seu Número de Piloto.');
+      if (w && (w.length < 10 || w.length > 11)) falhou('erro-whats', 'whats', 'WhatsApp incompleto. Use DDD + número.');
+    } else {
+      if (!w) falhou('erro-whats', 'whats', 'Informe seu WhatsApp para a equipe poder te retornar.');
+      else if (w.length < 10 || w.length > 11) falhou('erro-whats', 'whats', 'WhatsApp incompleto. Use DDD + número.');
+    }
+    if (primeiro && $(primeiro)) { try { $(primeiro).scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} if ($(primeiro).focus) $(primeiro).focus({ preventScroll: true }); }
+    return ok;
+  }
+
+  function conferirPiloto(numero, nome) {
+    return Promise.resolve(sb().rpc('conferir_piloto', { p_num: numero, p_nome: nome })).then(function (r) {
+      if (!r || r.error) throw (r && r.error) || new Error('conferir_piloto');
+      var linha = Array.isArray(r.data) ? r.data[0] : r.data;
+      return { encontrado: !!(linha && linha.encontrado), confere: !!(linha && linha.confere) };
+    });
+  }
+
+  function travarEnvio(sim) {
+    enviando = sim;
+    $('btn-enviar').disabled = sim;
+    $('btn-enviar-txt').textContent = sim ? 'Enviando…' : 'Enviar para a Ouvidoria';
+  }
+
+  $('btn-enviar').addEventListener('click', function () {
+    if (enviando) return;
+    erro('erro-geral', '');
+    if (!validar()) return;
+    if (carregandoFotos) { erro('erro-geral', 'Aguarde as fotos terminarem de carregar.'); return; }
+    if (!sb()) { erro('erro-geral', 'Sem conexão com o servidor. Verifique sua internet e tente de novo.'); return; }
+    travarEnvio(true);
+
+    var membro = st.perfil === 'membro';
+    var passo = membro ? conferirPiloto(st.mNumero, st.mNome.trim()) : Promise.resolve(null);
+    passo.then(function (c) {
+      if (c && !c.encontrado) { erro('erro-m-numero', 'Não encontramos esse Número de Piloto.'); travarEnvio(false); return; }
+      if (c && !c.confere) { erro('erro-m-nome', 'O nome não confere com o Número de Piloto. Digite como está no seu cadastro.'); travarEnvio(false); return; }
+
+      var dados = {
+        perfil: st.perfil, tipo: st.tipo, titulo: st.titulo, relato: st.relato,
+        categoria: st.tipo === 'reclamacao' ? st.categoria : null,
+        piloto_envolvido: st.tipo === 'sugestao' ? null : (st.piloto || null),
+        membro_numero: membro ? st.mNumero : null,
+        membro_nome: membro ? st.mNome.trim() : null,
+        contato_nome: membro ? null : (st.pNome.trim() || null),
+        whatsapp: soDigitos(st.whats) || null,
+        receber_whatsapp: !!soDigitos(st.whats) && st.receber
+      };
+      return Promise.resolve(sb().rpc('ouvidoria_enviar', { p_dados: dados, p_anexos: st.fotos })).then(function (r) {
+        if (!r || r.error) throw (r && r.error) || new Error('envio');
+        concluir(String(r.data || ''));
+      });
+    }).catch(function (e) {
+      var cod = e && e.message ? String(e.message).trim() : '';
+      erro('erro-geral', ERROS_SERVIDOR[cod] || 'Não foi possível enviar agora. Verifique sua internet e tente de novo. Seu texto continua salvo.');
+      travarEnvio(false);
+    });
+  });
+
+  function concluir(protocolo) {
+    travarEnvio(false);
+    limparRascunho();
+    var tipo = st.tipo;
+    $('protocolo-gerado').textContent = protocolo || '—';
+    $('enviado-titulo').textContent = tipo === 'elogio' ? 'Obrigado pelo elogio!' : (tipo === 'sugestao' ? 'Obrigado pela sugestão!' : 'Recebemos sua reclamação!');
+    st = { tela: 'enviado', perfil: '', tipo: '', relato: '', titulo: '', categoria: '', piloto: '', mNome: '', mNumero: '', pNome: '', whats: '', receber: true, fotos: [] };
+    marcarEscolhas();
+    irPara('enviado');
+  }
+  $('btn-copiar').addEventListener('click', function () {
+    var p = $('protocolo-gerado').textContent, b = this;
+    function feito() { b.textContent = 'Copiado ✓'; setTimeout(function () { b.textContent = 'Copiar protocolo'; }, 2000); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(p).then(feito, function () {});
+    else { try { var t = document.createElement('textarea'); t.value = p; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); feito(); } catch (e) {} }
+  });
+  $('btn-acompanhar').addEventListener('click', function () {
+    $('protocolo-busca').value = $('protocolo-gerado').textContent;
+    irPara('consulta'); consultar();
+  });
+
+  // ---------------------------------------------------------------
+  // Consulta de protocolo
+  // ---------------------------------------------------------------
+  function dataBR(iso) {
+    try { return new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; }
+  }
+  function normalizarProtocolo(v) {
+    var s = String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (s.indexOf('OUV') === 0) s = s.slice(3);
+    return s ? 'OUV-' + s.slice(0, 6) : '';
+  }
+  $('protocolo-busca').addEventListener('input', function () { erro('erro-consulta', ''); });
+  $('protocolo-busca').addEventListener('blur', function () { this.value = normalizarProtocolo(this.value); });
+  $('form-consulta').addEventListener('submit', function (ev) { ev.preventDefault(); consultar(); });
+
+  function consultar() {
+    var p = normalizarProtocolo($('protocolo-busca').value);
+    $('protocolo-busca').value = p;
+    var res = $('resultado');
+    res.hidden = true;
+    if (!/^OUV-[A-Z0-9]{6}$/.test(p)) { erro('erro-consulta', 'Digite o protocolo completo, no formato OUV-XXXXXX.'); return; }
+    if (!sb()) { erro('erro-consulta', 'Sem conexão com o servidor.'); return; }
+    $('btn-consultar').disabled = true; $('btn-consultar').textContent = 'Buscando…';
+    Promise.resolve(sb().rpc('ouvidoria_consultar', { p_protocolo: p })).then(function (r) {
+      $('btn-consultar').disabled = false; $('btn-consultar').textContent = 'Consultar';
+      if (!r || r.error) throw r && r.error;
+      var d = r.data;
+      if (!d) { erro('erro-consulta', 'Não encontramos esse protocolo. Confira as letras e números.'); return; }
+      var passos = [
+        { k: 'recebido', t: 'Recebida', s: 'Sua manifestação chegou ao conselho.' },
+        { k: 'em_analise', t: 'Em análise', s: 'O conselho está cuidando do seu caso.' },
+        { k: 'concluido', t: 'Concluída', s: 'O conselho finalizou o atendimento.' }
+      ];
+      var atual = passos.map(function (x) { return x.k; }).indexOf(d.status);
+      res.innerHTML =
+        '<div class="cab"><strong></strong><span class="selo selo--' + d.tipo + '">' + (TIPO_NOME[d.tipo] || '') + '</span></div>' +
+        '<ol class="linha-tempo">' + passos.map(function (x, i) {
+          var cls = i < atual || (i === atual && x.k === 'concluido') ? 'feito' : (i === atual ? 'atual' : '');
+          var quando = i === 0 ? dataBR(d.criado_em) : (i === atual && i > 0 ? 'Atualizado em ' + dataBR(d.atualizado_em) : '');
+          return '<li class="' + cls + '"><span class="bol"></span><span><b>' + x.t + '</b><small>' + (i <= atual ? x.s : '') + (quando ? ' ' + quando : '') + '</small></span></li>';
+        }).join('') + '</ol>';
+      res.querySelector('.cab strong').textContent = d.protocolo;
+      res.hidden = false;
+    }).catch(function () {
+      $('btn-consultar').disabled = false; $('btn-consultar').textContent = 'Consultar';
+      erro('erro-consulta', 'Não foi possível consultar agora. Tente de novo em instantes.');
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // Rascunho salvo neste aparelho (sem as fotos)
+  // ---------------------------------------------------------------
+  var timerRascunho = null;
+  function salvarRascunho() {
+    clearTimeout(timerRascunho);
+    timerRascunho = setTimeout(function () {
+      var r = { perfil: st.perfil, tipo: st.tipo, relato: st.relato, titulo: st.titulo, categoria: st.categoria, piloto: st.piloto,
+                mNome: st.mNome, mNumero: st.mNumero, pNome: st.pNome, whats: st.whats, receber: st.receber, em: Date.now() };
+      try {
+        localStorage.setItem(CHAVE_RASCUNHO, JSON.stringify(r));
+        var el = $('rascunho-txt'); el.textContent = 'Rascunho salvo neste aparelho ✓'; el.classList.add('ok');
+      } catch (e) {}
+    }, 600);
+  }
+  function limparRascunho() { clearTimeout(timerRascunho); try { localStorage.removeItem(CHAVE_RASCUNHO); } catch (e) {} $('rascunho-txt').textContent = ''; }
+  function carregarRascunho() {
+    try {
+      var r = JSON.parse(localStorage.getItem(CHAVE_RASCUNHO) || 'null');
+      if (!r || typeof r !== 'object') return false;
+      if (Date.now() - (r.em || 0) > 1000 * 60 * 60 * 24 * 14) { limparRascunho(); return false; } // mais de 14 dias: descarta
+      ['perfil', 'tipo', 'relato', 'titulo', 'categoria', 'piloto', 'mNome', 'mNumero', 'pNome', 'whats'].forEach(function (k) { if (typeof r[k] === 'string') st[k] = r[k]; });
+      if (['membro', 'passageiro'].indexOf(st.perfil) < 0) st.perfil = '';
+      if (!TIPO_NOME[st.tipo]) st.tipo = '';
+      st.receber = r.receber !== false;
+      return !!(st.relato || st.titulo);
+    } catch (e) { return false; }
+  }
+
+  // ---------------------------------------------------------------
+  // Início
+  // ---------------------------------------------------------------
+  var temRascunho = carregarRascunho();
+  marcarEscolhas();
+  var params = new URLSearchParams(location.search);
+  var protocoloUrl = params.get('protocolo');
+  if (protocoloUrl || location.hash === '#acompanhar') {
+    if (protocoloUrl) $('protocolo-busca').value = normalizarProtocolo(protocoloUrl);
+    irPara('consulta', true);
+    if (protocoloUrl) consultar();
+  } else {
+    irPara('inicio', true);
+    if (temRascunho) {
+      var el = $('rascunho-txt');
+      el.innerHTML = 'Recuperamos seu rascunho. <button type="button" id="descartar" style="background:none;border:none;padding:0;color:#D8D2C7;font:inherit;text-decoration:underline;cursor:pointer">Descartar</button>';
+      el.classList.add('ok');
+      $('descartar').addEventListener('click', function () {
+        limparRascunho();
+        st = { tela: 'inicio', perfil: '', tipo: '', relato: '', titulo: '', categoria: '', piloto: '', mNome: '', mNumero: '', pNome: '', whats: '', receber: true, fotos: [] };
+        marcarEscolhas();
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>
