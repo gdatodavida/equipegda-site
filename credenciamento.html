@@ -16,6 +16,20 @@
   .gda-regras-lista{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;}
   .gda-regras-lista li{font-family:'Manrope',sans-serif;font-size:14px;line-height:1.55;color:#E9E3D8;padding-left:4px;}
   .gda-regras-lista li::marker{color:#FFDB00;font-weight:700;}
+  /* escolha do adesivo (moto / carro) */
+  .cr-opcoes{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cr-op{position:relative;display:flex;flex-direction:column;border-radius:14px;overflow:hidden;background:#171310;border:1.5px solid rgba(245,241,234,0.14);cursor:pointer;text-align:left;padding:0;font:inherit;color:#F5F1EA;transition:border-color .2s,box-shadow .2s;}
+  .cr-op[aria-pressed="true"]{border-color:#FFDB00;box-shadow:0 6px 22px rgba(255,219,0,0.12);}
+  .cr-op:disabled{cursor:default;}
+  .cr-op img{width:100%;aspect-ratio:1/1;object-fit:contain;background:#FFFFFF;display:block;}
+  .cr-op-txt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;}
+  .cr-check{width:24px;height:24px;flex:none;border-radius:999px;border:1.5px solid rgba(245,241,234,0.35);display:flex;align-items:center;justify-content:center;font-size:14px;color:#14110F;}
+  .cr-op[aria-pressed="true"] .cr-check{background:#FFDB00;border-color:#FFDB00;}
+  .cr-linha{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:#171310;border-radius:12px;}
+  .cr-unico{display:flex;align-items:center;gap:14px;padding:12px;background:#171310;border-radius:14px;}
+  .cr-unico img{width:72px;height:72px;border-radius:10px;object-fit:contain;background:#FFFFFF;flex:none;}
+  .cr-dica{font-family:'Manrope',sans-serif;font-size:12.5px;line-height:1.5;color:#A89C8E;}
+  .cr-dica b{color:#7FD99A;}
 </style>
 </head>
 <body>
@@ -50,7 +64,7 @@
       <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; padding: 44px 36px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
         <h2 id="bloqueado-titulo" style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Ainda não liberado</h2>
         <p id="bloqueado-texto" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.6; color: #D8D2C7;">Não encontramos um cadastro aprovado com esse WhatsApp.</p>
-        <a href='/consultar-cadastro' style='display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px;'>Consultar meu cadastro →</a>
+        <a href='/consultar-cadastro' style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Consultar meu cadastro →</a>
       </div>
     </section>
   </div>
@@ -68,10 +82,7 @@
 
         <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #D8D2C7;">Com o Adesivo de Identificação Oficial GDA, você recebe seu Número de Piloto (sua ID) e acesso aos grupos SOS GDA e Passageiros GDA, ao nosso app de localização em tempo real Life360, além de estar apto a pedir o Uniforme Oficial — entre outros programas e parcerias exclusivas do GDA.</p>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; background: #171310; border-radius: 12px;">
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Adesivo de Identificação Oficial</span>
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; color: #FFDB00;">R$ 19,90</span>
-        </div>
+        <div id="ad-escolha" style="display: flex; flex-direction: column; gap: 14px;"></div>
 
         <button id="btn-pagar-adesivo" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 15px; border: none;">Pagar com Pix →</button>
         <span id="pix-erro" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #E8806F; text-align: center;"></span>
@@ -136,7 +147,7 @@
         </div>
         <span style="font-family: 'Manrope', sans-serif; font-style: italic; font-size: 13px; line-height: 1.5; color: #A89C8E;">Depois de instalar o Life360, peça no grupo oficial o código de convite do nosso Circle (ele é renovado a cada 7 dias).</span>
 
-        <a href='/' style='display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: \'Manrope\', sans-serif; font-weight: 600; font-size: 14px;'>Voltar ao portal</a>
+        <a href='/' style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Voltar ao portal</a>
       </div>
     </section>
   </div>
@@ -144,7 +155,7 @@
   <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
     <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">2024 © Equipe GDA. Todos os direitos reservados.</span>
-      <a href='/' style='font-family: \'Manrope\', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;'>Voltar ao portal</a>
+      <a href='/' style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
     </div>
   </footer>
 
@@ -212,9 +223,13 @@
     if (n && num) quem = 'sou ' + n + ', Piloto ' + num + ' e ';
     else if (n) quem = 'sou ' + n + ' e ';
     else if (num) quem = 'sou o Piloto ' + num + ' e ';
-    return 'Olá, ' + quem + 'acabei de pagar meu Adesivo de Identificação Oficial GDA. Quero saber onde retirar meu adesivo.';
+    var qual = (typeof escolha !== 'undefined' && escolha.moto && escolha.carro) ? 'meus Adesivos de Identificação Oficial GDA (moto e carro)'
+      : (typeof escolha !== 'undefined' && escolha.carro) ? 'meu Adesivo de Identificação Oficial GDA (carro)' : 'meu Adesivo de Identificação Oficial GDA';
+    return 'Olá, ' + quem + 'acabei de pagar ' + qual + '. Quero saber onde retirar.';
   }
+  var ultimoNome = '', ultimoNumero = '';
   function atualizarLinkSuporte(nome, numero) {
+    ultimoNome = nome; ultimoNumero = numero;
     var a = document.getElementById('btn-suporte-retirada');
     if (a) a.href = 'https://wa.me/' + SUPORTE_WHATSAPP + '?text=' + encodeURIComponent(montarMensagemRetirada(nome, numero));
   }
@@ -439,7 +454,7 @@
   }
   function definirVeiculo(v) {
     VEICULO = normalizarVeiculo(v);
-    if (!veiculoPronto) { veiculoPronto = true; renderGrupos(); }
+    if (!veiculoPronto) { veiculoPronto = true; renderGrupos(); renderEscolha(); }
   }
   // Busca no banco se o piloto é de moto, carro ou ambos. Se der qualquer erro, conta como moto.
   function carregarVeiculo() {
@@ -632,9 +647,65 @@
   renderInstagram();
   renderGrupos();
 
+  // ===== Escolha do adesivo pelo veículo do cadastro =====
+  // moto / carro: 1 adesivo do tipo (R$ 19,90). ambos: escolhe moto, carro ou os dois (os dois = R$ 14,90 cada).
+  // Só para mostrar: o valor COBRADO é calculado no servidor (função criar-pix).
+  var PRECO_UM = 19.90, PRECO_DOIS_CADA = 14.90;
+  var escolha = { moto: 1, carro: 0 };
+  var escolhaTravada = false;
+  function brl(v) { return 'R$ ' + (Math.round(v * 100) / 100).toFixed(2).replace('.', ','); }
+  function totalEscolha() { var n = escolha.moto + escolha.carro; return n >= 2 ? n * PRECO_DOIS_CADA : PRECO_UM; }
+  function itensEscolha() {
+    return [escolha.moto ? 'moto' : '', escolha.carro ? 'carro' : ''].filter(Boolean).join(' + ');
+  }
+  function textoBotaoPagar() { return 'Pagar ' + brl(totalEscolha()) + ' com Pix →'; }
+  function renderEscolha() {
+    var box = document.getElementById('ad-escolha');
+    var btn = document.getElementById('btn-pagar-adesivo');
+    if (!box) return;
+    if (!veiculoPronto) {
+      box.innerHTML = '<div class="cr-linha"><span style="font-family: Manrope, sans-serif; font-size: 14px; color: #A89C8E;">Carregando seu adesivo…</span></div>';
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+      return;
+    }
+    var v = normalizarVeiculo(VEICULO);
+    if (v !== 'ambos') {
+      escolha = v === 'carro' ? { moto: 0, carro: 1 } : { moto: 1, carro: 0 };
+      var carro = v === 'carro';
+      box.innerHTML = '<div class="cr-unico"><img src="img/adesivo-' + (carro ? 'carro' : 'moto') + '-gda.jpg" alt="">' +
+        '<div style="flex: 1; display: flex; flex-direction: column; gap: 4px;"><span style="font-family: Oswald, sans-serif; font-weight: 600; font-size: 16px; color: #F5F1EA;">Adesivo de Identificação Oficial</span>' +
+        '<span style="font-family: Manrope, sans-serif; font-size: 13px; color: #A89C8E;">Para ' + (carro ? 'carro' : 'moto') + '</span></div>' +
+        '<span style="font-family: Oswald, sans-serif; font-weight: 700; font-size: 20px; color: #FFDB00;">' + brl(PRECO_UM) + '</span></div>';
+    } else {
+      var n = escolha.moto + escolha.carro;
+      var op = function (k, nome) {
+        return '<button type="button" class="cr-op" data-op="' + k + '" aria-pressed="' + (escolha[k] ? 'true' : 'false') + '"' + (escolhaTravada ? ' disabled' : '') + '>' +
+          '<img src="img/adesivo-' + k + '-gda.jpg" alt=""><span class="cr-op-txt">' + nome + '<span class="cr-check">' + (escolha[k] ? '✓' : '') + '</span></span></button>';
+      };
+      box.innerHTML = '<span style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 700; color: #F5F1EA;">Você roda de moto e de carro. Qual adesivo você quer?</span>' +
+        '<div class="cr-opcoes">' + op('moto', 'Moto') + op('carro', 'Carro') + '</div>' +
+        '<span class="cr-dica">1 adesivo: ' + brl(PRECO_UM) + ' · <b>Levando os dois: 25% de desconto (' + brl(PRECO_DOIS_CADA) + ' cada)</b></span>' +
+        '<div class="cr-linha"><span style="font-family: Oswald, sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">' +
+        (n >= 2 ? '2 adesivos (moto + carro)' : 'Adesivo de Identificação Oficial (' + itensEscolha() + ')') + '</span><span style="display: flex; align-items: baseline; gap: 8px; white-space: nowrap;">' +
+        (n >= 2 ? '<span style="font-family: Manrope, sans-serif; font-size: 13px; color: #8A8178; text-decoration: line-through;">' + brl(2 * PRECO_UM) + '</span>' : '') +
+        '<span style="font-family: Oswald, sans-serif; font-weight: 700; font-size: 20px; color: #FFDB00;">' + brl(totalEscolha()) + '</span></span></div>';
+      Array.prototype.forEach.call(box.querySelectorAll('[data-op]'), function (b) {
+        b.addEventListener('click', function () {
+          if (escolhaTravada) return;
+          var k = b.getAttribute('data-op'), outro = k === 'moto' ? 'carro' : 'moto';
+          if (escolha[k] && !escolha[outro]) return; // precisa ficar pelo menos 1
+          escolha[k] = escolha[k] ? 0 : 1;
+          renderEscolha();
+        });
+      });
+    }
+    if (btn && !btn.getAttribute('data-gerando')) { btn.disabled = false; btn.style.opacity = '1'; btn.textContent = textoBotaoPagar(); }
+  }
+
   var painelPix = null;
 
   function irParaBoasVindas() {
+    atualizarLinkSuporte(ultimoNome, ultimoNumero); // mensagem com o(s) adesivo(s) escolhido(s)
     scrollToTop();
     document.getElementById('screen-1').style.display = 'none';
     document.getElementById('screen-2').style.display = '';
@@ -660,15 +731,21 @@
       mostrarErroPix('O pagamento não carregou. Atualize a página e tente de novo.');
       return;
     }
+    if (!veiculoPronto) return;
     btn.disabled = true;
     btn.style.opacity = '0.6';
     btn.textContent = 'Gerando Pix…';
+    btn.setAttribute('data-gerando', '1');
+    escolhaTravada = true; renderEscolha();
 
-    window.gdaPix.criar({ tipo: 'adesivo', cadastro_id: cadastroId }).then(function (r) {
+    window.gdaPix.criar({ tipo: 'adesivo', cadastro_id: cadastroId, qtd_moto: escolha.moto, qtd_carro: escolha.carro }).then(function (r) {
+      btn.removeAttribute('data-gerando');
       if (!r.ok) {
+        escolhaTravada = false;
         btn.disabled = false;
         btn.style.opacity = '1';
-        btn.textContent = 'Pagar com Pix →';
+        btn.textContent = textoBotaoPagar();
+        renderEscolha();
         if (r.erro === 'adesivo_ja_pago') { irParaBoasVindas(); return; }
         mostrarErroPix(r.mensagem);
         return;
@@ -687,6 +764,7 @@
 
   var btnPagar = document.getElementById('btn-pagar-adesivo');
   if (btnPagar) btnPagar.addEventListener('click', gerarPixAdesivo);
+  renderEscolha();
 })();
 </script>
 </body>

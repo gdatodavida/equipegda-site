@@ -17,16 +17,52 @@
   .gda-input{width:100%;box-sizing:border-box;padding:13px 16px;border-radius:10px;border:1px solid rgba(245,241,234,0.16);background:#171310;color:#F5F1EA;font-family:'Manrope',sans-serif;font-size:15px;}
   .gda-label{font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;color:#D8D2C7;}
   .gda-erro{display:none;font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;line-height:1.4;color:#FF8A7A;}
+
+  /* ===== Passo 2: carrinho (moto / carro) ===== */
+  .ad-k{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FFDB00;}
+  .ad-selo{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(255,219,0,.16),rgba(255,219,0,.04));border:1.5px solid rgba(255,219,0,.55);}
+  .ad-selo b{font-family:'Oswald',sans-serif;font-size:26px;color:#FFDB00;line-height:1;flex:none;}
+  .ad-selo span{font-family:'Manrope',sans-serif;font-size:13px;line-height:1.4;color:#D8D2C7;}
+  .ad-itens{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .ad-item{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:#171310;border:1.5px solid rgba(245,241,234,.12);transition:border-color .2s,box-shadow .2s;}
+  .ad-item.on{border-color:#FFDB00;box-shadow:0 6px 22px rgba(255,219,0,.12);}
+  .ad-img{position:relative;aspect-ratio:1/1;background:#FFFFFF;overflow:hidden;}
+  .ad-img img{width:100%;height:100%;object-fit:contain;display:block;}
+  .ad-tag{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:999px;background:#14110F;color:#F5F1EA;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;letter-spacing:.06em;}
+  .ad-body{padding:14px;display:flex;flex-direction:column;gap:8px;}
+  .ad-nome{font-family:'Oswald',sans-serif;font-weight:600;font-size:17px;color:#F5F1EA;}
+  .ad-precos{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .ad-de{font-family:'Manrope',sans-serif;font-size:12px;color:#8A8178;text-decoration:line-through;}
+  .ad-por{font-family:'Oswald',sans-serif;font-weight:700;font-size:20px;color:#FFDB00;}
+  .ad-qtd{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:4px;min-height:44px;border-radius:999px;border:1.5px solid #FFDB00;padding:0 4px;color:#F5F1EA;}
+  .ad-qtd button{width:40px;height:40px;border-radius:999px;border:none;background:transparent;color:#FFDB00;font-size:22px;font-weight:800;line-height:1;padding:0;}
+  .ad-qtd button:disabled{opacity:.3;cursor:not-allowed;}
+  .ad-qtd span{font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;min-width:24px;text-align:center;}
+  .ad-item.on .ad-qtd{background:#FFDB00;color:#14110F;}
+  .ad-item.on .ad-qtd button{color:#14110F;}
+  .ad-cart{display:flex;flex-direction:column;gap:10px;padding:18px 20px;background:#171310;border-radius:16px;font-family:'Manrope',sans-serif;}
+  .ad-linha{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:#D8D2C7;}
+  .ad-linha.desc{color:#7FD99A;font-weight:700;}
+  .ad-linha span:last-child{white-space:nowrap;}
+  .ad-sep{height:1px;background:rgba(245,241,234,.08);}
+  .ad-total{display:flex;justify-content:space-between;align-items:baseline;color:#F5F1EA;}
+  .ad-total span{font-size:14px;font-weight:700;}
+  .ad-total b{font-family:'Oswald',sans-serif;font-size:30px;color:#FFDB00;}
+  .ad-eco{align-self:flex-end;padding:4px 10px;border-radius:999px;background:rgba(127,217,154,.12);color:#7FD99A;font-size:12px;font-weight:800;}
+  .ad-vazio{font-size:13px;color:#8A8178;text-align:center;padding:6px 0;}
+  #btn-pagar:disabled{opacity:.4;cursor:not-allowed;}
+  @media (max-width:480px){.ad-itens{gap:10px;}.ad-nome{font-size:15px;}.ad-body{padding:12px;}}
+  @media (max-width:600px){header{padding:14px 20px !important;}}
 </style>
 </head>
 <body>
 <div style="width: 100%; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; background: #14110F; font-family: 'Manrope', sans-serif;">
 
   <header style="position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 40px; background: rgba(20,17,15,0.94); border-bottom: 1px solid rgba(245,241,234,0.10); backdrop-filter: blur(6px);">
-    <a href="index.html" style="display: flex; align-items: center; gap: 12px;">
+    <a href="/" style="display: flex; align-items: center; gap: 12px;">
       <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block;">
     </a>
-    <a id="header-voltar" href="index.html" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">← Voltar ao portal</a>
+    <a href="/" id="header-voltar" style="display: inline-flex; align-items: center; gap: 8px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #D8D2C7;">← Voltar ao portal</a>
   </header>
 
   <!-- PASSO 1: identificação -->
@@ -34,9 +70,9 @@
     <section style="position: relative; display: flex; align-items: center; padding: 64px 24px 36px; box-sizing: border-box; background: linear-gradient(160deg, #1D1712 0%, #14110F 48%, #100D0B 100%); overflow: hidden;">
       <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
       <div style="position: relative; max-width: 640px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px;">
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Adesivo de Identificação Oficial</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Adesivo de Identificação Oficial · moto e carro</span>
         <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 40px; line-height: 1.1; color: #F5F1EA;">Pedir adesivo de reposição</h1>
-        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 480px;">Exclusivo para membros que já têm Número de Piloto. Vamos confirmar quem é você.</p>
+        <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 480px;">Exclusivo para membros que já têm Número de Piloto, com <strong style="color: #FFDB00;">25% de desconto</strong>. Vamos confirmar quem é você.</p>
       </div>
     </section>
 
@@ -73,13 +109,13 @@
     </section>
   </div>
 
-  <!-- PASSO 2: resumo e envio -->
+  <!-- PASSO 2: monte seu pedido -->
   <div id="screen-2" style="display: none;">
     <section style="padding: 20px 20px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
-      <div style="max-width: 520px; margin: 60px auto 0; display: flex; flex-direction: column; gap: 24px; padding: 36px 30px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
+      <div style="max-width: 560px; margin: 40px auto 0; display: flex; flex-direction: column; gap: 22px; padding: 32px 26px; background: #211B17; border: 1px solid rgba(245,241,234,0.08); border-radius: 20px; box-sizing: border-box;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FFDB00;">Passo 2 de 2</span>
-          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 22px; color: #F5F1EA;">Confira seu pedido</h2>
+          <span class="ad-k">Passo 2 de 2</span>
+          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; color: #F5F1EA;">Monte seu pedido</h2>
         </div>
 
         <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(127,217,154,0.08); border: 1px solid rgba(127,217,154,0.35);">
@@ -87,20 +123,36 @@
           <span id="resumo-ok" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: #7FD99A;">Piloto confirmado</span>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; background: #171310; border-radius: 14px;">
-          <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">Item</span><span style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA; text-align: right;">Adesivo de Identificação Oficial (reposição)</span></div>
-          <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
+        <div class="ad-selo"><b>-25%</b><span><strong style="color: #F5F1EA;">Benefício de membro GDA.</strong><br>Desconto exclusivo para quem tem Número de Piloto.</span></div>
+
+        <div class="ad-itens">
+          <div class="ad-item" data-item="moto">
+            <div class="ad-img"><img src="img/adesivo-moto-gda.jpg" alt="Adesivo de Identificação Oficial GDA para moto"><span class="ad-tag">MOTO</span></div>
+            <div class="ad-body">
+              <span class="ad-nome">Adesivo de Moto</span>
+              <span class="ad-precos"><span class="ad-de">R$ 19,90</span><span class="ad-por">R$ 14,90</span></span>
+              <div class="ad-qtd"><button type="button" data-menos aria-label="Diminuir adesivo de moto">−</button><span data-qtd aria-live="polite">0</span><button type="button" data-mais aria-label="Aumentar adesivo de moto">+</button></div>
+            </div>
+          </div>
+          <div class="ad-item" data-item="carro">
+            <div class="ad-img"><img src="img/adesivo-carro-gda.jpg" alt="Adesivo de Identificação Oficial GDA para carro"><span class="ad-tag">CARRO</span></div>
+            <div class="ad-body">
+              <span class="ad-nome">Adesivo de Carro</span>
+              <span class="ad-precos"><span class="ad-de">R$ 19,90</span><span class="ad-por">R$ 14,90</span></span>
+              <div class="ad-qtd"><button type="button" data-menos aria-label="Diminuir adesivo de carro">−</button><span data-qtd aria-live="polite">0</span><button type="button" data-mais aria-label="Aumentar adesivo de carro">+</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ad-cart" id="carrinho"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 20px; background: #171310; border-radius: 14px;">
           <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">Nome</span><span id="resumo-nome" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA; text-align: right;"></span></div>
           <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">Número do adesivo</span><span id="resumo-numero" style="font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; color: #FFDB00;"></span></div>
           <div style="display: flex; justify-content: space-between; gap: 12px;"><span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">WhatsApp</span><span id="resumo-wa" style="font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #F5F1EA;"></span></div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; background: #171310; border-radius: 12px;">
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Total</span>
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #FFDB00;">R$ 19,90</span>
-        </div>
-
-        <button id="btn-pagar" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15px; border: none;">Pagar com Pix →</button>
+        <button id="btn-pagar" type="button" disabled style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 15px 28px; border-radius: 999px; background-color: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16px; border: none;">Pagar com Pix →</button>
         <span id="nota-pagar" style="font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #A89C8E; text-align: center;">Geramos o seu Pix (QR Code e Pix Copia e Cola). O pagamento é confirmado automaticamente, sem precisar enviar comprovante.</span>
         <span id="pix-erro" role="alert" style="display: none; font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #E8806F; text-align: center;"></span>
         <div id="pix-box" style="display: none;"></div>
@@ -124,7 +176,7 @@
           <a id="btn-retirada" href="https://wa.me/557331914501" target="_blank" rel="noopener" style="width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16px;">Falar com o suporte no WhatsApp →</a>
           <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #A89C8E;">(73) 3191-4501</span>
         </div>
-        <a href="index.html" style="display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Voltar ao portal</a>
+        <a href="/" style="display: inline-flex; align-items: center; justify-content: center; padding: 12px 24px; border-radius: 999px; background: transparent; border: 1px solid rgba(245,241,234,0.16); color: #D8D2C7; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 14px;">Voltar ao portal</a>
       </div>
     </section>
   </div>
@@ -132,7 +184,7 @@
   <footer style="padding: 40px 40px 32px; background: #0F0C0A; border-top: 1px solid rgba(245,241,234,0.08); box-sizing: border-box;">
     <div style="max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #7A7369;">2024 © Equipe GDA. Todos os direitos reservados.</span>
-      <a href="index.html" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
+      <a href="/" style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; color: #D8D2C7;">Voltar ao portal</a>
     </div>
   </footer>
 
@@ -146,10 +198,17 @@
   'use strict';
 
   var SUPORTE_WHATSAPP = '557331914501';
+  // Só para mostrar na tela. O valor COBRADO é calculado no servidor (função criar-pix).
+  var PRECO_CHEIO = 19.90;
+  var PRECO_MEMBRO = 14.90;
+  var MAX_POR_ITEM = 10;
+  var NOMES = { moto: 'Adesivo de Moto', carro: 'Adesivo de Carro' };
 
   var state = { nome: '', numero: '', whatsapp: '' };
+  var qtd = { moto: 0, carro: 0 };
 
   function scrollToTop() { try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (err) { try { window.scrollTo(0, 0); } catch (e) {} } }
+  function brl(v) { return 'R$ ' + (Math.round(v * 100) / 100).toFixed(2).replace('.', ','); }
 
   // ----- conferência do piloto no Supabase (tabela pilotos) -----
   // Devolve { encontrado: bool, confere: bool }. Só número + nome são enviados; nenhum dado pessoal volta.
@@ -262,8 +321,60 @@
 
   function numeroAtual() { return String(parseInt(state.numero, 10)); }
   function linkSuporte(texto) { return 'https://wa.me/' + SUPORTE_WHATSAPP + '?text=' + encodeURIComponent(texto); }
+  function itensTexto() {
+    var p = [];
+    if (qtd.moto) p.push(qtd.moto + '× ' + NOMES.moto);
+    if (qtd.carro) p.push(qtd.carro + '× ' + NOMES.carro);
+    return p.join(' + ') || 'nenhum item';
+  }
   function dadosTexto() {
-    return 'Nome: ' + state.nome.trim() + '\nNúmero do adesivo (Piloto): ' + numeroAtual() + '\nWhatsApp: ' + state.whatsapp;
+    return 'Nome: ' + state.nome.trim() + '\nNúmero do adesivo (Piloto): ' + numeroAtual() + '\nWhatsApp: ' + state.whatsapp +
+      '\nPedido: ' + itensTexto() + ' — total ' + brl((qtd.moto + qtd.carro) * PRECO_MEMBRO);
+  }
+
+  // ----- carrinho -----
+  function renderCarrinho() {
+    var num = numeroAtual();
+    Array.prototype.forEach.call(document.querySelectorAll('.ad-item'), function (el) {
+      var k = el.getAttribute('data-item');
+      el.classList.toggle('on', qtd[k] > 0);
+      el.querySelector('[data-qtd]').textContent = qtd[k];
+      el.querySelector('[data-menos]').disabled = qtd[k] === 0;
+      el.querySelector('[data-mais]').disabled = qtd[k] >= MAX_POR_ITEM;
+    });
+    var box = document.getElementById('carrinho');
+    var pagar = document.getElementById('btn-pagar');
+    var n = qtd.moto + qtd.carro;
+    if (!n) {
+      box.innerHTML = '<span class="ad-k" style="color:#A89C8E">Seu carrinho</span><span class="ad-vazio">Escolha quantos adesivos de moto e de carro você quer.</span>';
+      pagar.disabled = true; pagar.textContent = 'Pagar com Pix →';
+      return;
+    }
+    var sub = n * PRECO_CHEIO, tot = n * PRECO_MEMBRO, eco = sub - tot;
+    var linhas = ['moto', 'carro'].filter(function (k) { return qtd[k] > 0; }).map(function (k) {
+      return '<div class="ad-linha"><span>' + qtd[k] + '× ' + NOMES[k] + ' (Nº ' + num + ')</span><span>' + brl(qtd[k] * PRECO_CHEIO) + '</span></div>';
+    }).join('');
+    box.innerHTML = '<span class="ad-k" style="color:#A89C8E">Seu carrinho</span>' + linhas +
+      '<div class="ad-sep"></div><div class="ad-linha"><span>Subtotal</span><span>' + brl(sub) + '</span></div>' +
+      '<div class="ad-linha desc"><span>Benefício de membro (−25%)</span><span>− ' + brl(eco) + '</span></div>' +
+      '<div class="ad-sep"></div><div class="ad-total"><span>Total</span><b>' + brl(tot) + '</b></div>' +
+      '<span class="ad-eco">Você economiza ' + brl(eco) + '</span>';
+    pagar.disabled = gerando; pagar.textContent = 'Pagar ' + brl(tot) + ' com Pix →';
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ad-item'), function (el) {
+    var k = el.getAttribute('data-item');
+    el.querySelector('[data-menos]').addEventListener('click', function () { mudarQtd(k, -1); });
+    el.querySelector('[data-mais]').addEventListener('click', function () { mudarQtd(k, 1); });
+  });
+  function mudarQtd(k, d) {
+    if (gerando) return;
+    var novo = Math.max(0, Math.min(MAX_POR_ITEM, qtd[k] + d));
+    if (novo === qtd[k]) return;
+    qtd[k] = novo;
+    // mudou o carrinho depois de gerar o Pix: some o QR antigo (o valor mudou)
+    if (painelPix || document.getElementById('pix-box').style.display !== 'none') resetarPix();
+    renderCarrinho();
   }
 
   function mostrarErroPix(msg) {
@@ -278,10 +389,11 @@
     var box = document.getElementById('pix-box');
     box.innerHTML = ''; box.style.display = 'none';
     var btn = document.getElementById('btn-pagar');
-    btn.style.display = ''; btn.disabled = false; btn.style.opacity = '1'; btn.textContent = 'Pagar com Pix →';
+    btn.style.display = ''; btn.style.opacity = '';
     document.getElementById('nota-pagar').style.display = '';
     document.getElementById('pix-suporte').style.display = 'none';
     mostrarErroPix('');
+    renderCarrinho();
   }
 
   function irParaPasso2() {
@@ -290,7 +402,6 @@
     document.getElementById('resumo-nome').textContent = state.nome.trim();
     document.getElementById('resumo-numero').textContent = 'Nº ' + num;
     document.getElementById('resumo-wa').textContent = state.whatsapp;
-    document.getElementById('pix-suporte-link').href = linkSuporte('Olá! Estou com problema para pagar o Adesivo de Identificação Oficial GDA de REPOSIÇÃO.\n\n' + dadosTexto());
     var chave = num + '|' + state.whatsapp.replace(/\D/g, '');
     if (chave !== pedidoChave) { pedidoId = null; pedidoChave = chave; }
     resetarPix();
@@ -301,9 +412,9 @@
 
   function irParaPago() {
     var num = numeroAtual();
-    document.getElementById('pago-texto').textContent = 'Seu Adesivo de Identificação Oficial de reposição (Piloto ' + num + ') está pago e registrado.';
+    document.getElementById('pago-texto').textContent = 'Seu pedido (' + itensTexto() + ', Piloto ' + num + ') está pago e registrado.';
     document.getElementById('btn-retirada').href = linkSuporte(
-      'Olá! Acabei de pagar o meu Adesivo de Identificação Oficial GDA de REPOSIÇÃO (Pix confirmado automaticamente).\n\n' + dadosTexto() + '\n\nQuero combinar onde e quando retirar.');
+      'Olá! Acabei de pagar meu pedido de Adesivo de Identificação Oficial GDA de REPOSIÇÃO (Pix confirmado automaticamente).\n\n' + dadosTexto() + '\n\nQuero combinar onde e quando retirar.');
     document.getElementById('screen-2').style.display = 'none';
     document.getElementById('screen-3').style.display = '';
     document.getElementById('header-voltar').style.display = 'none';
@@ -323,22 +434,27 @@
 
   function gerarPix() {
     if (gerando) return;
+    if (!(qtd.moto + qtd.carro)) return;
     var btn = document.getElementById('btn-pagar');
     mostrarErroPix('');
+    document.getElementById('pix-suporte-link').href = linkSuporte('Olá! Estou com problema para pagar o Adesivo de Identificação Oficial GDA de REPOSIÇÃO.\n\n' + dadosTexto());
     if (!window.gdaSupabase || !window.gdaPix) {
       mostrarErroPix('O pagamento não carregou. Atualize a página e tente de novo.');
       return;
     }
     gerando = true;
     btn.disabled = true; btn.style.opacity = '0.6'; btn.textContent = 'Gerando Pix…';
+    var pedido = { moto: qtd.moto, carro: qtd.carro };
     garantirPedido().then(function (id) {
-      return window.gdaPix.criar({ tipo: 'adesivo_reposicao', pedido_adesivo_id: id });
+      return window.gdaPix.criar({ tipo: 'adesivo_reposicao', pedido_adesivo_id: id, qtd_moto: pedido.moto, qtd_carro: pedido.carro });
     }).then(function (r) {
       gerando = false;
       if (!r.ok) {
-        if (r.erro === 'pedido_nao_pendente') { irParaPago(); return; }
-        btn.disabled = false; btn.style.opacity = '1'; btn.textContent = 'Pagar com Pix →';
-        mostrarErroPix(r.mensagem);
+        // pedido já pago (ex.: outra aba): cria um pedido novo na próxima tentativa
+        if (r.erro === 'pedido_nao_pendente') { pedidoId = null; }
+        btn.style.opacity = '1';
+        renderCarrinho();
+        mostrarErroPix(r.erro === 'pedido_nao_pendente' ? 'Este pedido já foi pago. Toque em Pagar de novo para fazer um novo pedido.' : r.mensagem);
         return;
       }
       btn.style.display = 'none';
@@ -348,13 +464,14 @@
       box.style.display = '';
       if (painelPix) painelPix.parar();
       painelPix = window.gdaPix.mostrar(box, r.data, {
-        titulo: 'Pague o adesivo de reposição com Pix',
+        titulo: 'Pague seu pedido de adesivo com Pix',
         onAprovado: function () { setTimeout(irParaPago, 1600); },
         onNovoCodigo: function () { resetarPix(); gerarPix(); }
       });
     }, function () {
       gerando = false;
-      btn.disabled = false; btn.style.opacity = '1'; btn.textContent = 'Pagar com Pix →';
+      btn.style.opacity = '1';
+      renderCarrinho();
       mostrarErroPix('Não foi possível registrar o seu pedido agora. Verifique sua internet e tente de novo.');
     });
   }
@@ -367,6 +484,8 @@
     document.getElementById('screen-1').style.display = '';
     scrollToTop();
   });
+
+  renderCarrinho();
 })();
 </script>
 </body>
