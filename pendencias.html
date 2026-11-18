@@ -12,6 +12,7 @@
 <style>
   *{box-sizing:border-box;}
   [hidden]{display:none !important;}
+  body:not(.com-privado) .so-privado{display:none !important;}
   body{margin:0;font-family:'Manrope',sans-serif;min-height:100vh;}
   main{max-width:1000px;margin:0 auto;padding:48px 32px 90px;}
   .kicker{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--g-am-txt);}
@@ -107,7 +108,7 @@
 <main id="tela" hidden>
   <span class="kicker">Diretoria · Equipe GDA</span>
   <h1>Pendências</h1>
-  <p class="sub">Lembretes e coisas a fazer do GDA, da ATIVAmob e da vida pessoal.</p>
+  <p class="sub" id="sub">Lembretes e coisas a fazer da Equipe GDA.</p>
 
   <div class="aviso" id="aviso-tabela" hidden>
     A tabela <strong>lembretes</strong> ainda não existe no Supabase. Rode o arquivo
@@ -121,13 +122,13 @@
       <button class="btn" type="submit" id="btn-salvar">Adicionar</button>
     </div>
 
-    <div class="linha">
+    <div class="linha so-privado">
       <div class="seg" role="radiogroup" aria-label="Categoria">
         <input type="radio" name="cat" id="c-gda" value="gda" checked><label for="c-gda" class="cat-gda">GDA</label>
-        <input type="radio" name="cat" id="c-ativamob" value="ativamob"><label for="c-ativamob" class="cat-ativamob">ATIVAmob</label>
-        <input type="radio" name="cat" id="c-pessoal" value="pessoal"><label for="c-pessoal" class="cat-pessoal">Pessoal</label>
+        <input type="radio" name="cat" id="c-ativamob" value="ativamob"><label for="c-ativamob" class="cat-ativamob so-privado">ATIVAmob</label>
+        <input type="radio" name="cat" id="c-pessoal" value="pessoal"><label for="c-pessoal" class="cat-pessoal so-privado">Pessoal</label>
       </div>
-      <span class="privado" id="aviso-privado" hidden>🔒 Só você vê</span>
+      <span class="privado so-privado" id="aviso-privado" hidden>🔒 Só você vê</span>
     </div>
 
     <div class="linha">
@@ -163,7 +164,7 @@
   </div>
 
   <div class="filtros">
-    <div class="seg" role="radiogroup" aria-label="Filtrar por categoria">
+    <div class="seg so-privado" role="radiogroup" aria-label="Filtrar por categoria">
       <input type="radio" name="fcat" id="fc-todas" value="" checked><label for="fc-todas">Todas</label>
       <input type="radio" name="fcat" id="fc-gda" value="gda"><label for="fc-gda" class="cat-gda">GDA</label>
       <input type="radio" name="fcat" id="fc-ativamob" value="ativamob"><label for="fc-ativamob" class="cat-ativamob">ATIVAmob</label>
@@ -194,6 +195,7 @@
   var itens = [];         // todos os lembretes carregados
   var periodo = 'todas';
   var editandoId = '';
+  var liberado = false;   // pode usar Pessoal / ATIVAmob?
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -390,7 +392,7 @@
     editandoId = '';
     $('form').reset();
     var c = ''; try { c = localStorage.getItem(CHAVE_CAT) || ''; } catch (e) {}
-    marcarRadio('cat', CATS[c] ? c : 'gda');
+    marcarRadio('cat', liberado && CATS[c] ? c : 'gda');
     $('f-det').hidden = true; $('btn-det').hidden = false;
     $('btn-salvar').textContent = 'Adicionar';
     $('acoes-edicao').hidden = true;
@@ -423,7 +425,7 @@
     if (!titulo) return;
     var dados = {
       titulo: titulo,
-      categoria: valorRadio('cat') || 'gda',
+      categoria: liberado ? (valorRadio('cat') || 'gda') : 'gda',
       data: $('f-data').value || null,
       hora: $('f-data').value && $('f-hora').value ? $('f-hora').value : null,
       prioridade: $('f-prio').value,
@@ -483,10 +485,16 @@
   // ------------------------------------------------------------------
   window.gdaAdmin.exigir(function (sessao) {
     meuId = sessao.user && sessao.user.id || '';
-    limparForm();
-    $('tela-carregando').hidden = true;
-    $('tela').hidden = false;
-    carregar();
+    Promise.resolve(sb.rpc('lembretes_privado_liberado')).then(function (r) {
+      liberado = !!(r && !r.error && r.data === true);
+    }, function () { liberado = false; }).then(function () {
+      document.body.classList.toggle('com-privado', liberado);
+      if (liberado) $('sub').textContent = 'Lembretes e coisas a fazer do GDA, da ATIVAmob e da vida pessoal.';
+      limparForm();
+      $('tela-carregando').hidden = true;
+      $('tela').hidden = false;
+      carregar();
+    });
     // virou o dia com a página aberta / voltou para a aba -> recarrega
     document.addEventListener('visibilitychange', function () { if (!document.hidden) carregar(); });
   });
