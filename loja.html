@@ -12,15 +12,50 @@
   .gda-card{display:flex;flex-direction:column;background:#211B17;border:1px solid rgba(245,241,234,0.08);border-radius:20px;overflow:hidden;transition:transform .2s ease,border-color .2s ease;}
   .gda-card:hover{transform:translateY(-3px);border-color:rgba(255,219,0,0.45);}
   .gda-card:focus-visible{outline:2px solid #FFDB00;outline-offset:3px;}
-  .gda-card-img{width:100%;aspect-ratio:1600/912;object-fit:cover;display:block;background:#171310;}
-  .gda-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:999px;background:#FFDB00;color:#14110F;font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;}
+  .gda-card-img{width:100%;aspect-ratio:1600/912;object-fit:cover;object-position:var(--pos,center);display:block;background:#171310;}
+
+  /* conteúdo do card */
+  .gc-corpo{display:flex;flex-direction:column;gap:10px;padding:24px 24px 26px;flex:1;}
+  .gc-selo{align-self:flex-start;padding:4px 10px;border-radius:999px;font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;}
+  .gc-selo--promo{background:rgba(255,219,0,0.14);color:#FFDB00;}
+  .gc-selo--ok{background:rgba(127,217,154,0.12);color:#7FD99A;}
+  .gc-selo--fim{background:rgba(230,40,40,0.16);color:#FF6B5E;}
+  .gc-tit{margin:0;font-family:'Oswald',sans-serif;font-weight:600;font-size:24px;line-height:1.2;color:#F5F1EA;}
+  .gc-desc{margin:0;font-family:'Manrope',sans-serif;font-size:14px;line-height:1.6;color:#A89C8E;}
+  .gc-precos{display:flex;align-items:baseline;gap:10px;margin-top:4px;flex-wrap:wrap;}
+  .gc-de{font-family:'Manrope',sans-serif;font-weight:600;font-size:16px;color:#7A7369;text-decoration:line-through;}
+  .gc-por{font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;color:#FFDB00;}
+  .gc-off{align-self:center;padding:3px 9px;border-radius:999px;background:rgba(255,219,0,0.14);color:#FFDB00;font-family:'Manrope',sans-serif;font-weight:800;font-size:12px;}
+  .gc-nota{font-family:'Manrope',sans-serif;font-size:12px;color:#6B655C;margin-bottom:8px;}
+  .so-leitor{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+  .gda-btn{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:999px;background:#FFDB00;color:#14110F;font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;text-align:center;}
+  .gda-btn .curto{display:none;}
+
   @media (prefers-reduced-motion: reduce){.gda-card{transition:none;}.gda-card:hover{transform:none;}}
   @media (max-width: 760px){
     .gda-header{padding:14px 20px !important;}
-    .gda-sec{padding:28px 20px 72px !important;}
-    .gda-hero{padding:44px 20px 28px !important;}
-    .gda-hero h1{font-size:36px !important;}
-    .gda-produtos{grid-template-columns:1fr;gap:20px;}
+    .gda-sec{padding:14px 12px 72px !important;}
+    .gda-hero{padding:22px 20px 16px !important;}
+    .gda-hero > div{gap:6px !important;}
+    .gda-hero span{font-size:11px !important;}
+    .gda-hero h1{font-size:30px !important;}
+    .gda-hero p{font-size:13px !important;line-height:1.45 !important;}
+
+    /* celular: um produto por linha, imagem inteira e card compacto
+       (cabem dois produtos na tela) */
+    .gda-produtos{grid-template-columns:1fr;gap:12px;}
+    .gda-card{border-radius:16px;}
+    .gc-corpo{display:grid;grid-template-columns:1fr auto;grid-template-areas:"selo btn" "tit btn" "preco btn";align-items:center;column-gap:12px;row-gap:3px;padding:10px 14px 12px;}
+    .gc-selo{grid-area:selo;justify-self:start;font-size:10px;padding:3px 8px;}
+    .gc-tit{grid-area:tit;font-size:16px;line-height:1.2;}
+    .gc-precos{grid-area:preco;gap:2px 8px;margin:0;}
+    .gc-de{font-size:12px;}
+    .gc-por{font-size:20px;}
+    .gc-off{font-size:10px;padding:2px 6px;}
+    .gc-desc,.gc-nota{display:none;}
+    .gda-btn{grid-area:btn;margin:0;padding:12px 16px;font-size:13px;gap:4px;white-space:nowrap;}
+    .gda-btn .longo{display:none;}
+    .gda-btn .curto{display:inline;}
   }
 </style>
 </head>
@@ -46,28 +81,66 @@
   <section class="gda-sec" style="padding: 36px 40px 100px; background: #1A1512; box-sizing: border-box; flex: 1;">
     <div class="gda-produtos" style="max-width: 1040px; margin: 0 auto;">
 
-      <a class="gda-card" href="interesse-camisa.html" aria-label="Camisa Oficial de Piloto GDA — 3ª remessa finalizada: entrar na lista de interesse">
-        <img class="gda-card-img" src="img/remessa-finalizada.jpg" alt="3ª Remessa finalizada — Camisa Oficial de Piloto GDA">
-        <div style="display: flex; flex-direction: column; gap: 10px; padding: 24px 24px 26px; flex: 1;">
-          <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: rgba(230,40,40,0.16); color: #FF6B5E; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px;">3ª remessa finalizada · lista de interesse aberta</span>
-          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; line-height: 1.2; color: #F5F1EA;">Camisa Oficial de Piloto GDA</h2>
-          <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Os pedidos da 3ª remessa foram finalizados em 22/10. Deixe seu nome na lista e o suporte chama você no WhatsApp quando abrir a próxima.</p>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C; margin-bottom: 8px;">Feita sob encomenda, com o seu nome e número de piloto.</span>
-          <span class="gda-btn" style="margin-top: auto;">Quero a minha camisa →</span>
+      <!-- Camiseta com frase — promoção de pré-venda (pedido pelo WhatsApp) -->
+      <a class="gda-card" href="https://wa.me/557331914501?text=Ol%C3%A1%2C%20suporte%20GDA%21%20%F0%9F%91%8B%0AQuero%20garantir%20a%20camiseta%20%22Quem%20dorme%20perde%22%20na%20pr%C3%A9-venda%20desta%20semana%2C%20por%20R%24%2054%2C90.%0ATamanho%3A%20%0AN%C2%BA%20de%20piloto%3A%20%0AComo%20fa%C3%A7o%20o%20pagamento%3F" target="_blank" rel="noopener" aria-label="Camiseta GDA Quem dorme perde — pré-venda de reposição: pedir pelo WhatsApp">
+        <img class="gda-card-img" style="--pos: 80% center;" src="img/camiseta-frases-reposicao.jpg" alt="Reposição em pré-venda — camiseta GDA Quem dorme perde, 100% algodão">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--promo">Pré-venda · só esta semana</span>
+          <h2 class="gc-tit">Camiseta GDA “Quem dorme perde”</h2>
+          <p class="gc-desc">Reposição da camiseta com frase, 100% algodão e exclusiva GDA. Preço de pré-venda só nesta semana.</p>
+          <div class="gc-precos">
+            <span class="gc-de"><span class="so-leitor">De </span>R$ 59,90</span>
+            <span class="gc-por"><span class="so-leitor">por </span>R$ 54,90</span>
+            <span class="gc-off">8% OFF</span>
+          </div>
+          <span class="gc-nota">Pedido direto com o suporte no WhatsApp</span>
+          <span class="gda-btn"><span class="longo">Quero a minha</span><span class="curto">Quero</span> →</span>
         </div>
       </a>
 
-      <a class="gda-card" href="pedido-adesivo.html" aria-label="Adesivo de Identificação Oficial — reposição: fazer pedido">
-        <img class="gda-card-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação Oficial GDA">
-        <div style="display: flex; flex-direction: column; gap: 10px; padding: 24px 24px 26px; flex: 1;">
-          <span style="align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: rgba(127,217,154,0.12); color: #7FD99A; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12px;">Disponível</span>
-          <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 24px; line-height: 1.2; color: #F5F1EA;">Adesivo de Identificação Oficial — reposição</h2>
-          <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: #A89C8E;">Perdeu ou estragou o seu adesivo? Peça um novo com o seu número de piloto e combine a retirada com o suporte.</p>
-          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 4px;">
-            <span style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 26px; color: #FFDB00;">R$ 19,90</span>
+      <!-- Boné — promoção da semana (pedido pelo WhatsApp) -->
+      <a class="gda-card" href="https://wa.me/557331914501?text=Ol%C3%A1%2C%20suporte%20GDA%21%20%F0%9F%91%8B%0AQuero%20garantir%20o%20bon%C3%A9%20GDA%20na%20pr%C3%A9-venda%20desta%20semana%2C%20por%20R%24%2024%2C90.%0AN%C2%BA%20de%20piloto%3A%20%0AComo%20fa%C3%A7o%20o%20pagamento%3F" target="_blank" rel="noopener" aria-label="Boné GDA — pré-venda só esta semana: pedir pelo WhatsApp">
+        <img class="gda-card-img" style="--pos: right center;" src="img/bone-gda-promocao.jpg" alt="Pré-venda só esta semana — Boné GDA modelo trucker">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--promo">Pré-venda · só esta semana</span>
+          <h2 class="gc-tit">Boné GDA</h2>
+          <p class="gc-desc">Boné oficial modelo trucker, com a logo GDA e o @gdaoficial01. Preço de pré-venda só nesta semana.</p>
+          <div class="gc-precos">
+            <span class="gc-de"><span class="so-leitor">De </span>R$ 29,90</span>
+            <span class="gc-por"><span class="so-leitor">por </span>R$ 24,90</span>
+            <span class="gc-off">16% OFF</span>
           </div>
-          <span style="font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B655C; margin-bottom: 8px;">Pix com confirmação automática</span>
-          <span class="gda-btn" style="margin-top: auto;">Pedir meu adesivo →</span>
+          <span class="gc-nota">Pedido direto com o suporte no WhatsApp</span>
+          <span class="gda-btn"><span class="longo">Quero o meu</span><span class="curto">Quero</span> →</span>
+        </div>
+      </a>
+
+      <!-- Adesivo de reposição (página de pedido com Pix) -->
+      <a class="gda-card" href="pedido-adesivo.html" aria-label="Adesivo de Identificação Oficial — reposição: fazer pedido">
+        <img class="gda-card-img" style="--pos: right center;" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação Oficial GDA">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--ok">Disponível</span>
+          <h2 class="gc-tit">Adesivo de Identificação — reposição</h2>
+          <p class="gc-desc">Perdeu ou estragou o seu adesivo? Peça um novo com o seu número de piloto e combine a retirada com o suporte.</p>
+          <div class="gc-precos">
+            <span class="gc-de"><span class="so-leitor">De </span>R$ 19,90</span>
+            <span class="gc-por"><span class="so-leitor">por </span>R$ 14,90</span>
+            <span class="gc-off">25% OFF</span>
+          </div>
+          <span class="gc-nota">Pix com confirmação automática</span>
+          <span class="gda-btn"><span class="longo">Pedir meu adesivo</span><span class="curto">Pedir</span> →</span>
+        </div>
+      </a>
+
+      <!-- Camisa oficial de piloto — remessa finalizada (lista de interesse) -->
+      <a class="gda-card" href="interesse-camisa.html" aria-label="Camisa Oficial de Piloto GDA — 3ª remessa finalizada: entrar na lista de interesse">
+        <img class="gda-card-img" style="--pos: center;" src="img/remessa-finalizada.jpg" alt="3ª Remessa finalizada — Camisa Oficial de Piloto GDA">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--fim">Lista de interesse</span>
+          <h2 class="gc-tit">Camisa Oficial de Piloto GDA</h2>
+          <p class="gc-desc">Os pedidos da 3ª remessa foram finalizados em 22/10. Deixe seu nome na lista e o suporte chama você no WhatsApp quando abrir a próxima.</p>
+          <span class="gc-nota">Feita sob encomenda, com o seu nome e número de piloto.</span>
+          <span class="gda-btn"><span class="longo">Quero a minha camisa</span><span class="curto">Entrar na lista</span> →</span>
         </div>
       </a>
 

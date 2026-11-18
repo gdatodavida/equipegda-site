@@ -29,7 +29,7 @@
   .card{background:var(--g-card);border:1px solid rgba(var(--g-ink-rgb),.10);border-radius:20px;padding:20px;}
   .form{margin-top:28px;display:flex;flex-direction:column;gap:14px;}
   .form.editando{border-color:var(--g-am-txt);}
-  .form .linha{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .linha{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .campo{font-family:'Manrope',sans-serif;font-size:15px;color:var(--g-txt);background:var(--g-campo);border:1px solid rgba(var(--g-ink-rgb),.16);border-radius:10px;padding:11px 13px;outline:none;}
   .campo:focus{border-color:var(--g-am-txt);}
   #f-titulo{flex:1;min-width:0;font-size:16px;font-weight:600;}
@@ -50,6 +50,14 @@
   .privado{font-size:12px;color:var(--g-txt3);display:inline-flex;gap:6px;align-items:center;}
   .erro{color:var(--g-erro);font-size:13px;font-weight:700;}
 
+  /* diretoria e conselho (cadastro de pessoas) */
+  .pessoas-box{margin-top:12px;display:flex;flex-direction:column;gap:12px;}
+  .pessoas-box h3{margin:0;font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;text-transform:uppercase;color:var(--g-txt);}
+  #p-nome{flex:1;min-width:160px;}
+  .p-grupo{margin-top:4px;}
+  .p-linha{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-top:1px solid rgba(var(--g-ink-rgb),.08);font-size:15px;font-weight:600;color:var(--g-txt);}
+  .p-vazio{font-size:14px;color:var(--g-txt3);padding:6px 0;}
+
   /* resumo / filtros */
   .resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px;}
   .res{--c:var(--g-txt2-rgb);text-align:left;cursor:pointer;background:var(--g-card);border:1px solid rgba(var(--c),.28);border-radius:16px;padding:14px 16px;font-family:inherit;color:var(--g-txt);}
@@ -59,6 +67,26 @@
   .res-vencidas{--c:var(--g-alerta-rgb);} .res-hoje{--c:var(--g-coral-rgb);} .res-semana{--c:var(--g-azul-rgb);}
   .filtros{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:18px;}
   #f-busca{flex:1;min-width:180px;max-width:320px;}
+
+  /* filtro por etiqueta */
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;align-items:center;}
+  .chip{--c:var(--g-txt2-rgb);cursor:pointer;padding:7px 12px;border-radius:999px;border:1px solid rgba(var(--c),.4);background:none;color:rgb(var(--c));font-family:inherit;font-size:13px;font-weight:700;display:inline-flex;gap:6px;align-items:center;}
+  .chip .q{font-size:11px;font-weight:800;opacity:.8;}
+  .chip.ativo{background:rgb(var(--c));color:var(--g-on-cor);border-color:rgb(var(--c));}
+
+  /* filtro por pessoa */
+  .pessoas{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
+  .pessoas .grp{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .pessoas .grp .rot{min-width:84px;}
+  .pessoa{--c:var(--g-txt2-rgb);display:inline-flex;gap:8px;align-items:center;cursor:pointer;padding:6px 7px 6px 14px;border-radius:999px;border:1px solid rgba(var(--c),.45);background:none;color:var(--g-txt);font-family:inherit;font-size:14px;font-weight:700;}
+  .pessoa:hover{background:rgba(var(--c),.12);}
+  .pessoa .q{min-width:24px;padding:2px 7px;border-radius:999px;background:rgba(var(--c),.18);color:rgb(var(--c));font-size:12px;font-weight:800;text-align:center;}
+  .pessoa.ativo{background:rgb(var(--c));color:var(--g-on-cor);border-color:rgb(var(--c));}
+  .pessoa.ativo .q{background:rgba(0,0,0,.2);color:var(--g-on-cor);}
+  .g-diretoria{--c:var(--g-azul-rgb);}
+  .g-conselho{--c:196,140,20;}
+  .g-nenhum{--c:var(--g-txt2-rgb);}
+  .faixa-pessoa{margin-top:14px;padding:12px 16px;border-radius:12px;background:rgba(var(--c),.12);border:1px solid rgba(var(--c),.4);font-size:14px;font-weight:700;color:var(--g-txt);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
 
   /* lista */
   .grupo{margin-top:26px;}
@@ -80,6 +108,8 @@
   .tag-alta{--c:var(--g-alerta-rgb);}
   .tag-venc{--c:var(--g-alerta-rgb);background:rgba(var(--g-alerta-rgb),.2);}
   .tag-whats{--c:var(--g-verde-rgb);}
+  .tag-resp{border:none;cursor:pointer;font-family:inherit;text-transform:none;font-size:12px;letter-spacing:0;}
+  .tag-resp:hover{background:rgba(var(--c),.28);}
   .ops{display:flex;gap:4px;flex:none;}
   .op{background:none;border:none;color:var(--g-txt3);cursor:pointer;padding:6px;border-radius:8px;font-family:inherit;font-size:12px;font-weight:700;}
   .op:hover{color:var(--g-txt);background:rgba(var(--g-ink-rgb),.06);}
@@ -104,6 +134,8 @@
     .item{padding:12px;gap:10px;}
     .ops{flex-direction:column;}
     #f-busca{max-width:none;}
+    #f-etq,#f-resp{flex:1;min-width:140px;}
+    .pessoas .grp .rot{min-width:100%;}
   }
 </style>
 </head>
@@ -120,6 +152,10 @@
   <div class="aviso" id="aviso-tabela" hidden>
     A tabela <strong>lembretes</strong> ainda não existe no Supabase. Rode o arquivo
     <strong>supabase-lembretes.sql</strong> no SQL Editor do Supabase e atualize esta página.
+  </div>
+  <div class="aviso" id="aviso-resp" hidden>
+    Etiquetas e responsáveis ainda não estão ativos. Rode o arquivo
+    <strong>supabase-pendencias-responsaveis.sql</strong> no SQL Editor do Supabase e atualize esta página.
   </div>
 
   <!-- NOVA PENDÊNCIA -->
@@ -139,6 +175,14 @@
         <input type="radio" name="cat" id="c-pessoal" value="pessoal"><label for="c-pessoal" class="cat-pessoal so-privado">Pessoal</label>
       </div>
       <span class="privado so-privado" id="aviso-privado" hidden>🔒 Só você vê</span>
+    </div>
+
+    <div class="linha" id="linha-gda" hidden>
+      <span class="rot">Etiqueta</span>
+      <select class="campo" id="f-etq" aria-label="Etiqueta"></select>
+      <span class="rot">Responsável</span>
+      <select class="campo" id="f-resp" aria-label="Responsável"></select>
+      <button type="button" class="link" id="btn-pessoas">Diretoria e conselho</button>
     </div>
 
     <div class="linha">
@@ -165,6 +209,24 @@
     <span class="erro" id="f-erro" hidden></span>
   </form>
 
+  <!-- CADASTRO DA DIRETORIA E DO CONSELHO -->
+  <div class="card pessoas-box" id="pessoas-box" hidden>
+    <div class="acoes-form">
+      <h3>Diretoria e conselho</h3>
+      <button type="button" class="link" id="btn-fechar-pessoas">Fechar</button>
+    </div>
+    <div class="linha">
+      <input class="campo" id="p-nome" maxlength="80" placeholder="Nome da pessoa">
+      <select class="campo" id="p-grupo" aria-label="Grupo">
+        <option value="diretoria">Diretoria</option>
+        <option value="conselho">Conselho</option>
+      </select>
+      <button type="button" class="btn" id="p-add">Adicionar</button>
+    </div>
+    <span class="erro" id="p-erro" hidden></span>
+    <div id="p-lista"></div>
+  </div>
+
   <!-- RESUMO (também filtra) -->
   <div class="resumo" id="resumo">
     <button type="button" class="res res-vencidas" data-periodo="vencidas"><div class="n" id="n-vencidas">0</div><div class="l">Vencidas</div></button>
@@ -187,6 +249,10 @@
     </div>
   </div>
 
+  <div class="chips" id="filtro-etq" hidden></div>
+  <div class="pessoas" id="filtro-pessoas" hidden></div>
+  <div class="faixa-pessoa" id="faixa-pessoa" hidden></div>
+
   <div id="lista"></div>
 </main>
 
@@ -201,9 +267,24 @@
   var DIAS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
   var CHAVE_CAT = 'gda_pend_cat';
 
+  // Etiquetas das demandas do GDA (para incluir uma nova, é só acrescentar aqui)
+  var ETQS = [
+    { id: 'institucional', nome: 'Institucional',                 cor: '124,92,230' },
+    { id: 'instagram',     nome: 'Instagram e identidade visual', cor: '219,68,140' },
+    { id: 'digital',       nome: 'Digital e tecnologia',          cor: 'var(--g-azul-rgb)' },
+    { id: 'comercial',     nome: 'Comercial e vendas',            cor: 'var(--g-verde-rgb)' },
+    { id: 'reuniao',       nome: 'Reunião com membros',           cor: 'var(--g-coral-rgb)' },
+    { id: 'conselho',      nome: 'Conselho',                      cor: '196,140,20' }
+  ];
+  var GRUPOS = { diretoria: 'Diretoria', conselho: 'Conselho' };
+
   var meuId = '';
   var itens = [];         // todos os lembretes carregados
+  var pessoas = [];       // diretoria e conselho (gda_responsaveis)
+  var temResp = false;    // colunas de etiqueta/responsável já existem?
   var periodo = 'todas';
+  var filtroEtq = '';
+  var filtroPessoa = '';  // id da pessoa, 'nenhum' (sem responsável) ou ''
   var editandoId = '';
   var liberado = false;   // pode usar Pessoal / ATIVAmob?
 
@@ -215,6 +296,9 @@
   function hoje() { return dataStr(new Date()); }
   function valorRadio(nome) { var r = document.querySelector('input[name="' + nome + '"]:checked'); return r ? r.value : ''; }
   function marcarRadio(nome, valor) { var r = document.querySelector('input[name="' + nome + '"][value="' + valor + '"]'); if (r) r.checked = true; }
+  function acharEtq(id) { for (var i = 0; i < ETQS.length; i++) if (ETQS[i].id === id) return ETQS[i]; return null; }
+  function acharPessoa(id) { for (var i = 0; i < pessoas.length; i++) if (pessoas[i].id === id) return pessoas[i]; return null; }
+  function ativas(grupo) { return pessoas.filter(function (p) { return p.ativo && p.grupo === grupo; }).sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt-BR'); }); }
 
   function rotuloData(it) {
     if (!it.data) return '';
@@ -234,7 +318,8 @@
   function carregar() {
     return Promise.all([
       sb.from('lembretes').select('*').eq('status', 'pendente').order('data', { ascending: true, nullsFirst: false }).limit(1000),
-      sb.from('lembretes').select('*').eq('status', 'feito').order('concluido_em', { ascending: false }).limit(100)
+      sb.from('lembretes').select('*').eq('status', 'feito').order('concluido_em', { ascending: false }).limit(100),
+      sb.from('gda_responsaveis').select('*').order('nome')
     ]).then(function (r) {
       var erro = r[0].error || r[1].error;
       if (erro) {
@@ -245,8 +330,34 @@
         $('aviso-tabela').hidden = true;
         itens = (r[0].data || []).concat(r[1].data || []);
       }
+      var amostra = itens[0];
+      temResp = !r[2].error && (!amostra || 'responsavel_id' in amostra);
+      if (r[2].error) console.warn('[Pendências] responsáveis:', r[2].error);
+      pessoas = temResp ? (r[2].data || []) : [];
+      $('aviso-resp').hidden = temResp || !!erro;
+      preencherSelects();
+      atualizarPrivado();
+      desenharPessoasBox();
       desenhar();
     });
+  }
+
+  function preencherSelects() {
+    var etqAtual = $('f-etq').value, respAtual = $('f-resp').value;
+    $('f-etq').innerHTML = '<option value="">Sem etiqueta</option>' + ETQS.map(function (e) {
+      return '<option value="' + e.id + '">' + esc(e.nome) + '</option>';
+    }).join('');
+    var html = '<option value="">Sem responsável</option>';
+    ['diretoria', 'conselho'].forEach(function (g) {
+      var lista = ativas(g);
+      if (!lista.length) return;
+      html += '<optgroup label="' + GRUPOS[g] + '">' + lista.map(function (p) {
+        return '<option value="' + esc(p.id) + '">' + esc(p.nome) + '</option>';
+      }).join('') + '</optgroup>';
+    });
+    $('f-resp').innerHTML = html;
+    $('f-etq').value = etqAtual || '';
+    $('f-resp').value = respAtual || '';
   }
 
   // ------------------------------------------------------------------
@@ -271,13 +382,70 @@
     return true;
   }
 
+  function daPessoa(it, pid) {
+    if (!pid) return true;
+    if (pid === 'nenhum') return it.categoria === 'gda' && !it.responsavel_id;
+    return it.responsavel_id === pid;
+  }
+
+  function desenharFiltrosExtras(cat) {
+    var mostrar = temResp && (!cat || cat === 'gda');
+    $('filtro-etq').hidden = !mostrar;
+    $('filtro-pessoas').hidden = !mostrar;
+    if (!mostrar) { filtroEtq = ''; filtroPessoa = ''; $('faixa-pessoa').hidden = true; return; }
+
+    var pend = itens.filter(function (it) { return it.status === 'pendente' && it.categoria === 'gda'; });
+
+    // etiquetas (contagem respeita a pessoa escolhida)
+    var pendP = pend.filter(function (it) { return daPessoa(it, filtroPessoa); });
+    $('filtro-etq').innerHTML = '<span class="rot" style="margin-right:4px">Etiqueta</span>' +
+      '<button type="button" class="chip' + (filtroEtq ? '' : ' ativo') + '" data-etq="">Todas</button>' +
+      ETQS.map(function (e) {
+        var n = pendP.filter(function (it) { return it.etiqueta === e.id; }).length;
+        return '<button type="button" class="chip' + (filtroEtq === e.id ? ' ativo' : '') + '" data-etq="' + e.id + '" style="--c:' + e.cor + '">' +
+          esc(e.nome) + ' <span class="q">' + n + '</span></button>';
+      }).join('');
+
+    // pessoas
+    function botao(p) {
+      var n = pend.filter(function (it) { return it.responsavel_id === p.id; }).length;
+      return '<button type="button" class="pessoa g-' + p.grupo + (filtroPessoa === p.id ? ' ativo' : '') + '" data-pessoa="' + esc(p.id) + '" title="Ver o que falta de ' + esc(p.nome) + '">' +
+        esc(p.nome) + '<span class="q">' + n + '</span></button>';
+    }
+    var html = '';
+    ['diretoria', 'conselho'].forEach(function (g) {
+      var lista = ativas(g);
+      html += '<div class="grp"><span class="rot">' + GRUPOS[g] + '</span>' +
+        (lista.length ? lista.map(botao).join('') : '<button type="button" class="link" data-abrir-pessoas="1">+ cadastrar ' + GRUPOS[g].toLowerCase() + '</button>') +
+        '</div>';
+    });
+    var semResp = pend.filter(function (it) { return !it.responsavel_id; }).length;
+    if (semResp) html += '<div class="grp"><span class="rot">&nbsp;</span><button type="button" class="pessoa g-nenhum' + (filtroPessoa === 'nenhum' ? ' ativo' : '') + '" data-pessoa="nenhum">Sem responsável<span class="q">' + semResp + '</span></button></div>';
+    $('filtro-pessoas').innerHTML = html;
+
+    // faixa "o que falta de…"
+    var faixa = $('faixa-pessoa');
+    if (filtroPessoa) {
+      var p = acharPessoa(filtroPessoa);
+      var nome = filtroPessoa === 'nenhum' ? 'sem responsável' : (p ? p.nome + ' (' + GRUPOS[p.grupo] + ')' : '');
+      faixa.className = 'faixa-pessoa g-' + (p ? p.grupo : 'nenhum');
+      faixa.innerHTML = '<span>' + (valorRadio('fst') === 'feito' ? 'Concluídas' : 'O que falta') + ' — ' + esc(nome) + '</span><button type="button" class="link" data-pessoa="">Ver todas as pessoas</button>';
+      faixa.hidden = false;
+    } else faixa.hidden = true;
+  }
+
   function desenhar() {
     var cat = valorRadio('fcat');
     var st = valorRadio('fst');
     var busca = $('f-busca').value.trim().toLowerCase();
 
-    // resumo (respeita só o filtro de categoria)
-    var pend = itens.filter(function (it) { return it.status === 'pendente' && (!cat || it.categoria === cat); });
+    desenharFiltrosExtras(cat);
+
+    // resumo (respeita categoria, etiqueta e pessoa)
+    var pend = itens.filter(function (it) {
+      return it.status === 'pendente' && (!cat || it.categoria === cat) &&
+        (!filtroEtq || it.etiqueta === filtroEtq) && daPessoa(it, filtroPessoa);
+    });
     ['vencidas', 'hoje', 'semana', 'todas'].forEach(function (p) {
       $('n-' + p).textContent = pend.filter(function (it) { return noPeriodo(it, p); }).length;
     });
@@ -288,8 +456,14 @@
     var lista = itens.filter(function (it) {
       if (it.status !== st) return false;
       if (cat && it.categoria !== cat) return false;
+      if (filtroEtq && it.etiqueta !== filtroEtq) return false;
+      if (!daPessoa(it, filtroPessoa)) return false;
       if (st === 'pendente' && !noPeriodo(it, periodo)) return false;
-      if (busca && ((it.titulo || '') + ' ' + (it.detalhes || '')).toLowerCase().indexOf(busca) < 0) return false;
+      if (busca) {
+        var e = acharEtq(it.etiqueta), p = acharPessoa(it.responsavel_id);
+        var txt = (it.titulo || '') + ' ' + (it.detalhes || '') + ' ' + (e ? e.nome : '') + ' ' + (p ? p.nome : '');
+        if (txt.toLowerCase().indexOf(busca) < 0) return false;
+      }
       return true;
     });
 
@@ -322,6 +496,10 @@
   function htmlItem(it) {
     var feito = it.status === 'feito';
     var tags = '<span class="tag">' + esc(CATS[it.categoria] || it.categoria) + '</span>';
+    var e = acharEtq(it.etiqueta);
+    if (e) tags += '<span class="tag" style="--c:' + e.cor + '">' + esc(e.nome) + '</span>';
+    var p = acharPessoa(it.responsavel_id);
+    if (p) tags += '<button type="button" class="tag tag-resp g-' + p.grupo + '" data-pessoa="' + esc(p.id) + '" title="Ver o que falta de ' + esc(p.nome) + '">👤 ' + esc(p.nome) + ' · ' + GRUPOS[p.grupo] + '</button>';
     var dt = rotuloData(it);
     if (dt) tags += '<span class="tag ' + (vencida(it) ? 'tag-venc' : 'tag-n') + '">' + esc(dt) + '</span>';
     if (it.prioridade === 'alta') tags += '<span class="tag tag-alta">Alta</span>';
@@ -343,6 +521,23 @@
         '<button type="button" class="op" data-acao="excluir">Excluir</button>' +
       '</div></div>';
   }
+
+  // ------------------------------------------------------------------
+  // Filtro por pessoa / etiqueta (botões em qualquer lugar da página)
+  // ------------------------------------------------------------------
+  function escolherPessoa(pid) {
+    filtroPessoa = filtroPessoa === pid ? '' : pid;
+    if (filtroPessoa) { periodo = 'todas'; marcarRadio('fst', 'pendente'); }
+    desenhar();
+    if (filtroPessoa) $('faixa-pessoa').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('tela').addEventListener('click', function (e) {
+    var bp = e.target.closest('[data-pessoa]');
+    if (bp) { e.preventDefault(); var pid = bp.getAttribute('data-pessoa'); if (pid === '') { filtroPessoa = ''; desenhar(); } else escolherPessoa(pid); return; }
+    var be = e.target.closest('[data-etq]');
+    if (be) { filtroEtq = be.getAttribute('data-etq'); desenhar(); return; }
+    if (e.target.closest('[data-abrir-pessoas]')) abrirPessoas();
+  });
 
   // ------------------------------------------------------------------
   // Ações da lista
@@ -385,7 +580,11 @@
   // ------------------------------------------------------------------
   // Formulário
   // ------------------------------------------------------------------
-  function atualizarPrivado() { $('aviso-privado').hidden = valorRadio('cat') === 'gda'; }
+  function atualizarPrivado() {
+    var gda = valorRadio('cat') === 'gda';
+    $('aviso-privado').hidden = gda;
+    $('linha-gda').hidden = !temResp || !gda;
+  }
   Array.prototype.forEach.call(document.querySelectorAll('input[name="cat"]'), function (r) {
     r.addEventListener('change', function () { atualizarPrivado(); if (!editandoId) { try { localStorage.setItem(CHAVE_CAT, r.value); } catch (e) {} } });
   });
@@ -401,6 +600,7 @@
   function limparForm() {
     editandoId = '';
     $('form').reset();
+    $('f-etq').value = ''; $('f-resp').value = '';
     var c = ''; try { c = localStorage.getItem(CHAVE_CAT) || ''; } catch (e) {}
     marcarRadio('cat', liberado && CATS[c] ? c : 'gda');
     $('f-det').hidden = true; $('btn-det').hidden = false;
@@ -419,6 +619,14 @@
     $('f-hora').value = it.hora ? it.hora.slice(0, 5) : '';
     $('f-prio').value = it.prioridade || 'normal';
     $('f-det').value = it.detalhes || '';
+    $('f-etq').value = it.etiqueta || '';
+    var sel = $('f-resp');
+    if (it.responsavel_id && !sel.querySelector('option[value="' + it.responsavel_id + '"]')) {
+      var p = acharPessoa(it.responsavel_id), o = document.createElement('option');
+      o.value = it.responsavel_id; o.textContent = (p ? p.nome : 'Pessoa removida') + ' (fora da lista)';
+      sel.appendChild(o);
+    }
+    sel.value = it.responsavel_id || '';
     $('f-det').hidden = false; $('btn-det').hidden = true;
     $('btn-salvar').textContent = 'Salvar';
     $('acoes-edicao').hidden = false;
@@ -427,20 +635,25 @@
     $('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
     $('f-titulo').focus({ preventScroll: true });
   }
-  $('btn-cancelar').addEventListener('click', limparForm);
+  $('btn-cancelar').addEventListener('click', function () { limparForm(); preencherSelects(); });
 
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
     var titulo = $('f-titulo').value.trim();
     if (!titulo) return;
+    var categoria = liberado ? (valorRadio('cat') || 'gda') : 'gda';
     var dados = {
       titulo: titulo,
-      categoria: liberado ? (valorRadio('cat') || 'gda') : 'gda',
+      categoria: categoria,
       data: $('f-data').value || null,
       hora: $('f-data').value && $('f-hora').value ? $('f-hora').value : null,
       prioridade: $('f-prio').value,
       detalhes: $('f-det').value.trim() || null
     };
+    if (temResp) {
+      dados.etiqueta = categoria === 'gda' ? ($('f-etq').value || null) : null;
+      dados.responsavel_id = categoria === 'gda' ? ($('f-resp').value || null) : null;
+    }
     var btn = $('btn-salvar'), erro = $('f-erro');
     btn.disabled = true; erro.hidden = true;
     var q = editandoId
@@ -457,9 +670,70 @@
       itens = itens.filter(function (x) { return x.id !== id; }).concat([r.data]);
       toast(editandoId ? 'Pendência atualizada' : 'Pendência adicionada');
       limparForm();
+      preencherSelects();
       $('f-titulo').focus();
       desenhar();
     }, function () { btn.disabled = false; erro.textContent = 'Sem conexão agora. Tente de novo.'; erro.hidden = false; });
+  });
+
+  // ------------------------------------------------------------------
+  // Cadastro da diretoria e do conselho
+  // ------------------------------------------------------------------
+  function abrirPessoas() {
+    $('pessoas-box').hidden = false;
+    $('pessoas-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('p-nome').focus({ preventScroll: true });
+  }
+  $('btn-pessoas').addEventListener('click', function () {
+    if ($('pessoas-box').hidden) abrirPessoas(); else $('pessoas-box').hidden = true;
+  });
+  $('btn-fechar-pessoas').addEventListener('click', function () { $('pessoas-box').hidden = true; });
+
+  function desenharPessoasBox() {
+    $('p-lista').innerHTML = ['diretoria', 'conselho'].map(function (g) {
+      var lista = ativas(g);
+      return '<div class="p-grupo"><span class="rot">' + GRUPOS[g] + '</span>' +
+        (lista.length ? lista.map(function (p) {
+          return '<div class="p-linha"><span>' + esc(p.nome) + '</span><button type="button" class="op" data-remover="' + esc(p.id) + '">Remover</button></div>';
+        }).join('') : '<div class="p-vazio">Ninguém cadastrado ainda.</div>') + '</div>';
+    }).join('');
+  }
+
+  function adicionarPessoa() {
+    var nome = $('p-nome').value.trim().replace(/\s+/g, ' '), grupo = $('p-grupo').value, erro = $('p-erro');
+    erro.hidden = true;
+    if (!nome) { $('p-nome').focus(); return; }
+    var repetido = pessoas.some(function (p) { return p.ativo && p.grupo === grupo && p.nome.toLowerCase() === nome.toLowerCase(); });
+    if (repetido) { erro.textContent = nome + ' já está na ' + GRUPOS[grupo].toLowerCase() + '.'; erro.hidden = false; return; }
+    $('p-add').disabled = true;
+    sb.from('gda_responsaveis').insert({ nome: nome, grupo: grupo }).select().single().then(function (r) {
+      $('p-add').disabled = false;
+      if (r.error || !r.data) { erro.textContent = 'Não foi possível salvar. ' + (r.error ? '(' + r.error.message + ')' : ''); erro.hidden = false; return; }
+      pessoas.push(r.data);
+      $('p-nome').value = ''; $('p-nome').focus();
+      preencherSelects(); desenharPessoasBox(); desenhar();
+      toast(nome + ' adicionado(a) à ' + GRUPOS[grupo].toLowerCase());
+    });
+  }
+  $('p-add').addEventListener('click', adicionarPessoa);
+  $('p-nome').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); adicionarPessoa(); } });
+
+  $('p-lista').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-remover]'); if (!b) return;
+    var p = acharPessoa(b.getAttribute('data-remover')); if (!p) return;
+    if (!b.classList.contains('confirmar')) {
+      b.classList.add('confirmar'); b.textContent = 'Confirmar?';
+      setTimeout(function () { if (b.isConnected) { b.classList.remove('confirmar'); b.textContent = 'Remover'; } }, 4000);
+      return;
+    }
+    // não apaga: só tira da lista (as pendências antigas continuam com o nome)
+    sb.from('gda_responsaveis').update({ ativo: false }).eq('id', p.id).then(function (r) {
+      if (r.error) { toast('Não foi possível remover.'); return; }
+      p.ativo = false;
+      if (filtroPessoa === p.id) filtroPessoa = '';
+      preencherSelects(); desenharPessoasBox(); desenhar();
+      toast(p.nome + ' removido(a) da lista');
+    });
   });
 
   // ------------------------------------------------------------------

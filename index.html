@@ -52,6 +52,21 @@
   .gda-mslide-arrow[data-dir="-1"] { left: 28px; }
   .gda-mslide-arrow[data-dir="1"] { right: 28px; }
 
+  /* Selo de desconto por cima da arte do carrossel (posição em % da arte;
+     tamanho acompanha a largura do carrossel). --pc = computador, --cel = celular */
+  .gda-mobile-slides-track { container-type: inline-size; }
+  .gda-off { position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #FFDB00; color: #14110F; border: .25cqw solid #14110F; border-radius: 1.2cqw; transform: rotate(-7deg); box-shadow: 0 .6cqw 2cqw rgba(0,0,0,.55); font-family: 'Oswald', sans-serif; line-height: 1; pointer-events: none; }
+  .gda-off b { font-weight: 700; }
+  .gda-off span { font-family: 'Manrope', sans-serif; font-weight: 800; white-space: nowrap; }
+  .gda-off--pc { left: 70%; top: 30%; padding: .7cqw 1.4cqw; }
+  .gda-off--pc b { font-size: 3.3cqw; }
+  .gda-off--pc span { font-size: .95cqw; margin-top: .3cqw; }
+  .gda-off--cel { display: none; left: 11%; top: 73%; transform: rotate(-4deg); padding: 1.2cqw 2.6cqw; }
+  .gda-off--cel b { font-size: 6.4cqw; }
+  .gda-off--cel span { font-size: 2.1cqw; margin-top: .6cqw; }
+  .gda-off--prod { left: 4.5%; top: 70%; }
+  @media (max-width: 760px) { .gda-off--pc { display: none; } .gda-off--cel { display: flex; } }
+
   #hero { padding: 44px 40px 56px !important; min-height: 0 !important; align-items: center !important; }
   #hero .gda-hero-content { gap: 20px !important; max-width: 1160px !important; }
   #hero h1 { width: auto !important; height: auto !important; font-size: 68px !important; }
@@ -184,7 +199,7 @@
         <img src="img/4ac9e9bf08b452d271c1706be86e366d.png" alt="Equipe GDA" style="height: 32px; width: 124px; display: block">
       </a>
 
-      <a href='/fazer-parte' style='display: none; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 999px; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 14px; white-space: nowrap; background-color: #FFDB00; font-style: normal'>Fazer parte da equipe</a><nav class="gda-nav" style="display: flex; align-items: center; gap: 30px; width: 590px; height: 50px"><a href="#sobre" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Quem somos</a>
+      <a href='/fazer-parte' style='display: none; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 999px; color: #14110F; font-family: Manrope, sans-serif; font-weight: 700; font-size: 14px; white-space: nowrap; background-color: #FFDB00; font-style: normal'>Fazer parte da equipe</a><nav class="gda-nav" style="display: flex; align-items: center; gap: 30px; width: 590px; height: 50px"><a href="#sobre" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Quem somos</a>
         <a href='/loja' style='font-family: Manrope, sans-serif; font-size: 14px; font-weight: 700; color: #FFDB00'>Loja GDA</a>
         <a href="#galeria" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Galeria</a>
         <a href="/ouvidoria" style="font-family: Manrope, sans-serif; font-size: 14px; font-weight: 600; color: rgb(216, 210, 199)">Ouvidoria</a>
@@ -194,7 +209,7 @@
     </div>
     <nav id="gda-mobile-menu" class="gda-mobile-menu" style="display: none; flex-direction: column; background: #1A1512; border-top: 1px solid rgba(245,241,234,0.08);">
       <a href="#sobre" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Quem somos</a>
-      <a href='/loja' style='padding: 14px 20px; font-family: \'Manrope\', sans-serif; font-size: 15px; font-weight: 700; color: #FFDB00; border-bottom: 1px solid rgba(245,241,234,0.06);'>Loja GDA</a>
+      <a href='/loja' style='padding: 14px 20px; font-family: Manrope, sans-serif; font-size: 15px; font-weight: 700; color: #FFDB00; border-bottom: 1px solid rgba(245,241,234,0.06);'>Loja GDA</a>
       <a href="#galeria" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Galeria</a>
       <a href="/ouvidoria" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7; border-bottom: 1px solid rgba(245,241,234,0.06);">Ouvidoria</a>
       <a href="#contato" style="padding: 14px 20px; font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600; color: #D8D2C7;">Contato</a>
@@ -215,16 +230,32 @@
           <span class="gda-mslide-cap-t" style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 22px; color: #F5F1EA;">Faça parte da Equipe GDA</span>
         </div>
       </a>
-      <a class='gda-mslide' data-slide='1' href='/interesse-camisa' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
+      <a class='gda-mslide' data-slide='1' href='/loja' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
+        <picture>
+          <source media="(min-width: 761px)" srcset="img/camiseta-frases-pc.jpg" width="1920" height="442">
+          <img class="gda-mslide-img" src="img/camiseta-frases-reposicao.jpg" alt="Pré-venda só esta semana — Camiseta GDA Quem dorme perde, de R$ 59,90 por R$ 54,90" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </picture>
+        <div class="gda-off gda-off--cel gda-off--prod" aria-hidden="true"><b>8% OFF</b><span>de R$ 59,90 por R$ 54,90</span></div>
+      </a>
+      <a class='gda-mslide' data-slide='2' href='/loja' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
+        <picture>
+          <source media="(min-width: 761px)" srcset="img/bone-gda-pc.jpg" width="1920" height="442">
+          <img class="gda-mslide-img" src="img/bone-gda-promocao.jpg" alt="Pré-venda só esta semana — Boné GDA modelo trucker, de R$ 29,90 por R$ 24,90" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </picture>
+        <div class="gda-off gda-off--cel gda-off--prod" aria-hidden="true"><b>16% OFF</b><span>de R$ 29,90 por R$ 24,90</span></div>
+      </a>
+      <a class='gda-mslide' data-slide='3' href='/pedido-adesivo' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
+        <picture>
+          <source media="(min-width: 761px)" srcset="img/adesivo-pc.jpg" width="1920" height="442">
+          <img class="gda-mslide-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação GDA com 25% OFF: de R$ 19,90 por R$ 14,90" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </picture>
+        <div class="gda-off gda-off--pc" aria-hidden="true"><b>25% OFF</b><span>de R$ 19,90 por R$ 14,90</span></div>
+        <div class="gda-off gda-off--cel" aria-hidden="true"><b>25% OFF</b><span>de R$ 19,90 por R$ 14,90</span></div>
+      </a>
+      <a class='gda-mslide' data-slide='4' href='/interesse-camisa' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
         <picture>
           <source media="(min-width: 761px)" srcset="img/remessa-finalizada-pc.jpg" width="1920" height="442">
           <img class="gda-mslide-img" src="img/remessa-finalizada.jpg" alt="3ª Remessa finalizada — Camisa Oficial de Piloto GDA: entre na lista de interesse" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-        </picture>
-      </a>
-      <a class='gda-mslide' data-slide='2' href='/pedido-adesivo' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
-        <picture>
-          <source media="(min-width: 761px)" srcset="img/adesivo-pc.jpg" width="1920" height="442">
-          <img class="gda-mslide-img" src="img/adesivo-reposicao-gda.jpg" alt="Peça aqui o seu adesivo de reposição — Adesivo de Identificação GDA" style="width: 100%; height: 100%; object-fit: cover; display: block;">
         </picture>
       </a>
     </div>
@@ -234,6 +265,8 @@
       <button type="button" class="gda-mdot" data-dot="0" aria-label="Slide 1" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: #ffdb00;"></button>
       <button type="button" class="gda-mdot" data-dot="1" aria-label="Slide 2" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
       <button type="button" class="gda-mdot" data-dot="2" aria-label="Slide 3" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
+      <button type="button" class="gda-mdot" data-dot="3" aria-label="Slide 4" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
+      <button type="button" class="gda-mdot" data-dot="4" aria-label="Slide 5" style="width: 8px; height: 8px; border-radius: 999px; border: none; padding: 0; background: rgba(245,241,234,0.25);"></button>
     </div>
   </div>
 
@@ -339,7 +372,7 @@
 
     <div class="gda-container-pad gda-remessa-cta" style="max-width: 640px; margin: 0 auto; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px;">
       <p class="gda-remessa-p" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; width: 646px">Os pedidos da 3ª remessa foram finalizados em 22/10.<br>Não ficou com a sua? Entre na lista de interesse e seja o primeiro a saber quando abrir a próxima remessa.<br>(Exclusivo para membros que possuem Número do Piloto).</p>
-      <a class='gda-remessa-btn' href='/interesse-camisa' style='display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: 999px; background-color: #ffdb00; color: #14110F; font-family: \'Manrope\', sans-serif; font-weight: 700; font-size: 16px;'>Quero a minha camisa</a>
+      <a class='gda-remessa-btn' href='/interesse-camisa' style='display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: 999px; background-color: #ffdb00; color: #14110F; font-family: Manrope, sans-serif; font-weight: 700; font-size: 16px;'>Quero a minha camisa</a>
     </div>
   </section>
 
@@ -541,7 +574,7 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lb.classList.remove('open'); });
   }
 
-  // Telas de passagem (recrutamento / remessa de camisas / loja GDA)
+  // Telas de passagem (recrutamento / camiseta / boné / adesivo / remessa de camisas)
   var wrap = document.querySelector('.gda-mobile-slides');
   if (!wrap) return;
   var track = wrap.querySelector('.gda-mobile-slides-track');
@@ -549,7 +582,7 @@
   var dots = Array.prototype.slice.call(wrap.querySelectorAll('.gda-mdot'));
   if (!slides.length) return;
 
-  var AUTO_MS = 3000;
+  var AUTO_MS = 2500;
   var current = 0;
   var timer = null;
 
