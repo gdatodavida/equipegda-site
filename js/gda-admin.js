@@ -11,7 +11,8 @@
    2) BARRA DE ATALHOS
       Coloque <div id="gda-admin-bar" data-pagina="vendas"></div> no
       topo do <body>. data-pagina = inicio | recrutamento | pedidos |
-      adesivos | pilotos | vendas (marca o botão da página atual).
+      adesivos | pilotos | vendas | ouvidoria | pendencias
+      (marca o botão da página atual).
 
    3) ACESSO SÓ DA DIRETORIA
       gdaAdmin.exigir(function (sessao) { ...carrega a página... })
@@ -41,7 +42,8 @@
     { id: 'adesivos',     nome: 'Adesivos de reposição', url: '/painel-adesivos.html' },
     { id: 'pilotos',      nome: 'Pilotos',               url: '/pilotos-admin.html' },
     { id: 'vendas',       nome: 'GDA Vendas',            url: '/gda-vendas.html' },
-    { id: 'ouvidoria',    nome: 'Ouvidoria',             url: '/ouvidoria-painel', cor: 'var(--g-alerta-rgb)' }
+    { id: 'ouvidoria',    nome: 'Ouvidoria',             url: '/ouvidoria-painel', cor: 'var(--g-alerta-rgb)' },
+    { id: 'pendencias',   nome: 'Pendências',            url: '/pendencias', cor: 'var(--g-coral-rgb)' }
   ];
 
   // ------------------------------------------------------------------

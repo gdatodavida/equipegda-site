@@ -42,6 +42,7 @@
   .area .novo{font-size:10px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:999px;background:rgb(var(--c));color:var(--g-on-cor);}
   .a-vendas{--c:var(--g-teal-rgb);} .a-recrutamento{--c:var(--g-roxo-rgb);} .a-pilotos{--c:var(--g-coral-rgb);}
   .a-pedidos{--c:var(--g-verde-rgb);} .a-adesivos{--c:var(--g-azul-rgb);} .a-ouvidoria{--c:var(--g-alerta-rgb);}
+  .a-pendencias{--c:var(--g-coral-rgb);}
 
   .carregando{text-align:center;color:var(--g-txt3);padding:80px 20px;font-size:14px;}
 
@@ -86,6 +87,13 @@
   <p class="sub">Escolha a área da administração que deseja abrir.</p>
 
   <nav class="areas" aria-label="Áreas da administração">
+    <a class='area a-pendencias' href='/pendencias'>
+      <span class="topo">
+        <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"></path><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5L7.5 11"></path><circle cx="5" cy="18" r="1.4"></circle></svg></span>
+        <span class="novo" id="pend-selo">NOVO</span>
+      </span>
+      <span class="txt"><span class="nome">Pendências</span><span class="desc" style="display:block" id="pend-desc">Lembretes e coisas a fazer</span></span>
+    </a>
     <a class='area a-vendas' href='/gda-vendas'>
       <span class="topo">
         <span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h2l2.4 12.2a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"></path><circle cx="9" cy="20" r="1.4"></circle><circle cx="18" cy="20" r="1.4"></circle></svg></span>
@@ -146,7 +154,26 @@
       var quem = $('gda-quem'); if (quem) quem.textContent = sessao.user && sessao.user.email || '';
       var sair = $('gda-btn-sair'); if (sair) sair.hidden = false;
       mostrar('tela-inicio');
+      contarPendencias();
     });
+  }
+
+  // Cartão "Pendências": mostra quantas vencem hoje ou já venceram.
+  function contarPendencias() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    var hoje = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    Promise.resolve(sb.from('lembretes').select('id', { count: 'exact', head: true })
+      .eq('status', 'pendente').lte('data', hoje)).then(function (r) {
+      if (!r || r.error || typeof r.count !== 'number') return; // tabela ainda não criada: fica "NOVO"
+      var selo = $('pend-selo'), desc = $('pend-desc');
+      if (r.count > 0) {
+        selo.textContent = r.count + ' PARA HOJE';
+        desc.textContent = r.count === 1 ? '1 pendência vence hoje ou está atrasada' : r.count + ' pendências vencem hoje ou estão atrasadas';
+      } else {
+        selo.hidden = true;
+        desc.textContent = 'Tudo em dia por hoje';
+      }
+    }, function () {});
   }
 
   function mostrarSemAcesso(sessao) {
