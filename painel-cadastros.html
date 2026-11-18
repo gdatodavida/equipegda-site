@@ -34,6 +34,14 @@
   .cm .doc{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--g-campo);border:1px dashed rgba(var(--g-ink-rgb),0.2);border-radius:12px;font-size:13px;color:var(--g-txt3);}
   .cm .doc img{width:64px;height:64px;object-fit:cover;border-radius:8px;}
   @media (max-width:600px){ .cm .grade{grid-template-columns:1fr;} }
+  /* busca e filtro por veículo */
+  .busca-linha{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .busca-linha input{flex:1;min-width:220px;font-family:'Manrope',sans-serif;font-size:15px;color:var(--g-txt);background:var(--g-campo);border:1px solid rgba(var(--g-ink-rgb),0.16);border-radius:10px;padding:11px 14px;outline:none;}
+  .busca-linha input:focus{border-color:var(--g-am);}
+  .veic{display:flex;gap:6px;flex-wrap:wrap;}
+  .veic button{padding:7px 13px;border-radius:999px;border:1px solid rgba(var(--g-ink-rgb),0.16);background:var(--g-campo);color:var(--g-txt2);font-family:'Manrope',sans-serif;font-weight:600;font-size:12.5px;}
+  .veic button.ativo{background:var(--g-txt2);color:var(--g-bg);border-color:var(--g-txt2);}
+  .veic button .q{opacity:.7;font-weight:700;margin-left:4px;}
 </style>
 <meta name="theme-color" content="#14110F">
 <link rel="stylesheet" href="/css/gda-admin.css">
@@ -60,6 +68,16 @@
         <button data-filtro="incompletos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Credenciamento incompleto</button>
         <button data-filtro="todos" class="gda-filtro-btn" type="button" style="padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(var(--g-ink-rgb),0.16); font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px;">Todos</button>
         <button id="btn-cad-manual" type="button" style="margin-left: auto; padding: 8px 18px; border-radius: 999px; border: none; background: var(--g-am); color: var(--g-on-am); font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px;">+ Novo cadastro manual</button>
+      </div>
+
+      <div class="busca-linha">
+        <input id="busca" type="search" placeholder="Buscar por nome, apelido, WhatsApp, e-mail ou nº de piloto…" autocomplete="off">
+        <div class="veic" id="veic" role="group" aria-label="Filtrar por veículo">
+          <button type="button" data-veic="" class="ativo">Todos veículos</button>
+          <button type="button" data-veic="moto">🏍 Só moto<span class="q" data-q="moto"></span></button>
+          <button type="button" data-veic="carro">🚗 Só carro<span class="q" data-q="carro"></span></button>
+          <button type="button" data-veic="ambos">Moto e carro<span class="q" data-q="ambos"></span></button>
+        </div>
       </div>
 
       <div id="status-msg" style="font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--g-txt3);">Carregando cadastros…</div>
@@ -159,6 +177,19 @@
 
   var cadastros = [];
   var filtroAtual = 'pendente';
+  var veiculoAtual = '';   // '' | moto | carro | ambos
+
+  function semAcento(t) { return String(t == null ? '' : t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function passaBusca(c, termo) {
+    if (!termo) return true;
+    var dig = termo.replace(/\D/g, '');
+    if (dig && dig === termo.replace(/\s/g, '')) { // só números: nº de piloto ou telefone
+      if (String(c.numero_piloto || '') === dig) return true;
+      if (dig.length >= 4 && String(c.whatsapp || '').replace(/\D/g, '').indexOf(dig) > -1) return true;
+    }
+    var alvo = semAcento([c.nome, c.apelido, c.email, c.whatsapp, c.numero_piloto].join(' '));
+    return semAcento(termo).split(/\s+/).every(function (w) { return !w || alvo.indexOf(w) > -1; });
+  }
 
   // ----- adesivo: pagamento e retirada -----
   // Pago: usa a coluna adesivo_pago do cadastro; se ela não existir, consulta a tabela de pagamentos (Pix do adesivo).
@@ -526,18 +557,37 @@
       if (input.value) pilotoValores[id] = input.value;
     });
 
-    var lista = filtroAtual === 'todos' ? cadastros
+    var daAba = filtroAtual === 'todos' ? cadastros
       : filtroAtual === 'incompletos' ? cadastros.filter(function (c) { return c.status === 'aprovado' && pendencias(c).length > 0; })
       : cadastros.filter(function (c) { return c.status === filtroAtual; });
+    var termo = (document.getElementById('busca').value || '').trim();
+    var buscados = daAba.filter(function (c) { return passaBusca(c, termo); });
+    // contagem por veículo (dentro da aba e da busca atuais)
+    ['moto', 'carro', 'ambos'].forEach(function (v) {
+      var q = buscados.filter(function (c) { return c.veiculo_tipo === v; }).length;
+      var el = document.querySelector('[data-q="' + v + '"]'); if (el) el.textContent = q;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#veic button'), function (b) { b.classList.toggle('ativo', b.getAttribute('data-veic') === veiculoAtual); });
+    var lista = veiculoAtual ? buscados.filter(function (c) { return c.veiculo_tipo === veiculoAtual; }) : buscados;
+
+    // botões das abas continuam com a cor certa mesmo sem resultados
+    Array.prototype.slice.call(document.querySelectorAll('.gda-filtro-btn')).forEach(function (b) {
+      var ativo = b.getAttribute('data-filtro') === filtroAtual;
+      b.style.background = ativo ? 'var(--g-am)' : 'var(--g-campo)';
+      b.style.color = ativo ? 'var(--g-on-am)' : 'var(--g-txt2)';
+      b.style.borderColor = ativo ? 'var(--g-am)' : 'rgba(var(--g-ink-rgb),0.16)';
+    });
 
     if (!lista.length) {
       statusMsg.style.display = '';
-      statusMsg.textContent = 'Nenhum cadastro nessa categoria ainda.';
+      statusMsg.textContent = termo || veiculoAtual ? 'Nenhum cadastro encontrado com essa busca/filtro nesta aba.' : 'Nenhum cadastro nessa categoria ainda.';
       container.innerHTML = '';
       return;
     }
     statusMsg.style.display = 'none';
     var sugestao = sugestaoNumeroPiloto();
+    statusMsg.style.display = '';
+    statusMsg.textContent = lista.length + ' cadastro' + (lista.length === 1 ? '' : 's') + (termo || veiculoAtual ? ' encontrado' + (lista.length === 1 ? '' : 's') : '');
     container.innerHTML = lista.map(function (c) { return cardHtml(c, sugestao, pilotoValores[c.id]); }).join('');
 
     document.getElementById('cards-container').querySelectorAll('[data-acao]').forEach(function (btn) {
@@ -651,6 +701,14 @@
 
   Array.prototype.slice.call(document.querySelectorAll('.gda-filtro-btn')).forEach(function (b) {
     b.addEventListener('click', function () { filtroAtual = b.getAttribute('data-filtro'); render(); });
+  });
+  var tBusca;
+  document.getElementById('busca').addEventListener('input', function () { clearTimeout(tBusca); tBusca = setTimeout(render, 150); });
+  document.getElementById('veic').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-veic]'); if (!b) return;
+    var v = b.getAttribute('data-veic');
+    veiculoAtual = veiculoAtual === v ? '' : v;
+    render();
   });
 
   document.getElementById('cards-container').addEventListener('click', function (ev) {

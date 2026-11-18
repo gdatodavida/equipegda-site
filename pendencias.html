@@ -89,6 +89,13 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--g-txt);color:var(--g-card);padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;display:flex;gap:14px;align-items:center;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.3);}
   .toast button{background:none;border:none;color:var(--g-am);font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;padding:0;}
 
+  /* microfone */
+  .mic{flex:none;width:46px;height:46px;border-radius:50%;border:1px solid rgba(var(--g-ink-rgb),.2);background:var(--g-campo);color:var(--g-am-txt);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .mic:hover{border-color:var(--g-am-txt);}
+  .mic.ouvindo{background:var(--g-erro);border-color:var(--g-erro);color:#fff;animation:pulsar 1.2s ease-in-out infinite;}
+  @keyframes pulsar{0%,100%{box-shadow:0 0 0 0 rgba(255,90,80,.55);}50%{box-shadow:0 0 0 10px rgba(255,90,80,0);}}
+  .voz-status{font-size:13px;font-weight:700;color:var(--g-am-txt);margin-top:-4px;}
+  .campo.preenchido{border-color:var(--g-am-txt);box-shadow:0 0 0 2px rgba(var(--g-ink-rgb),.06);}
   @media (max-width:760px){
     main{padding:24px 14px 80px;}
     h1{font-size:38px;}
@@ -118,9 +125,12 @@
   <!-- NOVA PENDÊNCIA -->
   <form class="card form" id="form" autocomplete="off">
     <div class="linha">
+      <button type="button" class="mic" id="btn-mic" hidden aria-label="Falar a pendência" title="Falar a pendência"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v4"></path></svg></button>
       <input class="campo" id="f-titulo" maxlength="300" placeholder="O que precisa ser feito?" required>
       <button class="btn" type="submit" id="btn-salvar">Adicionar</button>
     </div>
+
+    <div class="voz-status" id="voz-status" role="status" hidden></div>
 
     <div class="linha so-privado">
       <div class="seg" role="radiogroup" aria-label="Categoria">
@@ -451,6 +461,140 @@
       desenhar();
     }, function () { btn.disabled = false; erro.textContent = 'Sem conexão agora. Tente de novo.'; erro.hidden = false; });
   });
+
+  // ------------------------------------------------------------------
+  // Microfone: fala -> preenche título, data, hora, prioridade e categoria
+  // (reconhecimento de voz do próprio navegador — gratuito; melhor no Chrome)
+  // ------------------------------------------------------------------
+// Interpreta a frase falada: título, data, hora, prioridade e categoria.
+function interpretarFala(texto, hojeStr) {
+  var DIAS_SEMANA = { 'domingo': 0, 'segunda': 1, 'terça': 2, 'terca': 2, 'quarta': 3, 'quinta': 4, 'sexta': 5, 'sábado': 6, 'sabado': 6 };
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function paraData(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function str(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function soma(s, n) { var d = paraData(s); d.setDate(d.getDate() + n); return str(d); }
+  var r = { titulo: '', data: null, hora: null, prioridade: null, categoria: null };
+  var t = ' ' + String(texto || '').replace(/\s+/g, ' ').trim() + ' ';
+  var hoje = paraData(hojeStr);
+  function tirar(re) { t = t.replace(re, ' '); }
+
+  // --- data ---
+  var m;
+  if (/\bdepois de amanh[ãa](?=[\s,.!?;:]|$)/i.test(t)) { r.data = soma(hojeStr, 2); tirar(/\s(?:para\s|pra\s)?depois de amanh[ãa](?=[\s,.!?;:]|$)/i); }
+  else if (/\bamanh[ãa](?=[\s,.!?;:]|$)/i.test(t)) { r.data = soma(hojeStr, 1); tirar(/\s(?:para\s|pra\s)?amanh[ãa](?=[\s,.!?;:]|$)/i); }
+  else if (/\bhoje\b/i.test(t)) { r.data = hojeStr; tirar(/\s(?:para\s|pra\s)?hoje\b/i); }
+  else if ((m = t.match(/\s(?:n[oa]\s|na pr[óo]xima\s|no pr[óo]ximo\s|pr[óo]xim[oa]\s|nesta\s|nessa\s|essa\s|este\s|esse\s)?(domingo|segunda|ter[çc]a|quarta|quinta|sexta|s[áa]bado)(?:-feira| feira)?\b/i))) {
+    var alvo = DIAS_SEMANA[m[1].toLowerCase()];
+    var dif = (alvo - hoje.getDay() + 7) % 7; if (dif === 0) dif = 7;
+    r.data = soma(hojeStr, dif); tirar(m[0]);
+  }
+  else if ((m = t.match(/\s(?:n?o\s)?dia\s(\d{1,2})(?:\s?(?:\/|de)\s?(\d{1,2}))?\b/i)) || (m = t.match(/\s(?:em\s|para\s|pra\s)?(\d{1,2})\/(\d{1,2})\b/))) {
+    var dia = +m[1], mes = m[2] ? +m[2] - 1 : hoje.getMonth(), ano = hoje.getFullYear();
+    if (dia >= 1 && dia <= 31 && mes >= 0 && mes <= 11) {
+      var d = new Date(ano, mes, dia);
+      if (str(d) < hojeStr) d = m[2] ? new Date(ano + 1, mes, dia) : new Date(ano, mes + 1, dia);
+      r.data = str(d); tirar(m[0]);
+    }
+  }
+  else if (/\b(semana que vem|pr[óo]xima semana)\b/i.test(t)) { r.data = soma(hojeStr, 7); tirar(/\s(?:na\s|para\s|pra\s)?(semana que vem|pr[óo]xima semana)\b/i); }
+
+  // --- hora ---
+  if ((m = t.match(/\s(?:ao\s|à\s|a\s)?meio[- ]dia\b/i))) { r.hora = '12:00'; tirar(m[0]); }
+  else if ((m = t.match(/\s(?:às|as|a|à)\s(\d{1,2})(?:\s?(?:h|:)\s?(\d{2}))?(?:\s?(?:h|hs|horas?))?(?:\s(?:da|de)\s(manh[ãa]|tarde|noite))?(?=[\s,.]|$)/i))
+        || (m = t.match(/\s(\d{1,2})(?:\s?(?:h|:)\s?(\d{2}))(?:\s?(?:h|hs|horas?))?(?:\s(?:da|de)\s(manh[ãa]|tarde|noite))?(?=[\s,.]|$)/i))
+        || (m = t.match(/\s(\d{1,2})\s?(?:h|hs|horas)(?:\s(?:da|de)\s(manh[ãa]|tarde|noite))?(?=[\s,.]|$)/i))) {
+    var h = +m[1], min = m[2] && /^\d/.test(m[2]) ? +m[2] : 0, per = (m[3] || (m[2] && !/^\d/.test(m[2]) ? m[2] : '') || '').toLowerCase();
+    if ((per === 'tarde' || per === 'noite') && h < 12) h += 12;
+    if (h <= 23 && min <= 59) { r.hora = pad(h) + ':' + pad(min); tirar(m[0]); }
+  }
+
+  // --- prioridade ---
+  if (/\b(urgente|important[ei]|prioridade alta|com urg[êe]ncia)(?=[\s,.!?;:]|$)/i.test(t)) { r.prioridade = 'alta'; tirar(/[\s,]*(?:é\s)?(urgente|important[ei]|prioridade alta|com urg[êe]ncia)(?=[\s,.!?;:]|$)/gi); }
+
+  // --- categoria ---
+  var pre = t.match(/^\s*(pessoal|gda|g\.?d\.?a\.?|ativa ?mob|ativa)\s*[:,.\-]?\s/i);
+  if (pre) {
+    var p = pre[1].toLowerCase().replace(/\./g, '');
+    r.categoria = p === 'pessoal' ? 'pessoal' : /^ativa/.test(p) ? 'ativamob' : 'gda';
+    t = ' ' + t.slice(pre[0].length);
+  } else if (/\b(ativa ?mob|ativa|motoristas?|passageiros?|investidor(es)?|mob ?apps?|pitch)\b/i.test(t)) r.categoria = 'ativamob';
+  else if (/\b(g\.?d\.?a|equipe|pilotos?|camisas?|adesivos?|diretoria|motociata|ouvidoria|membros?|remessa|site|bon[ée]s?(?=[\s,.!?;:]|$)|confraterniza[çc][ãa]o)(?=[\s,.!?;:]|$)/i.test(t)) r.categoria = 'gda';
+  else if (/\b(comprar|compras?|mercado|supermercado|farm[áa]cia|casa|conta de|pagar a conta|m[ée]dico|consulta|dentista|anivers[áa]rio|academia|fam[íi]lia|m[ãa]e(?=[\s,.!?;:]|$)|pai|filh[oa]s?|esposa|namorada)\b/i.test(t)) r.categoria = 'pessoal';
+
+  // --- título ---
+  t = t.replace(/^\s*(?:me\s)?(?:lembr[ae]r?|lembre|lembra)(?:-me)?\s(?:de\s|que\s)?/i, ' ')
+       .replace(/^\s*(?:lembrete|anota[r]?|anote|adicion[ae]r?)\s*[:,]?\s(?:a[ií]\s)?(?:que\s)?/i, ' ')
+       .replace(/\s+([,.!?])/g, '$1').replace(/\s{2,}/g, ' ').trim()
+       .replace(/^[,.\-:;\s]+|[,.\-:;\s]+$/g, '').replace(/\s(?:para|pra|às|as|no|na|de)$/i, '').trim();
+  r.titulo = t ? t.charAt(0).toUpperCase() + t.slice(1) : '';
+  return r;
+}
+
+  (function () {
+    var Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var btn = $('btn-mic'), status = $('voz-status');
+    if (!Rec) return; // navegador sem suporte: botão fica escondido
+    btn.hidden = false;
+    var rec = null, ouvindo = false, finalTxt = '';
+
+    function aviso(txt) { status.textContent = txt; status.hidden = !txt; }
+    function marcar(id) { var el = $(id); el.classList.add('preenchido'); setTimeout(function () { el.classList.remove('preenchido'); }, 2500); }
+
+    function aplicar(texto) {
+      var r = interpretarFala(texto, hoje());
+      if (!r.titulo) { aviso('Não entendi. Toque no microfone e fale de novo.'); return; }
+      $('f-titulo').value = r.titulo; marcar('f-titulo');
+      // cada fala começa do zero (a categoria escolhida continua, se não for dita)
+      $('f-data').value = ''; $('f-hora').value = ''; $('f-prio').value = 'normal';
+      var partes = [];
+      if (r.data) {
+        $('f-data').value = r.data; marcar('f-data');
+        partes.push(rotuloData({ data: r.data, hora: r.hora ? r.hora + ':00' : null }));
+      } else if (r.hora) {
+        $('f-data').value = hoje(); marcar('f-data');
+        partes.push(rotuloData({ data: hoje(), hora: r.hora + ':00' }));
+      }
+      if (r.hora) { $('f-hora').value = r.hora; marcar('f-hora'); }
+      if (r.prioridade) { $('f-prio').value = r.prioridade; marcar('f-prio'); partes.push('prioridade alta'); }
+      if (r.categoria && liberado) { marcarRadio('cat', r.categoria); atualizarPrivado(); }
+      if (liberado) partes.unshift(CATS[valorRadio('cat')]);
+      aviso('✓ Entendi' + (partes.length ? ': ' + partes.join(' · ') : '') + '. Confira e toque em Adicionar.');
+    }
+
+    function parar() { ouvindo = false; btn.classList.remove('ouvindo'); btn.setAttribute('aria-label', 'Falar a pendência'); }
+
+    btn.addEventListener('click', function () {
+      if (ouvindo && rec) { rec.stop(); return; }
+      if (editandoId) limparForm();
+      rec = new Rec();
+      rec.lang = 'pt-BR'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+      finalTxt = '';
+      rec.onstart = function () { ouvindo = true; btn.classList.add('ouvindo'); btn.setAttribute('aria-label', 'Parar'); aviso('🎤 Ouvindo… fale a pendência (ex.: “cobrar fornecedor sexta às 15h”)'); };
+      rec.onresult = function (e) {
+        var parcial = '';
+        for (var i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) finalTxt += e.results[i][0].transcript; else parcial += e.results[i][0].transcript;
+        }
+        $('f-titulo').value = (finalTxt + ' ' + parcial).trim();
+      };
+      rec.onerror = function (e) {
+        parar();
+        aviso(e.error === 'not-allowed' || e.error === 'service-not-allowed' ? 'Libere o microfone para este site nas permissões do navegador.'
+          : e.error === 'no-speech' ? 'Não ouvi nada. Toque no microfone e fale de novo.'
+          : e.error === 'network' ? 'Sem internet para reconhecer a voz agora.' : 'Não foi possível ouvir. Tente de novo.');
+      };
+      rec.onend = function () {
+        var eraOuvindo = ouvindo; parar();
+        if (finalTxt.trim()) aplicar(finalTxt.trim());
+        else if (eraOuvindo && !status.textContent.indexOf('🎤')) aviso('Não ouvi nada. Toque no microfone e fale de novo.');
+      };
+      try { rec.start(); } catch (err) { parar(); aviso('Não foi possível ligar o microfone.'); }
+    });
+
+    // ao salvar ou limpar o formulário, some o aviso
+    $('form').addEventListener('submit', function () { setTimeout(function () { aviso(''); }, 0); });
+    $('btn-cancelar').addEventListener('click', function () { aviso(''); });
+  })();
 
   // ------------------------------------------------------------------
   // Filtros

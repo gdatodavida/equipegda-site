@@ -92,7 +92,7 @@
   .tabrow{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; }
 
   /* KPI cards */
-  .kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:14px; }
   .kpi{
     background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius);
     padding:16px 16px 14px; box-shadow:var(--shadow);
@@ -243,6 +243,25 @@
   .setup-card ol{ padding-left:20px; font-size:13.5px; line-height:1.7; color:var(--ink-soft); }
   .setup-card code{ background:var(--surface-alt); padding:1px 6px; border-radius:5px; font-family:"Oswald"; font-size:12.5px; }
 
+  .kpi .value small{ font-size:15px; font-weight:600; color:var(--ink-soft); margin-left:4px; }
+  .kpi.lucro .value{ color:var(--good); }
+  .kpi.lucro.neg .value{ color:var(--bad); }
+
+  /* Margem de lucro: barras horizontais */
+  .hb{ padding:8px 16px 12px; }
+  .hb-row{ display:grid; grid-template-columns:minmax(90px,38%) 1fr auto; align-items:center; gap:10px; padding:6px 0; font-size:12.5px; border-radius:6px; }
+  .hb-row:hover{ background:var(--surface-alt); }
+  .hb-lab{ color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .hb-track{ height:14px; position:relative; }
+  .hb-bar{ position:absolute; left:0; top:0; bottom:0; border-radius:0 4px 4px 0; background:var(--g-teal); min-width:2px; }
+  .hb-bar.neg{ background:var(--bad); }
+  .hb-val{ font-family:"Oswald"; font-variant-numeric:tabular-nums; font-weight:600; color:var(--ink); white-space:nowrap; text-align:right; min-width:86px; }
+  .hb-sub{ font-size:11px; color:var(--ink-faint); font-family:"Manrope"; font-weight:600; margin-left:4px; }
+  .pill-semcusto{ background:var(--warn-soft); color:var(--warn); }
+  .custo-edit{ display:flex; align-items:center; gap:6px; }
+  .custo-edit input{ width:84px; padding:6px 7px; text-align:right; }
+  .linklike{ background:none; border:none; padding:0; color:var(--accent-txt); font-weight:700; cursor:pointer; text-decoration:underline; font-size:inherit; }
+
   @media (max-width:860px){
     .kpis{ grid-template-columns:repeat(2,1fr); }
     .grid-2{ grid-template-columns:1fr; }
@@ -307,6 +326,7 @@
       <button data-tab="brindes">Brindes</button>
       <button data-tab="receber">A receber<span class="tab-badge" id="tabBadgeReceber" hidden></span></button>
       <button data-tab="clientes">Clientes</button>
+      <button data-tab="margem">Margem de lucro</button>
     </nav>
     <button class="cta-vender" id="ctaVender">+ Registrar venda</button>
   </div>
@@ -328,6 +348,11 @@
         <div class="label">Itens em estoque</div>
         <div class="value num" id="kpiEstoque">0</div>
         <div class="sub" id="kpiEstoqueSub">disponíveis p/ venda</div>
+      </div>
+      <div class="kpi lucro" id="kpiLucroBox">
+        <div class="label">Lucro</div>
+        <div class="value num" id="kpiLucro">R$ 0,00</div>
+        <div class="sub" id="kpiLucroSub">sobre as vendas</div>
       </div>
       <div class="kpi">
         <div class="label">Valor em estoque</div>
@@ -487,7 +512,7 @@
       <div class="panel-body">
         <div class="table-wrap">
           <table id="tblEstoqueGerenciar">
-            <thead><tr><th>Produto</th><th class="num-cell">Preço</th><th class="num-cell">Vendido</th><th>Disponível</th><th class="num-cell">Valor estoque</th><th>Ações</th></tr></thead>
+            <thead><tr><th>Produto</th><th class="num-cell">Preço</th><th>Custo unit.</th><th class="num-cell">Vendido</th><th>Disponível</th><th class="num-cell">Valor estoque</th><th>Ações</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
@@ -557,12 +582,67 @@
       </div>
       <div class="table-wrap">
         <table id="tblClientes">
-          <thead><tr><th>Num</th><th>Nome</th><th class="num-cell">Itens comprados</th><th class="num-cell">Total</th><th class="num-cell">Pago</th><th class="num-cell">Deve</th></tr></thead>
+          <thead><tr><th class="num-cell">#</th><th>Num</th><th>Nome</th><th class="num-cell">Itens comprados</th><th class="num-cell">Total</th><th class="num-cell">Pago</th><th class="num-cell">Deve</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
       <div class="empty" id="emptyClientes" hidden><b>Nenhum cliente encontrado</b>Sua lista de clientes vem direto da sua planilha do Google Sheets — cadastre ou edite por lá.</div>
       <div class="empty" id="clientesSemConexao" hidden><b>Não foi possível carregar os clientes</b>Confira se a planilha de clientes ainda está compartilhada com a conta usada no Apps Script.</div>
+    </div>
+  </section>
+
+  <!-- MARGEM DE LUCRO -->
+  <section id="tab-margem" hidden>
+    <div class="panel" style="margin-bottom:14px;">
+      <div class="toolbar">
+        <select id="mPeriodo" title="Período">
+          <option value="mes">Este mês</option>
+          <option value="mes_passado">Mês passado</option>
+          <option value="30d">Últimos 30 dias</option>
+          <option value="90d">Últimos 90 dias</option>
+          <option value="ano">Este ano</option>
+          <option value="tudo" selected>Todo o período</option>
+          <option value="custom">Personalizado</option>
+        </select>
+        <input type="date" id="mDe" title="De">
+        <input type="date" id="mAte" title="Até">
+        <span class="grow"></span>
+        <button class="btn btn-ghost btn-sm" id="mCsv" type="button">⬇ Baixar relatório (planilha)</button>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="label">Faturamento</div><div class="value num" id="mFat">R$ 0,00</div><div class="sub" id="mFatSub">vendas no período</div></div>
+      <div class="kpi"><div class="label">Custo dos produtos</div><div class="value num" id="mCusto">R$ 0,00</div><div class="sub">custo unitário × qtd vendida</div></div>
+      <div class="kpi lucro" id="mLucroBox"><div class="label">Lucro</div><div class="value num" id="mLucro">R$ 0,00</div><div class="sub" id="mLucroSub">já descontando os brindes</div></div>
+      <div class="kpi"><div class="label">Margem</div><div class="value num" id="mMargem">0%</div><div class="sub">lucro ÷ faturamento</div></div>
+      <div class="kpi"><div class="label">Custo dos brindes</div><div class="value num" id="mBrindes">R$ 0,00</div><div class="sub" id="mBrindesSub">0 item(ns)</div></div>
+    </div>
+    <div class="substats" id="mAvisos"></div>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="panel">
+        <div class="panel-head"><h2>Lucro por produto</h2><span class="hint">maior → menor</span></div>
+        <div class="hb" id="mGrafProduto"></div>
+        <div class="empty" id="mGrafProdutoVazio" hidden><b>Sem lucro para mostrar</b>Nenhuma venda com custo cadastrado neste período.</div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Lucro por mês</h2></div>
+        <div class="hb" id="mGrafMes"></div>
+        <div class="empty" id="mGrafMesVazio" hidden><b>Sem dados no período</b></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Margem por produto</h2><span class="hint" id="mTabHint"></span></div>
+      <div class="table-wrap">
+        <table id="tblMargem">
+          <thead><tr><th>Produto</th><th class="num-cell">Qtd vendida</th><th class="num-cell">Faturamento</th><th class="num-cell">Custo unit.</th><th class="num-cell">Custo total</th><th class="num-cell">Lucro</th><th class="num-cell">Margem</th></tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <div class="empty" id="mTabVazio" hidden><b>Nenhuma venda no período</b>Escolha outro período acima.</div>
     </div>
   </section>
 </div>
@@ -905,7 +985,7 @@
   }
 
   /* ---------- tabs ---------- */
-  var TABS = ['painel','vender','estoque','vendas','brindes','receber','clientes'];
+  var TABS = ['painel','vender','estoque','vendas','brindes','receber','clientes','margem'];
   function setTab(name){
     TABS.forEach(function(t){
       document.getElementById('tab-'+t).hidden = (t!==name);
@@ -929,6 +1009,12 @@
     document.getElementById('kpiVendidos').textContent = fmtInt(a.totals.vendidos);
     document.getElementById('kpiEstoque').textContent = fmtInt(a.totals.disponiveis);
     document.getElementById('kpiValorEstoque').textContent = fmtMoney(a.totals.valorEstoque);
+    var lp = resumoLucro(state.sales);
+    document.getElementById('kpiLucro').innerHTML = fmtMoney(lp.lucro) + ' <small>(' + fmtPct(lp.margem) + ')</small>';
+    document.getElementById('kpiLucroBox').classList.toggle('neg', lp.lucro < 0);
+    document.getElementById('kpiLucroSub').textContent = lp.semCustoProdutos.length
+      ? '⚠ ' + lp.semCustoProdutos.length + ' produto(s) vendido(s) sem custo cadastrado'
+      : 'margem sobre as vendas';
 
     var activeCount = state.products.filter(function(p){ return p.active!==false; }).length;
     var paidCount = state.sales.filter(isPaidSale).length;
@@ -1294,14 +1380,22 @@
     var a = allStats();
     var tb = document.querySelector('#tblEstoqueGerenciar tbody');
     document.getElementById('emptyProdutosEstoque').hidden = a.list.length>0;
-    tb.innerHTML = a.list.map(function(x){
+    // enquanto alguém digita na tabela (custo ou reposição), a atualização automática não apaga o que foi digitado
+    if(tb.contains(document.activeElement)) return;
+    var ordenada = a.list.slice().sort(function(x,y){ return String(x.p.name||'').localeCompare(String(y.p.name||''), 'pt-BR', { sensitivity:'base' }); });
+    tb.innerHTML = ordenada.map(function(x){
       var p = x.p, st = x.st;
       var inactive = p.active===false;
+      var custo = costOf(p);
       var pillCls = st.status==='out'?'out':(st.status==='low'?'low':'ok');
       var pillTxt = st.status==='out'?'Esgotado':(st.status==='low'?'Baixo':'OK');
       return '<tr style="'+(inactive?'opacity:.5;':'')+'">'+
         '<td>'+escapeHtml(p.name)+(inactive?' <span class="hint" style="font-size:11px;">(inativo)</span>':'')+'</td>'+
         '<td class="num-cell">'+fmtMoney(p.price)+'</td>'+
+        '<td><div class="custo-edit"><input type="text" inputmode="decimal" class="custoInput" data-id="'+p.id+'" value="'+(custo==null?'':toDecimalStr(custo))+'" placeholder="0,00" title="Custo unitário (R$)">'+
+          '<button class="btn btn-ghost btn-sm custoBtn" data-id="'+p.id+'">Salvar</button></div>'+
+          (custo==null ? '<span class="status-pill pill-semcusto" style="margin-top:4px;">sem custo</span>' : '<span class="hint" style="font-size:11px;color:var(--ink-faint);">margem '+fmtPct(Number(p.price)>0 ? (Number(p.price)-custo)/Number(p.price) : 0)+'</span>')+
+        '</td>'+
         '<td class="num-cell">'+fmtInt(st.sold)+'</td>'+
         '<td><span class="status-pill '+pillCls+'">'+pillTxt+'</span> <span class="num" style="font-size:12.5px;">'+fmtInt(st.available)+'</span></td>'+
         '<td class="num-cell">'+fmtMoney(st.stockValue)+'</td>'+
@@ -1319,6 +1413,21 @@
   document.querySelector('#tblEstoqueGerenciar tbody').addEventListener('click', function(e){
     var repoBtn = e.target.closest('.repoBtn');
     var toggleBtn = e.target.closest('.toggleBtn');
+    var custoBtn = e.target.closest('.custoBtn');
+    if(custoBtn){
+      var cid = custoBtn.getAttribute('data-id');
+      var cInput = document.querySelector('.custoInput[data-id="'+cid+'"]');
+      var raw = cInput.value.trim();
+      var val = raw==='' ? '' : parseDecimal(raw);
+      if(raw!=='' && (isNaN(val) || val<0)){ showToast('Informe um custo válido (ex.: 12,50) ou deixe vazio.', true); return; }
+      custoBtn.disabled = true; custoBtn.textContent = 'Salvando…';
+      apiPost('updateProduct', { cost: val }, cid).then(function(){
+        var prod = state.products.find(function(p){ return p.id===cid; }); if(prod) prod.cost = val;
+        showToast('Custo salvo.'); cInput.blur(); return refreshAll(false);
+      }).catch(function(err){ showToast('Erro ao salvar o custo (' + err.message + ').', true); })
+        .finally(function(){ custoBtn.disabled = false; custoBtn.textContent = 'Salvar'; });
+      return;
+    }
     if(repoBtn){
       var id = repoBtn.getAttribute('data-id');
       var input = document.querySelector('.repoInput[data-id="'+id+'"]');
@@ -1600,15 +1709,21 @@
       return;
     }
     var busca = document.getElementById('fCliente').value.trim().toLowerCase();
-    var list = state.customers.filter(function(c){
+    // Ordem: quem mais comprou (valor total) primeiro; empate → mais itens → nome.
+    // A posição (#) é a do ranking geral, mesmo quando a busca filtra a lista.
+    var ranking = state.customers.map(function(c){ return { c:c, st:customerStats(c) }; })
+      .sort(function(a,b){ return (b.st.total-a.st.total) || (b.st.itens-a.st.itens) || String(a.c.name).localeCompare(String(b.c.name), 'pt-BR'); });
+    ranking.forEach(function(x, i){ x.pos = i+1; });
+    var list = ranking.filter(function(x){
       if(!busca) return true;
-      return String(c.name||'').toLowerCase().indexOf(busca)>-1 || String(c.id||'').toLowerCase().indexOf(busca)>-1;
-    }).sort(function(a,b){ return String(a.name).localeCompare(String(b.name), 'pt-BR'); });
+      return String(x.c.name||'').toLowerCase().indexOf(busca)>-1 || String(x.c.id||'').toLowerCase().indexOf(busca)>-1;
+    });
     document.getElementById('emptyClientes').hidden = list.length>0;
     var tb = document.querySelector('#tblClientes tbody');
-    tb.innerHTML = list.map(function(c){
-      var st = customerStats(c);
+    tb.innerHTML = list.map(function(x){
+      var c = x.c, st = x.st;
       return '<tr>'+
+        '<td class="num-cell" style="color:var(--ink-faint);">'+(st.total>0 ? x.pos+'º' : '—')+'</td>'+
         '<td>'+escapeHtml(c.id)+'</td>'+
         '<td>'+escapeHtml(c.name)+'</td>'+
         '<td class="num-cell">'+fmtInt(st.itens)+'</td>'+
@@ -1621,6 +1736,185 @@
   }
   document.getElementById('fCliente').addEventListener('input', renderClientes);
 
+  /* ---------- LUCRO E MARGEM ---------- */
+  // Custo vem do cadastro do produto (aba Estoque). Lucro de cada venda = valor da venda − custo × qtd.
+  // Brindes não têm receita: entram só como custo (diminuem o lucro).
+  // Produtos sem custo cadastrado ficam FORA do lucro e da margem (e aparecem com aviso).
+  function fmtPct(n){ return (isFinite(n) ? (n*100).toFixed(1).replace('.', ',') : '0') + '%'; }
+  function normNome(t){ return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').trim().toLowerCase(); }
+  function costOf(p){
+    if(!p || p.cost===undefined || p.cost===null || p.cost==='') return null;
+    var n = typeof p.cost==='number' ? p.cost : parseDecimal(p.cost);
+    return (isNaN(n) || n<0) ? null : n;
+  }
+  function productOfSale(s){
+    var pid = String(s.product_id==null?'':s.product_id);
+    var p = pid ? state.products.find(function(x){ return String(x.id)===pid; }) : null;
+    if(!p && s.product_name){ var n = normNome(s.product_name); p = state.products.find(function(x){ return normNome(x.name)===n; }) || null; }
+    return p;
+  }
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function isoLocal(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+  // Data da venda (AAAA-MM-DD). A planilha às vezes devolve data/hora ISO em UTC: converte para o dia local.
+  function saleDay(s){
+    var d = s.date;
+    if(d && /^\d{4}-\d{2}-\d{2}$/.test(String(d))) return String(d);
+    if(d && String(d).indexOf('T')>-1){ var x = new Date(d); if(!isNaN(x)) return isoLocal(x); }
+    if(s.ts){ var t = new Date(Number(s.ts)); if(!isNaN(t)) return isoLocal(t); }
+    return String(d||'').slice(0,10);
+  }
+  function resumoLucro(sales){
+    var r = { faturamento:0, fatComCusto:0, custo:0, brindesCusto:0, brindesQtd:0, lucro:0, margem:0, semCustoFat:0, semCustoProdutos:[], porProduto:{}, porMes:{} };
+    var semCusto = {};
+    sales.forEach(function(s){
+      var p = productOfSale(s), c = costOf(p), qty = Number(s.qty)||0, total = Number(s.total)||0;
+      var chave = p ? String(p.id) : ('nome:'+normNome(s.product_name));
+      var pp = r.porProduto[chave] || (r.porProduto[chave] = { nome: p ? p.name : (s.product_name||'—'), qty:0, faturamento:0, custoUnit:c, custo:0, lucro:0, brindesQtd:0, brindesCusto:0, semCusto: c==null });
+      var mes = saleDay(s).slice(0,7);
+      var pm = r.porMes[mes] || (r.porMes[mes] = { lucro:0, faturamento:0 });
+      if(isGift(s)){
+        r.brindesQtd += qty; pp.brindesQtd += qty;
+        if(c!=null){ r.brindesCusto += c*qty; pp.brindesCusto += c*qty; pm.lucro -= c*qty; }
+        return;
+      }
+      r.faturamento += total; pp.qty += qty; pp.faturamento += total; pm.faturamento += total;
+      if(c==null){ r.semCustoFat += total; if(p || s.product_name) semCusto[chave] = pp.nome; return; }
+      r.fatComCusto += total; r.custo += c*qty;
+      pp.custo += c*qty; pp.lucro += total - c*qty; pm.lucro += total - c*qty;
+    });
+    r.lucro = r.fatComCusto - r.custo - r.brindesCusto;
+    r.margem = r.fatComCusto>0 ? r.lucro / r.fatComCusto : 0;
+    r.semCustoProdutos = Object.keys(semCusto).map(function(k){ return semCusto[k]; });
+    return r;
+  }
+
+  // Período escolhido na aba Margem
+  function periodoDatas(v){
+    var hoje = new Date(), y = hoje.getFullYear(), m = hoje.getMonth();
+    if(v==='mes') return [isoLocal(new Date(y,m,1)), isoLocal(hoje)];
+    if(v==='mes_passado') return [isoLocal(new Date(y,m-1,1)), isoLocal(new Date(y,m,0))];
+    if(v==='30d'){ var a = new Date(hoje); a.setDate(a.getDate()-29); return [isoLocal(a), isoLocal(hoje)]; }
+    if(v==='90d'){ var b = new Date(hoje); b.setDate(b.getDate()-89); return [isoLocal(b), isoLocal(hoje)]; }
+    if(v==='ano') return [isoLocal(new Date(y,0,1)), isoLocal(hoje)];
+    return ['', ''];
+  }
+  function vendasNoPeriodo(){
+    var de = document.getElementById('mDe').value, ate = document.getElementById('mAte').value;
+    return state.sales.filter(function(s){ var d = saleDay(s); return (!de || d>=de) && (!ate || d<=ate); });
+  }
+  var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  function rotuloMes(ym){ var p = ym.split('-'); return p.length===2 ? MESES[Number(p[1])-1]+'/'+p[0] : (ym||'sem data'); }
+
+  function barrasHtml(itens){ // itens: [{rotulo, valor, sub, dica}]
+    var max = itens.reduce(function(a,x){ return Math.max(a, Math.abs(x.valor)); }, 0) || 1;
+    return itens.map(function(x){
+      var w = Math.max(0.5, Math.abs(x.valor)/max*100);
+      return '<div class="hb-row" title="'+escapeHtml(x.dica||'')+'">'+
+        '<span class="hb-lab">'+escapeHtml(x.rotulo)+'</span>'+
+        '<span class="hb-track"><span class="hb-bar'+(x.valor<0?' neg':'')+'" style="width:'+w.toFixed(1)+'%"></span></span>'+
+        '<span class="hb-val">'+fmtMoney(x.valor)+(x.sub ? '<span class="hb-sub">'+escapeHtml(x.sub)+'</span>' : '')+'</span>'+
+      '</div>';
+    }).join('');
+  }
+
+  function renderMargem(){
+    var r = resumoLucro(vendasNoPeriodo());
+    document.getElementById('mFat').textContent = fmtMoney(r.faturamento);
+    document.getElementById('mFatSub').textContent = r.semCustoFat>0 ? fmtMoney(r.semCustoFat)+' de produtos sem custo' : 'vendas no período';
+    document.getElementById('mCusto').textContent = fmtMoney(r.custo);
+    document.getElementById('mLucro').textContent = fmtMoney(r.lucro);
+    document.getElementById('mLucroBox').classList.toggle('neg', r.lucro<0);
+    document.getElementById('mMargem').textContent = fmtPct(r.margem);
+    document.getElementById('mBrindes').textContent = fmtMoney(r.brindesCusto);
+    document.getElementById('mBrindesSub').textContent = fmtInt(r.brindesQtd)+' item(ns) dado(s) de brinde';
+    document.getElementById('mAvisos').innerHTML = r.semCustoProdutos.length
+      ? '<span class="chip-stat warn">⚠ Sem custo cadastrado: <b>'+escapeHtml(r.semCustoProdutos.join(', '))+'</b> — fora do lucro. <button type="button" class="linklike" data-ir-estoque>Cadastrar custo no Estoque</button></span>'
+      : '';
+
+    // tabela e gráfico por produto
+    var prods = Object.keys(r.porProduto).map(function(k){ return r.porProduto[k]; })
+      .filter(function(p){ return p.qty>0 || p.brindesQtd>0; })
+      .sort(function(a,b){ return (a.semCusto-b.semCusto) || (b.lucro-a.lucro) || a.nome.localeCompare(b.nome,'pt-BR'); });
+    document.getElementById('mTabVazio').hidden = prods.length>0;
+    document.getElementById('mTabHint').textContent = prods.length ? fmtInt(prods.length)+' produto(s)' : '';
+    document.querySelector('#tblMargem tbody').innerHTML = prods.map(function(p){
+      var margem = p.faturamento>0 ? p.lucro/p.faturamento : 0;
+      return '<tr>'+
+        '<td>'+escapeHtml(p.nome)+(p.brindesQtd ? ' <span class="hint" style="font-size:11px;color:var(--ink-faint);">(+'+fmtInt(p.brindesQtd)+' brinde)</span>' : '')+'</td>'+
+        '<td class="num-cell">'+fmtInt(p.qty)+'</td>'+
+        '<td class="num-cell">'+fmtMoney(p.faturamento)+'</td>'+
+        (p.semCusto
+          ? '<td class="num-cell" colspan="4"><span class="status-pill pill-semcusto">sem custo cadastrado</span></td>'
+          : '<td class="num-cell">'+fmtMoney(p.custoUnit)+'</td>'+
+            '<td class="num-cell">'+fmtMoney(p.custo)+'</td>'+
+            '<td class="num-cell" style="color:'+(p.lucro<0?'var(--bad)':'var(--good)')+';">'+fmtMoney(p.lucro)+'</td>'+
+            '<td class="num-cell">'+fmtPct(margem)+'</td>')+
+      '</tr>';
+    }).join('');
+    document.querySelector('#tblMargem tfoot').innerHTML = prods.length ? (
+      (r.brindesCusto>0 ? '<tr><td colspan="5" style="color:var(--ink-faint);">Custo dos brindes ('+fmtInt(r.brindesQtd)+' item(ns))</td><td class="num-cell" style="color:var(--bad);">−'+fmtMoney(r.brindesCusto)+'</td><td></td></tr>' : '')+
+      '<tr class="footfoot"><td>Total</td><td class="num-cell">'+fmtInt(prods.reduce(function(a,p){ return a+p.qty; },0))+'</td><td class="num-cell">'+fmtMoney(r.faturamento)+'</td><td></td><td class="num-cell">'+fmtMoney(r.custo)+'</td><td class="num-cell">'+fmtMoney(r.lucro)+'</td><td class="num-cell">'+fmtPct(r.margem)+'</td></tr>'
+    ) : '';
+
+    var comLucro = prods.filter(function(p){ return !p.semCusto && p.qty>0; });
+    document.getElementById('mGrafProdutoVazio').hidden = comLucro.length>0;
+    document.getElementById('mGrafProduto').innerHTML = barrasHtml(comLucro.slice(0,15).map(function(p){
+      var mg = p.faturamento>0 ? p.lucro/p.faturamento : 0;
+      return { rotulo:p.nome, valor:p.lucro, sub:fmtPct(mg), dica:p.nome+': lucro '+fmtMoney(p.lucro)+' · faturamento '+fmtMoney(p.faturamento)+' · '+fmtInt(p.qty)+' vendido(s) · margem '+fmtPct(mg) };
+    }));
+
+    var meses = Object.keys(r.porMes).filter(function(k){ return k; }).sort();
+    document.getElementById('mGrafMesVazio').hidden = meses.length>0;
+    document.getElementById('mGrafMes').innerHTML = barrasHtml(meses.map(function(k){
+      var x = r.porMes[k], mg = x.faturamento>0 ? x.lucro/x.faturamento : 0;
+      return { rotulo:rotuloMes(k), valor:x.lucro, sub:fmtPct(mg), dica:rotuloMes(k)+': lucro '+fmtMoney(x.lucro)+' · faturamento '+fmtMoney(x.faturamento) };
+    }));
+    renderMargem.ultimo = { r:r, prods:prods };
+  }
+
+  document.getElementById('mPeriodo').addEventListener('change', function(){
+    var v = this.value;
+    if(v!=='custom'){ var d = periodoDatas(v); document.getElementById('mDe').value = d[0]; document.getElementById('mAte').value = d[1]; }
+    renderMargem();
+  });
+  ['mDe','mAte'].forEach(function(id){
+    document.getElementById(id).addEventListener('change', function(){ document.getElementById('mPeriodo').value = 'custom'; renderMargem(); });
+  });
+  document.getElementById('mAvisos').addEventListener('click', function(e){ if(e.target.closest('[data-ir-estoque]')) setTab('estoque'); });
+
+  // Relatório em planilha (CSV com ; e vírgula decimal — abre direto no Excel / Google Sheets)
+  document.getElementById('mCsv').addEventListener('click', function(){
+    renderMargem();
+    var u = renderMargem.ultimo; if(!u) return;
+    var de = document.getElementById('mDe').value, ate = document.getElementById('mAte').value;
+    function n(v){ return (Number(v)||0).toFixed(2).replace('.', ','); }
+    function q(t){ return '"'+String(t==null?'':t).replace(/"/g,'""')+'"'; }
+    var linhas = [
+      ['Relatório de lucro — GDA Vendas'],
+      ['Período', de ? fmtDateBR(de) : 'início', ate ? fmtDateBR(ate) : 'hoje'],
+      [],
+      ['Produto','Qtd vendida','Faturamento','Custo unitário','Custo total','Lucro','Margem %','Brindes (qtd)','Custo brindes']
+    ];
+    u.prods.forEach(function(p){
+      linhas.push([q(p.nome), p.qty, n(p.faturamento), p.semCusto ? 'sem custo' : n(p.custoUnit), p.semCusto ? '' : n(p.custo), p.semCusto ? '' : n(p.lucro),
+        p.semCusto || !p.faturamento ? '' : ((p.lucro/p.faturamento)*100).toFixed(1).replace('.', ','), p.brindesQtd, n(p.brindesCusto)]);
+    });
+    linhas.push([]);
+    linhas.push(['Faturamento total', n(u.r.faturamento)]);
+    linhas.push(['Custo dos produtos', n(u.r.custo)]);
+    linhas.push(['Custo dos brindes', n(u.r.brindesCusto)]);
+    linhas.push(['Lucro', n(u.r.lucro)]);
+    linhas.push(['Margem %', (u.r.margem*100).toFixed(1).replace('.', ',')]);
+    if(u.r.semCustoProdutos.length) linhas.push([q('Sem custo cadastrado (fora do lucro): '+u.r.semCustoProdutos.join(', '))]);
+    var csv = '﻿' + linhas.map(function(l){ return l.join(';'); }).join('\r\n');
+    var blob = new Blob([csv], { type:'text/csv;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lucro-gda-' + (de||'inicio') + '-a-' + (ate||todayISO()) + '.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  });
+
   /* ---------- master render ---------- */
   function renderAll(){
     renderPainel();
@@ -1629,6 +1923,7 @@
     renderBrindes();
     renderReceber();
     renderClientes();
+    renderMargem();
     var sel = document.getElementById('vProduto');
     populateProdutoSelect(sel, sel.value);
     populateClienteDatalist();
