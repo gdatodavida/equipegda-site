@@ -12,6 +12,27 @@
   button{cursor:pointer;}
   @keyframes gda-sugestoes-marquee{from{transform:translateX(-732px);}to{transform:translateX(0);}}
   @media (prefers-reduced-motion: reduce){.gda-sugestoes-marquee-track{animation:none !important;}}
+  /* Itens extras (manga curta) */
+  .ex-prod{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#171310;border:1px solid rgba(245,241,234,0.08);border-radius:12px;}
+  .ex-thumb{width:56px;height:72px;border-radius:8px;object-fit:cover;object-position:center top;flex-shrink:0;border:1px solid rgba(245,241,234,0.12);display:block;}
+  .ex-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+  .ex-nome{font-family:'Manrope',sans-serif;font-weight:700;font-size:14px;color:#F5F1EA;}
+  .ex-preco{font-family:'Manrope',sans-serif;font-size:13px;color:#FFDB00;font-weight:700;}
+  .ex-tab{font-family:'Manrope',sans-serif;font-size:12px;color:#A89C8E;text-decoration:underline;}
+  .ex-add{flex-shrink:0;padding:10px 14px;border-radius:999px;border:none;background:#FFDB00;color:#14110F;font-family:'Manrope',sans-serif;font-weight:800;font-size:13px;}
+  .ex-item{display:flex;flex-direction:column;gap:10px;padding:14px;background:rgba(255,219,0,0.06);border:1px solid rgba(255,219,0,0.3);border-radius:12px;}
+  .ex-item-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .ex-item-tit{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;color:#F5F1EA;}
+  .ex-rem{background:none;border:none;color:#FF8A7A;font-family:'Manrope',sans-serif;font-weight:700;font-size:12px;text-decoration:underline;padding:4px;}
+  .ex-linha{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .ex-rot{font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;color:#D8D2C7;min-width:62px;}
+  .ex-cor{padding:8px 14px;border-radius:999px;border:1px solid rgba(245,241,234,0.16);background:transparent;color:#F5F1EA;font-family:'Manrope',sans-serif;font-weight:700;font-size:13px;}
+  .ex-cor.on{border:2px solid #FFDB00;background:rgba(255,219,0,0.12);color:#FFDB00;}
+  .ex-cor.ex-inv{border-color:#FF8A7A;}
+  .ex-sel,.ex-inp{flex:1;min-width:120px;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid rgba(245,241,234,0.16);background:#171310;color:#F5F1EA;font-family:'Manrope',sans-serif;font-size:14px;outline:none;}
+  .ex-sel:focus,.ex-inp:focus{border-color:#FFDB00;}
+  .ex-inv{border-color:#FF8A7A !important;}
+  @media (max-width: 480px){ section{padding-left:14px !important;padding-right:14px !important;} section > div{padding-left:18px !important;padding-right:18px !important;} }
 </style>
 </head>
 <body>
@@ -62,10 +83,21 @@
             </div>
           </div>
         </div>
+        <div id="extras-resumo" style="display: none; flex-direction: column; gap: 10px;"></div>
         <div style="height: 1px; background: rgba(245,241,234,0.08);"></div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-          <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Total</span>
+          <span id="total-label" style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Total</span>
           <span id="total-price" style="font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; color: #FFDB00;">R$ 149,80</span>
+        </div>
+        <div id="extras-totais" style="display: none; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #D8D2C7;">Itens extras (pagar com o suporte)</span>
+            <span id="extras-total" style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #F5F1EA;">R$ 0,00</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E;">Total geral</span>
+            <span id="total-geral" style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #A89C8E;">R$ 0,00</span>
+          </div>
         </div>
       </div>
 
@@ -83,24 +115,11 @@
       </div>
 
       <div id="bloco-sugestoes" style="display: flex; flex-direction: column; gap: 10px;">
-        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; color: #F5F1EA;">Aproveite e peça também</span>
-        <div style="width: 100%; overflow: hidden;">
-          <div class="gda-sugestoes-marquee-track" style="display: flex; gap: 12px; width: max-content; animation: gda-sugestoes-marquee 24s linear infinite;">
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/9cc1dc391ae3ad51cc5cabe9a84cafb1.jpg" alt="Camisa Oficial GDA Kids — feminina (rosa)" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/7877dc720e5b774b5a19b23f0e818675.jpg" alt="Camisa Oficial Manga Curta GDA — masculina" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/642b0602d84321187c4c0e5ae4a4832f.jpg" alt="Camisa Oficial GDA Kids — masculina (amarela)" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/a021ae22f7d5500dc97ae419785a63e8.jpg" alt="Camisa GDA Kids" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/1ecdfdb145cae52f77b0d910b211b6bd.jpg" alt="Camisa Oficial GDA — pai e filho" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/ad67875f3b5510b4231baa695486d3e4.jpg" alt="Camisa Oficial GDA Kids — feminina (rosa, produto)" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/9cc1dc391ae3ad51cc5cabe9a84cafb1.jpg" alt="Camisa Oficial GDA Kids — feminina (rosa)" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/7877dc720e5b774b5a19b23f0e818675.jpg" alt="Camisa Oficial Manga Curta GDA — masculina" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/642b0602d84321187c4c0e5ae4a4832f.jpg" alt="Camisa Oficial GDA Kids — masculina (amarela)" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/a021ae22f7d5500dc97ae419785a63e8.jpg" alt="Camisa GDA Kids" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/1ecdfdb145cae52f77b0d910b211b6bd.jpg" alt="Camisa Oficial GDA — pai e filho" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;"></div>
-            <div style="flex: 0 0 auto; width: 110px; height: 150px; border-radius: 10px; overflow: hidden; background: #171310; border: 1px solid rgba(245,241,234,0.08);"><img src="img/ad67875f3b5510b4231baa695486d3e4.jpg" alt="Camisa Oficial GDA Kids — feminina (rosa, produto)" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
-          </div>
-        </div>
-        <span style="font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C;">Camisas Piloto - Manga Curta, Camisa Kids também podem ser adicionados ao seu pedido — Fale com o suporte.</span>
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #F5F1EA;">Aproveite e peça também</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5; color: #A89C8E;">Camisas manga curta (não oficiais, todo mundo pode ter), com o nome que você quiser. R$ 59,90 cada.</span>
+        <div id="extras-catalogo" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        <div id="extras-lista" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        <span id="extras-aviso" style="display: none; font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #A89C8E;">Os itens extras não entram no Pix automático: depois de enviar o pedido, você finaliza o pagamento deles com o suporte no WhatsApp (o pedido já vai pronto na mensagem).</span>
       </div>
 
       <div id="bloco-termo" style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; background: #171310; border-radius: 14px;">
@@ -120,6 +139,11 @@
         <span id="pago-titulo" style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #7FD99A;">Pagamento confirmado ✓</span>
         <span id="pago-texto" style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #D8D2C7;">Seu pedido está pago e registrado. Não precisa enviar comprovante — a confirmação foi automática. Se quiser, avise o suporte pelo WhatsApp para acompanhar o pedido.</span>
         <a id="pix-pago-whatsapp" href="#" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Avisar o suporte no WhatsApp →</a>
+      </div>
+      <div id="extras-box" style="display: none; flex-direction: column; gap: 10px; padding: 18px 20px; background: rgba(255,219,0,0.08); border: 1px solid rgba(255,219,0,0.35); border-radius: 14px;">
+        <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #FFDB00;">Falta finalizar os itens extras</span>
+        <span id="extras-box-texto" style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #D8D2C7;"></span>
+        <a id="extras-whatsapp" href="#" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; padding: 12px 22px; border-radius: 999px; background: #FFDB00; color: #14110F; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px;">Enviar itens extras no WhatsApp →</a>
       </div>
       <span id="pix-dinheiro" style="display: none; font-family: 'Manrope', sans-serif; font-size: 12px; line-height: 1.5; color: #6B655C; text-align: center;">Prefere pagar em dinheiro em mãos ou teve algum problema? <a id="pix-dinheiro-link" href="#" target="_blank" rel="noopener" style="color: #D8D2C7; text-decoration: underline;">Fale com o suporte no WhatsApp</a>.</span>
 
@@ -181,7 +205,9 @@
     pixAtivo: false,
     pago: false,
     manual: false,
-    retomando: false
+    retomando: false,
+    extras: [],
+    extrasNoPix: null // true = Pix já cobra os extras; false = extras pagos à parte com o suporte
   };
   var painelPix = null;
 
@@ -253,6 +279,161 @@
     return 'Balaclava oficial GDA' + (state.quantidadeBalaclava > 1 ? ' (x' + state.quantidadeBalaclava + ')' : '');
   }
 
+  // ----- itens extras: camisas manga curta (R$ 59,90 cada, pagos com o suporte) -----
+  var EXTRA_PRICE = 59.90;
+  var TAM_ADULTO = ['PP', 'P', 'M', 'G', 'GG', 'XG', 'G1', 'G2', 'G3', 'G4'];
+  var EXTRAS_CAT = [
+    { id: 'kids', nome: 'Camisa Manga Curta Kids', curto: 'Manga curta Kids', img: 'img/manga-curta-kids.jpg', tamanhos: ['1A', '2A', '4A', '6A', '8A', '10A', '12A', '14A'] },
+    { id: 'masculina', nome: 'Camisa Manga Curta Adulto Masculina', curto: 'Manga curta Masculina', img: 'img/manga-curta-masculina.jpg', tamanhos: TAM_ADULTO },
+    { id: 'feminina', nome: 'Camisa Manga Curta Adulto Feminina', curto: 'Manga curta Feminina', img: 'img/manga-curta-feminina.jpg', tamanhos: TAM_ADULTO }
+  ];
+  function catDe(id) { for (var i = 0; i < EXTRAS_CAT.length; i++) if (EXTRAS_CAT[i].id === id) return EXTRAS_CAT[i]; return EXTRAS_CAT[0]; }
+  var extrasLocked = false;
+  function totalExtras() { return EXTRA_PRICE * state.extras.length; }
+  function descExtra(x) {
+    return catDe(x.tipo).curto + ' — ' + (x.cor || '?') + ' — tam. ' + (x.tamanho || '?') + ' — nome: ' + ((x.nome || '').trim().toUpperCase() || '?');
+  }
+  function extrasTexto() {
+    if (!state.extras.length) return '';
+    var cab = state.extrasNoPix === true ? 'Itens extras (incluídos no Pix):' : (state.extrasNoPix === false ? 'Itens extras (pagar com o suporte):' : 'Itens extras:');
+    return '\n\n' + cab + '\n' + state.extras.map(function (x) { return '- ' + descExtra(x) + ' — ' + formatCurrency(EXTRA_PRICE); }).join('\n') +
+      '\nTotal dos extras: ' + formatCurrency(totalExtras());
+  }
+  function extrasIncompletos() {
+    for (var i = 0; i < state.extras.length; i++) {
+      var x = state.extras[i];
+      if (!x.cor || !x.tamanho || !(x.nome || '').trim()) return i;
+    }
+    return -1;
+  }
+
+  function montarCatalogo() {
+    var box = document.getElementById('extras-catalogo');
+    box.innerHTML = '';
+    EXTRAS_CAT.forEach(function (c) {
+      var row = document.createElement('div');
+      row.className = 'ex-prod';
+      row.innerHTML = '<a href="' + c.img + '" target="_blank" rel="noopener"><img class="ex-thumb" src="' + c.img + '" alt="' + c.nome + ' — rosa e amarela, frente e costas"></a>' +
+        '<div class="ex-info"><span class="ex-nome">' + c.nome + '</span><span class="ex-preco">R$ 59,90</span>' +
+        '<a class="ex-tab" href="' + c.img + '" target="_blank" rel="noopener">Tabela de medidas</a></div>';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ex-add';
+      btn.textContent = '+ Adicionar';
+      btn.addEventListener('click', function () {
+        if (extrasLocked) return;
+        state.extras.push({ tipo: c.id, cor: '', tamanho: '', nome: '' });
+        renderExtras();
+        var ult = document.querySelectorAll('#extras-lista .ex-item');
+        if (ult.length) ult[ult.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      row.appendChild(btn);
+      box.appendChild(row);
+    });
+  }
+
+  function renderExtras() {
+    var lista = document.getElementById('extras-lista');
+    lista.innerHTML = '';
+    var trav = extrasLocked;
+    document.getElementById('extras-catalogo').style.display = trav ? 'none' : 'flex';
+    state.extras.forEach(function (x, idx) {
+      var c = catDe(x.tipo);
+      var card = document.createElement('div');
+      card.className = 'ex-item';
+      var top = document.createElement('div');
+      top.className = 'ex-item-top';
+      var tit = document.createElement('span');
+      tit.className = 'ex-item-tit';
+      tit.textContent = c.nome + ' — R$ 59,90';
+      top.appendChild(tit);
+      if (!trav) {
+        var rem = document.createElement('button');
+        rem.type = 'button'; rem.className = 'ex-rem'; rem.textContent = 'Remover';
+        rem.addEventListener('click', function () { state.extras.splice(idx, 1); renderExtras(); });
+        top.appendChild(rem);
+      }
+      card.appendChild(top);
+
+      var lCor = document.createElement('div'); lCor.className = 'ex-linha';
+      lCor.innerHTML = '<span class="ex-rot">Cor</span>';
+      ['Rosa', 'Amarela'].forEach(function (cor) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'ex-cor' + (x.cor === cor ? ' on' : ''); b.textContent = cor; b.disabled = trav;
+        b.addEventListener('click', function () { x.cor = cor; renderExtras(); });
+        lCor.appendChild(b);
+      });
+      card.appendChild(lCor);
+
+      var lTam = document.createElement('div'); lTam.className = 'ex-linha';
+      lTam.innerHTML = '<span class="ex-rot">Tamanho</span>';
+      var sel = document.createElement('select');
+      sel.className = 'ex-sel'; sel.disabled = trav;
+      sel.innerHTML = '<option value="">Escolha</option>' + c.tamanhos.map(function (t) { return '<option value="' + t + '"' + (x.tamanho === t ? ' selected' : '') + '>' + t + '</option>'; }).join('');
+      sel.addEventListener('change', function () { x.tamanho = sel.value; sel.classList.remove('ex-inv'); render(); });
+      lTam.appendChild(sel);
+      card.appendChild(lTam);
+
+      var lNome = document.createElement('div'); lNome.className = 'ex-linha';
+      lNome.innerHTML = '<span class="ex-rot">Nome</span>';
+      var inp = document.createElement('input');
+      inp.type = 'text'; inp.className = 'ex-inp'; inp.placeholder = 'Nome pra estampar'; inp.maxLength = 20; inp.value = x.nome; inp.disabled = trav;
+      inp.addEventListener('input', function () { x.nome = inp.value; inp.classList.remove('ex-inv'); render(); });
+      lNome.appendChild(inp);
+      card.appendChild(lNome);
+
+      lista.appendChild(card);
+    });
+    render();
+  }
+
+  function atualizarResumoExtras() {
+    var tem = state.extras.length > 0;
+    var res = document.getElementById('extras-resumo');
+    res.innerHTML = '';
+    state.extras.forEach(function (x) {
+      var c = catDe(x.tipo);
+      var row = document.createElement('div');
+      row.setAttribute('style', 'display: flex; align-items: center; gap: 12px;');
+      row.innerHTML = '<img src="' + c.img + '" alt="" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; object-position: center top; flex-shrink: 0; border: 1px solid rgba(245,241,234,0.12);">' +
+        '<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1; min-width: 0;">' +
+        '<span style="font-family: Manrope, sans-serif; font-size: 14px; color: #D8D2C7;"></span>' +
+        '<span style="font-family: Manrope, sans-serif; font-weight: 600; font-size: 14px; color: #F5F1EA; white-space: nowrap;">' + formatCurrency(EXTRA_PRICE) + '</span></div>';
+      row.querySelector('div span').textContent = c.curto + (x.cor ? ' ' + x.cor.toLowerCase() : '') + (x.tamanho ? ' — tam. ' + x.tamanho : '') + ' (extra)';
+      var sep = document.createElement('div');
+      sep.setAttribute('style', 'height: 1px; background: rgba(245,241,234,0.08);');
+      res.appendChild(sep);
+      res.appendChild(row);
+    });
+    res.style.display = tem ? 'flex' : 'none';
+    var foraDoPix = state.extrasNoPix === false;
+    document.getElementById('extras-totais').style.display = (tem && foraDoPix) ? 'flex' : 'none';
+    document.getElementById('extras-aviso').style.display = 'none';
+    document.getElementById('total-label').textContent = 'Total';
+    document.getElementById('extras-total').textContent = formatCurrency(totalExtras());
+    document.getElementById('total-geral').textContent = formatCurrency(totalAtual());
+
+    var mostrarBox = tem && state.extrasNoPix !== null && (state.pixAtivo || state.pago);
+    document.getElementById('extras-box').style.display = mostrarBox ? 'flex' : 'none';
+    if (mostrarBox) {
+      var qtdTxt = state.extras.length + (state.extras.length > 1 ? ' camisas manga curta' : ' camisa manga curta');
+      var boxTit = document.querySelector('#extras-box span');
+      if (state.extrasNoPix === true) {
+        boxTit.textContent = 'Camisas manga curta incluídas no Pix ✓';
+        boxTit.style.color = '#7FD99A';
+        document.getElementById('extras-box-texto').textContent = (state.extras.length > 1 ? 'As ' + qtdTxt + ' (' + formatCurrency(totalExtras()) + ') já estão' : 'A camisa manga curta (' + formatCurrency(totalExtras()) + ') já está') + ' no valor do pedido e do Pix. Se quiser, mande os detalhes (cor, tamanho e nome) para o suporte conferir.';
+        document.getElementById('extras-whatsapp').textContent = 'Mandar detalhes ao suporte →';
+      } else {
+        boxTit.textContent = 'Falta pagar os itens extras';
+        boxTit.style.color = '#FFDB00';
+        document.getElementById('extras-box-texto').textContent = 'O Pix cobrou só a camisa oficial. ' + (state.extras.length > 1 ? 'As ' + qtdTxt : 'A camisa manga curta') + ' (' + formatCurrency(totalExtras()) + ') você paga com o suporte: toque no botão para mandar os itens e combinar o pagamento.';
+        document.getElementById('extras-whatsapp').textContent = 'Enviar itens extras no WhatsApp →';
+      }
+      var ref = state.pedidoId ? ('\nRef. do pedido: ' + state.pedidoId) : '';
+      document.getElementById('extras-whatsapp').href = linkSuporte('Olá! Fiz o pedido da Camisa Oficial GDA e quero adicionar itens extras.\n\nPiloto: ' + pilotoInfoTexto() + ref + extrasTexto());
+    }
+  }
+
   function render() {
     var isFeminina = state.item === 'feminina';
     var isVista = state.paymentMethod === 'vista';
@@ -260,7 +441,7 @@
 
     var camisaTotal = CAMISA_PRICE * state.quantidadeCamisa;
     var balaclavaTotal = BALACLAVA_PRICE * state.quantidadeBalaclava;
-    var total = camisaTotal + balaclavaTotal;
+    var total = camisaTotal + balaclavaTotal + totalExtras();
     var installment = total / 2;
 
     document.getElementById('item-label').textContent = itemLabelText();
@@ -315,6 +496,7 @@
     document.getElementById('btn-copiar-pix').textContent = state.pixCopiado ? 'Copiado ✓' : 'Copiar chave';
 
     // Modo "voltei pelo link": só o resumo + o Pix (sem escolher forma de pagamento nem aceitar o termo de novo)
+    atualizarResumoExtras();
     var ret = state.retomando;
     ['bloco-pagamento', 'bloco-sugestoes', 'bloco-termo'].forEach(function (id) {
       document.getElementById(id).style.display = ret ? 'none' : 'flex';
@@ -341,7 +523,7 @@
     var isParcelado = state.paymentMethod === 'parcelado';
     var camisaTotal = CAMISA_PRICE * state.quantidadeCamisa;
     var balaclavaTotal = BALACLAVA_PRICE * state.quantidadeBalaclava;
-    var total = camisaTotal + balaclavaTotal;
+    var total = camisaTotal + balaclavaTotal + totalExtras();
     var installment = total / 2;
     var pilotoInfo = (state.nome || state.piloto)
       ? ((state.nome || '') + (state.piloto ? ' (nº ' + state.piloto + ')' : ''))
@@ -354,7 +536,7 @@
       'Item: ' + itemLabelText() + '\n' +
       (state.quantidadeBalaclava > 0 ? ('Balaclava: ' + balaclavaLabelText() + '\n') : '') +
       'Pagamento: ' + paymentLabel + '\n' +
-      'Total: ' + formatCurrency(total) + '\n\n' +
+      'Total: ' + formatCurrency(total) + extrasTexto() + '\n\n' +
       'Vou enviar o comprovante aqui em seguida.';
     var url = 'https://wa.me/557331914501?text=' + encodeURIComponent(msg);
     try { window.open(url, '_blank'); } catch (err) {}
@@ -370,7 +552,7 @@
   }
 
   function totalAtual() {
-    return CAMISA_PRICE * state.quantidadeCamisa + BALACLAVA_PRICE * state.quantidadeBalaclava;
+    return CAMISA_PRICE * state.quantidadeCamisa + BALACLAVA_PRICE * state.quantidadeBalaclava + totalExtras();
   }
   // Valor que o Pix cobra agora: o total (à vista) ou a entrada de 50% (parcelado).
   function valorPixAtual() {
@@ -390,14 +572,14 @@
   function atualizarLinksSuporte() {
     var ref = state.pedidoId ? ('\nRef. do pedido: ' + state.pedidoId) : '';
     document.getElementById('pix-dinheiro-link').href = linkSuporte(
-      'Olá! Fiz o pedido da Camisa Oficial GDA (' + formatCurrency(totalAtual()) + (state.paymentMethod === 'parcelado' ? ', parcelado — entrada ' + formatCurrency(valorPixAtual()) : '') + ') e quero falar sobre o pagamento.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() + ref);
+      'Olá! Fiz o pedido da Camisa Oficial GDA (' + formatCurrency(totalAtual()) + (state.paymentMethod === 'parcelado' ? ', parcelado — entrada ' + formatCurrency(valorPixAtual()) : '') + ') e quero falar sobre o pagamento.\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() + ref + extrasTexto());
     var parcelado = state.paymentMethod === 'parcelado';
     document.getElementById('pix-pago-whatsapp').href = linkSuporte(
       (parcelado
         ? 'Olá! Acabei de pagar a ENTRADA (50%) do meu pedido da Camisa Oficial GDA via Pix (' + formatCurrency(valorPixAtual()) + ') — confirmada automaticamente. Falta a 2ª parcela (' + formatCurrency(totalAtual() - valorPixAtual()) + ').'
         : 'Olá! Acabei de pagar meu pedido da Camisa Oficial GDA via Pix (' + formatCurrency(totalAtual()) + ') — pagamento confirmado automaticamente.') +
       '\n\nPiloto: ' + pilotoInfoTexto() + '\nItem: ' + itemLabelText() +
-      (state.quantidadeBalaclava > 0 ? ('\nBalaclava: ' + balaclavaLabelText()) : '') + ref);
+      (state.quantidadeBalaclava > 0 ? ('\nBalaclava: ' + balaclavaLabelText()) : '') + ref + extrasTexto());
   }
 
   // Pedido gravado, mas o Pix automático não deu certo: cai no atendimento manual (como antes).
@@ -427,6 +609,9 @@
         return;
       }
       state.pixAtivo = true;
+      if (state.extras.length && !state.retomando) {
+        state.extrasNoPix = Math.abs(Number(r.data.valor) - valorPixAtual()) < 0.01;
+      }
       atualizarLinksSuporte();
       var box = document.getElementById('pix-pedido');
       box.style.display = '';
@@ -475,7 +660,16 @@
       state.pedidoId = String(result.data);
       marcarPedidoNaUrl();
       guardarPedidoLocal();
-      gerarPixDoPedido();
+      if (!state.extras.length) { gerarPixDoPedido(); return; }
+      // grava as camisas manga curta no pedido (o servidor soma no Pix). Se falhar, segue: extras pagos com o suporte.
+      Promise.resolve(window.gdaSupabase.rpc('salvar_extras_pedido', {
+        p_pedido_id: state.pedidoId,
+        p_whatsapp: state.whatsapp || '',
+        p_extras: state.extras.map(function (x) { return { tipo: x.tipo, cor: x.cor, tamanho: x.tamanho, nome: (x.nome || '').trim().toUpperCase() }; })
+      })).then(function (r) {
+        if (r && r.error) console.error('[GDA] erro ao salvar extras:', r.error);
+        gerarPixDoPedido();
+      }, function () { gerarPixDoPedido(); });
     });
   }
 
@@ -502,11 +696,31 @@
   document.getElementById('btn-enviar').addEventListener('click', function () {
     if (!state.concordo || state.enviando || state.pedidoEnviado || state.pixAtivo || state.pago) return;
 
+    var faltando = extrasIncompletos();
+    if (faltando >= 0) {
+      mostrarErroPix('Complete cor, tamanho e nome do item extra ' + (faltando + 1) + ' (ou remova o item) antes de enviar.');
+      var cards = document.querySelectorAll('#extras-lista .ex-item');
+      var card = cards[faltando];
+      if (card) {
+        var x = state.extras[faltando];
+        if (!x.cor) Array.prototype.forEach.call(card.querySelectorAll('.ex-cor'), function (b) { b.classList.add('ex-inv'); });
+        if (!x.tamanho) card.querySelector('.ex-sel').classList.add('ex-inv');
+        if (!(x.nome || '').trim()) card.querySelector('.ex-inp').classList.add('ex-inv');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+    mostrarErroPix('');
+
     if (Date.now() >= new Date('2026-11-28T11:59:00-03:00').getTime()) {
       mostrarErroPix('Os pedidos desta remessa foram encerrados no sábado, 28/11, às 11h59. Entre na lista de interesse para ser avisado da próxima remessa.');
       setTimeout(function () { window.location.href = 'interesse-camisa.html'; }, 4000);
       return;
     }
+
+    // a partir daqui o pedido vai ser enviado: os extras ficam travados
+    extrasLocked = true;
+    renderExtras();
 
     if (!window.gdaSupabase) {
       state.manual = true;
@@ -525,6 +739,8 @@
     gravarDiretoEAbrirWhatsapp();
   });
 
+  montarCatalogo();
+  renderExtras();
   render();
 
   // ----- ao abrir a página: voltou pelo link do pedido? -----

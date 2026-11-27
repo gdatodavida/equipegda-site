@@ -26,7 +26,7 @@
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--g-am-txt);">Painel administrativo</span>
-        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: var(--g-txt);">Pedidos — Camisa Oficial GDA (3ª remessa)</h1>
+        <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 32px; color: var(--g-txt);">Pedidos — Camisa Oficial GDA</h1>
         <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.6; color: var(--g-txt3);">Toda vez que alguém envia o formulário de pedido, a linha aparece aqui automaticamente. Clique no WhatsApp de qualquer pedido pra falar direto com a pessoa. Pedidos com Pix não pago ficam como “Aguardando Pix” (no parcelado, o Pix é da entrada de 50%): use “Copiar link de pagamento” ou “Lembrar no WhatsApp” para a pessoa voltar direto ao Pix. Se ninguém pagar em 48 h, o pedido é cancelado sozinho. No parcelado, depois da entrada o pedido fica como “Entrada paga ✓” até você marcar a 2ª parcela como recebida.</p>
       </div>
 
@@ -104,6 +104,15 @@
   function itemHtml(p) {
     var texto = (itemLabel[p.item] || escapeHtml(p.item));
     if (p.tamanho) texto += ' — tam. ' + escapeHtml(p.tamanho);
+    var ex = listaExtras(p);
+    if (ex.length) {
+      texto += '<div style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px; padding: 8px 10px; border-radius: 10px; background: rgba(var(--g-am-rgb),0.10); border: 1px solid rgba(var(--g-am-rgb),0.30);">' +
+        '<span style="font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--g-am-txt);">+ ' + ex.length + ' manga curta</span>' +
+        ex.map(function (x) {
+          return '<span style="font-size: 12px; line-height: 1.4; color: var(--g-txt2);">' + escapeHtml(extraLabel[x.tipo] || x.tipo) + ' · ' + escapeHtml(x.cor || '—') +
+            ' · tam. ' + escapeHtml(x.tamanho || '—') + ' · <strong>' + escapeHtml(x.nome || '—') + '</strong></span>';
+        }).join('') + '</div>';
+    }
     return texto;
   }
 
@@ -120,11 +129,19 @@
 
   var PRECO_CAMISA = 109.90;
   var PRECO_BALACLAVA = 39.90;
+  var PRECO_MANGA_CURTA = 59.90; // itens extras do checkout (kids / masculina / feminina)
+  var extraLabel = { kids: 'Manga curta Kids', masculina: 'Manga curta Masculina', feminina: 'Manga curta Feminina' };
+  function listaExtras(p) { return Array.isArray(p.extras) ? p.extras : []; }
+  // 2ª parcela: pedidos da remessa relâmpago (a partir de 27/11) vencem em 13/12; os antigos, em 22/10.
+  function prazo2a(p) {
+    var d = new Date(p.created_at);
+    return (!isNaN(d.getTime()) && d.getTime() >= new Date('2026-11-27T00:00:00-03:00').getTime()) ? '13/12' : '22/10';
+  }
   var pedidosComPix = null; // conjunto de ids de pedidos que já geraram Pix (null = não deu para saber)
 
   function brl(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
   function totalPedido(p) {
-    return PRECO_CAMISA * (p.quantidade_camisa || 0) + PRECO_BALACLAVA * (p.quantidade_balaclava || 0);
+    return PRECO_CAMISA * (p.quantidade_camisa || 0) + PRECO_BALACLAVA * (p.quantidade_balaclava || 0) + PRECO_MANGA_CURTA * listaExtras(p).length;
   }
 
   // "Aguardando Pix": pedido pendente que gerou Pix (à vista = total, parcelado = entrada).
@@ -164,7 +181,7 @@
     if (p.status === 'cancelado') return badge('Cancelado', 'var(--g-txt3)', 'rgba(var(--g-mute-rgb),0.14)');
     if (p.status === 'entrada_paga') {
       var wa2 = waLink(p.whatsapp);
-      var msg2 = 'Olá! Sua entrada da Camisa Oficial GDA já está confirmada. Falta a 2ª parcela de ' + brl(metade) + ', com prazo até 22/10. Como prefere pagar?';
+      var msg2 = 'Olá! Sua entrada da Camisa Oficial GDA já está confirmada. Falta a 2ª parcela de ' + brl(metade) + ', com prazo até ' + prazo2a(p) + '. Como prefere pagar?';
       var cobrar = wa2
         ? '<a href="' + wa2 + '?text=' + encodeURIComponent(msg2) + '" target="_blank" rel="noopener" style="' + BTN + 'border: 1px solid rgba(var(--g-am-rgb),0.5); color: var(--g-am-txt);">Cobrar 2ª parcela no WhatsApp</a>'
         : '';
@@ -392,8 +409,8 @@
   }
 
   // ----- Lista de interesse (próxima remessa) -----
-  var CHAVE_MSG = 'gda_interesse_msg';
-  var MSG_PADRAO = 'Olá, {nome}! Aqui é do suporte da Equipe GDA. A nova remessa da Camisa Oficial de Piloto GDA está aberta! Faça o seu pedido em equipegda.com.br/loja';
+  var CHAVE_MSG = 'gda_interesse_msg_relampago';
+  var MSG_PADRAO = 'Fala, {nome}! Aqui é do suporte da Equipe GDA. Você pediu para ser avisado: os pedidos da Camisa Oficial de Piloto GDA reabriram numa REMESSA RELÂMPAGO, só até amanhã, sábado (28/11), às 11h59. Camisa R$ 109,90 e balaclava R$ 39,90; dá para pagar à vista no Pix ou dar 50% de entrada e quitar em até 15 dias. Faça seu pedido direto aqui: equipegda.com.br/pedido-camisa  GDA toda vida!';
   var interessados = [];
   var msgEl = document.getElementById('interesse-msg');
   try { msgEl.value = localStorage.getItem(CHAVE_MSG) || MSG_PADRAO; } catch (e) { msgEl.value = MSG_PADRAO; }

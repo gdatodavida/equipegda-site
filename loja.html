@@ -132,15 +132,20 @@
         </div>
       </a>
 
-      <!-- Camisa oficial de piloto — remessa finalizada (lista de interesse) -->
-      <a class="gda-card" href="interesse-camisa.html" aria-label="Camisa Oficial de Piloto GDA — 3ª remessa finalizada: entrar na lista de interesse">
-        <img class="gda-card-img" style="--pos: center;" src="img/remessa-finalizada.jpg" alt="3ª Remessa finalizada — Camisa Oficial de Piloto GDA">
+      <!-- Camisa oficial de piloto — REMESSA RELÂMPAGO (pedido com Pix).
+           Depois de 28/11/2026 11h59 o script no fim da página volta este card
+           sozinho para a lista de interesse. -->
+      <a class="gda-card" id="card-camisa" href="pedido-camisa.html" aria-label="Camisa Oficial de Piloto GDA — remessa relâmpago: fazer pedido até sábado, 28/11, às 11h59">
+        <img class="gda-card-img" style="--pos: center;" src="img/remessa-finalizada.jpg" alt="Camisa Oficial de Piloto GDA">
         <div class="gc-corpo">
-          <span class="gc-selo gc-selo--fim">Lista de interesse</span>
+          <span class="gc-selo gc-selo--promo" id="camisa-selo">⏰ Pedidos até sáb 28/11 · 11h59</span>
           <h2 class="gc-tit">Camisa Oficial de Piloto GDA</h2>
-          <p class="gc-desc">Os pedidos da 3ª remessa foram finalizados em 22/10. Deixe seu nome na lista e o suporte chama você no WhatsApp quando abrir a próxima.</p>
-          <span class="gc-nota">Feita sob encomenda, com o seu nome e número de piloto.</span>
-          <span class="gda-btn"><span class="longo">Quero a minha camisa</span><span class="curto">Entrar na lista</span> →</span>
+          <p class="gc-desc" id="camisa-desc">Remessa relâmpago: pague à vista no Pix ou dê 50% de entrada e quite o restante em até 15 dias.</p>
+          <div class="gc-precos" id="camisa-precos">
+            <span class="gc-por">R$ 109,90</span>
+          </div>
+          <span class="gc-nota" id="camisa-nota">Pix com confirmação automática · feita sob encomenda, com o seu nome e número de piloto.</span>
+          <span class="gda-btn" id="camisa-btn"><span class="longo">Fazer meu pedido</span><span class="curto">Pedir</span> →</span>
         </div>
       </a>
 
@@ -155,5 +160,24 @@
   </footer>
 
 </div>
+<script>
+// Remessa relâmpago: depois de 28/11/2026 às 11h59 (Brasília) o card da camisa
+// volta sozinho para a lista de interesse, sem precisar de deploy.
+(function () {
+  if (Date.now() < new Date('2026-11-28T11:59:00-03:00').getTime()) return;
+  var card = document.getElementById('card-camisa');
+  if (!card) return;
+  card.setAttribute('href', 'interesse-camisa.html');
+  card.setAttribute('aria-label', 'Camisa Oficial de Piloto GDA — remessa finalizada: entrar na lista de interesse');
+  var selo = document.getElementById('camisa-selo');
+  selo.className = 'gc-selo gc-selo--fim';
+  selo.textContent = 'Lista de interesse';
+  document.getElementById('camisa-desc').textContent = 'Os pedidos da remessa relâmpago foram encerrados em 28/11. Deixe seu nome na lista e o suporte chama você no WhatsApp quando abrir a próxima.';
+  var precos = document.getElementById('camisa-precos');
+  if (precos) precos.parentNode.removeChild(precos);
+  document.getElementById('camisa-nota').textContent = 'Feita sob encomenda, com o seu nome e número de piloto.';
+  document.getElementById('camisa-btn').innerHTML = '<span class="longo">Quero a minha camisa</span><span class="curto">Entrar na lista</span> →';
+})();
+</script>
 </body>
 </html>
