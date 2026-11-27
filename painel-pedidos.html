@@ -85,7 +85,7 @@
 (function () {
   'use strict';
 
-  var itemLabel = { masculina: 'Camisa Masculina', feminina: 'Camisa Feminina' };
+  var itemLabel = { masculina: 'Camisa Masculina', feminina: 'Camisa Feminina', manga_curta: 'Só manga curta' };
   var pagamentoLabel = { vista: 'À vista', parcelado: 'Parcelado' };
 
   function escapeHtml(s) {
@@ -119,7 +119,7 @@
   // Link que leva a pessoa direto ao Pix do pedido (a página pedido-resumo reabre o pagamento)
   function linkPagamento(p) {
     var digits = String(p.whatsapp || '').replace(/\D/g, '');
-    var url = new URL('pedido-resumo.html', window.location.href);
+    var url = new URL(p.item === 'manga_curta' ? '/pedido-manga-curta.html' : 'pedido-resumo.html', window.location.href);
     url.search = '';
     url.hash = '';
     url.searchParams.set('pedido', String(p.id));

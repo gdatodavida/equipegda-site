@@ -74,7 +74,7 @@
     <div style="position: relative; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;">
       <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Produtos oficiais</span>
       <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 48px; line-height: 1.05; color: #F5F1EA;">Loja GDA</h1>
-      <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 520px;">Produtos exclusivos para membros com Número de Piloto. Escolha o que você quer pedir.</p>
+      <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 520px;">Escolha o que você quer pedir. A Camisa Oficial e o adesivo são exclusivos para membros com Número de Piloto; as camisas manga curta são para todo mundo.</p>
     </div>
   </section>
 
@@ -149,6 +149,51 @@
         </div>
       </a>
 
+      <!-- Camisa Manga Curta Kids — remessa relâmpago (pedido com Pix, sem precisar da camisa oficial) -->
+      <a class="gda-card gda-card-mc" href="pedido-manga-curta.html?tipo=kids" aria-label="Camisa Manga Curta Kids: fazer pedido até sábado, 28/11, às 11h59">
+        <img class="gda-card-img" style="--pos: center 12%;" src="img/manga-curta-kids.jpg" alt="Camisa Manga Curta Kids — rosa e amarela, frente e costas">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--promo mc-selo">⏰ Pedidos até sáb 28/11 · 11h59</span>
+          <h2 class="gc-tit">Camisa Manga Curta Kids</h2>
+          <p class="gc-desc mc-desc">Modelo unissex, de 1 a 14 anos, nas cores rosa ou amarela, com o nome que você quiser.</p>
+          <div class="gc-precos mc-precos">
+            <span class="gc-por">R$ 59,90</span>
+          </div>
+          <span class="gc-nota mc-nota">Pix com confirmação automática · à vista ou 50% de entrada</span>
+          <span class="gda-btn mc-btn"><span class="longo">Fazer meu pedido</span><span class="curto">Pedir</span> →</span>
+        </div>
+      </a>
+
+      <!-- Camisa Manga Curta Adulto Masculina — remessa relâmpago (pedido com Pix, sem precisar da camisa oficial) -->
+      <a class="gda-card gda-card-mc" href="pedido-manga-curta.html?tipo=masculina" aria-label="Camisa Manga Curta Adulto Masculina: fazer pedido até sábado, 28/11, às 11h59">
+        <img class="gda-card-img" style="--pos: center 12%;" src="img/manga-curta-masculina.jpg" alt="Camisa Manga Curta Adulto Masculina — rosa e amarela, frente e costas">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--promo mc-selo">⏰ Pedidos até sáb 28/11 · 11h59</span>
+          <h2 class="gc-tit">Camisa Manga Curta Adulto Masculina</h2>
+          <p class="gc-desc mc-desc">Do PP ao G4, nas cores rosa ou amarela, com o nome que você quiser. Camisa não oficial: todo mundo pode ter.</p>
+          <div class="gc-precos mc-precos">
+            <span class="gc-por">R$ 59,90</span>
+          </div>
+          <span class="gc-nota mc-nota">Pix com confirmação automática · à vista ou 50% de entrada</span>
+          <span class="gda-btn mc-btn"><span class="longo">Fazer meu pedido</span><span class="curto">Pedir</span> →</span>
+        </div>
+      </a>
+
+      <!-- Camisa Manga Curta Adulto Feminina — remessa relâmpago (pedido com Pix, sem precisar da camisa oficial) -->
+      <a class="gda-card gda-card-mc" href="pedido-manga-curta.html?tipo=feminina" aria-label="Camisa Manga Curta Adulto Feminina: fazer pedido até sábado, 28/11, às 11h59">
+        <img class="gda-card-img" style="--pos: center 12%;" src="img/manga-curta-feminina.jpg" alt="Camisa Manga Curta Adulto Feminina — rosa e amarela, frente e costas">
+        <div class="gc-corpo">
+          <span class="gc-selo gc-selo--promo mc-selo">⏰ Pedidos até sáb 28/11 · 11h59</span>
+          <h2 class="gc-tit">Camisa Manga Curta Adulto Feminina</h2>
+          <p class="gc-desc mc-desc">Do PP ao G4, nas cores rosa ou amarela, com o nome que você quiser. Camisa não oficial: todo mundo pode ter.</p>
+          <div class="gc-precos mc-precos">
+            <span class="gc-por">R$ 59,90</span>
+          </div>
+          <span class="gc-nota mc-nota">Pix com confirmação automática · à vista ou 50% de entrada</span>
+          <span class="gda-btn mc-btn"><span class="longo">Fazer meu pedido</span><span class="curto">Pedir</span> →</span>
+        </div>
+      </a>
+
     </div>
   </section>
 
@@ -177,6 +222,17 @@
   if (precos) precos.parentNode.removeChild(precos);
   document.getElementById('camisa-nota').textContent = 'Feita sob encomenda, com o seu nome e número de piloto.';
   document.getElementById('camisa-btn').innerHTML = '<span class="longo">Quero a minha camisa</span><span class="curto">Entrar na lista</span> →';
+
+  // Manga curta: depois do prazo, os cards levam ao suporte no WhatsApp
+  Array.prototype.forEach.call(document.querySelectorAll('.gda-card-mc'), function (c) {
+    var nome = c.querySelector('.gc-tit').textContent;
+    c.setAttribute('href', 'https://wa.me/557331914501?text=' + encodeURIComponent('Olá! Quero ser avisado quando abrir a próxima remessa da ' + nome + '.'));
+    c.setAttribute('target', '_blank'); c.setAttribute('rel', 'noopener');
+    var selo = c.querySelector('.mc-selo'); selo.className = 'gc-selo gc-selo--fim mc-selo'; selo.textContent = 'Pedidos encerrados';
+    var pr = c.querySelector('.mc-precos'); if (pr) pr.parentNode.removeChild(pr);
+    c.querySelector('.mc-nota').textContent = 'Fale com o suporte para ser avisado da próxima remessa.';
+    c.querySelector('.mc-btn').innerHTML = '<span class="longo">Quero ser avisado</span><span class="curto">Avisar</span> →';
+  });
 })();
 </script>
 </body>
