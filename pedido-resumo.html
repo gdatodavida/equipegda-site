@@ -77,9 +77,9 @@
         </button>
         <button id="btn-parcelado" type="button" style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-radius: 12px; text-align: left; width: 100%; box-sizing: border-box;">
           <span style="font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; color: #F5F1EA">Parcelado</span>
-          <span id="parcelado-sub" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E">Entrada de 50% R$ 74,90 + R$ 74,90 até 22/10</span>
+          <span id="parcelado-sub" style="font-family: 'Manrope', sans-serif; font-size: 13px; color: #A89C8E">Entrada de 50% R$ 74,90 + R$ 74,90 até 13/12</span>
         </button>
-        <span id="parcelado-note" style="display: none; font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">A entrada de 50% é paga agora por Pix (QR Code) e reserva o seu pedido, que é feito por encomenda. O restante (50%) deve ser pago até 22/10 — o suporte combina com você pelo WhatsApp.</span>
+        <span id="parcelado-note" style="display: none; font-family: 'Manrope', sans-serif; font-style: italic; font-size: 12px; line-height: 1.5; color: #6B655C;">A entrada de 50% é paga agora por Pix (QR Code) e reserva o seu pedido, que é feito por encomenda. O restante (50%) deve ser pago até 13/12 — o suporte combina com você pelo WhatsApp.</span>
       </div>
 
       <div id="bloco-sugestoes" style="display: flex; flex-direction: column; gap: 10px;">
@@ -105,7 +105,7 @@
 
       <div id="bloco-termo" style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; background: #171310; border-radius: 14px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #ffdb00">Termo de confirmação (leia com atenção)</span>
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #f5f1ea">Nossas camisas são feitas por encomenda: o prazo para pedidos e pagamento total vai do dia 06 a 22 de outubro. Se você escolher pagar parcelado, a entrada de 50% reserva o seu pedido e o restante (50%) deve ser pago até 22/10 — o comprovante da 2ª parcela só é reconhecido quando enviado direto no WhatsApp do suporte, sem ele o pedido não é finalizado. No dia 23 de Outubro, Seu pedido segue para a fábricação; existe um prazo de produção e envio. O suporte avisa pelo WhatsApp o rastreio do seu pedido. Assim que estiver disponível pra retirada, você tem 15 dias pra buscar; depois disso o pedido é expirado,&nbsp;<br>pois não temos espaço pra estoque.</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #f5f1ea">Nossas camisas são feitas por encomenda: esta remessa relâmpago aceita pedidos até sábado, 28/11, às 11h59. Se você escolher pagar parcelado, a entrada de 50% reserva o seu pedido e o restante (50%) deve ser pago até 13/12 — o comprovante da 2ª parcela só é reconhecido quando enviado direto no WhatsApp do suporte, sem ele o pedido não é finalizado. Depois do prazo de pagamento, seu pedido segue para a fabricação; existe um prazo de produção e envio. O suporte avisa pelo WhatsApp o rastreio do seu pedido. Assim que estiver disponível pra retirada, você tem 15 dias pra buscar; depois disso o pedido é expirado,&nbsp;<br>pois não temos espaço pra estoque.</span>
         <label id="label-concordo" style="display: flex; align-items: center; gap: 10px; margin-top: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #ffdb00; cursor: pointer;">
           <span id="concordo-mark" style="width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid #FFDB00; background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #14110F;"></span>
           Li e concordo
@@ -273,7 +273,7 @@
     document.getElementById('total-price').textContent = formatCurrency(total);
 
     document.getElementById('vista-sub').textContent = formatCurrency(total) + ' via Pix — confirmação automática';
-    document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(installment) + ' via Pix agora + ' + formatCurrency(installment) + ' até 22/10';
+    document.getElementById('parcelado-sub').textContent = 'Entrada de 50% ' + formatCurrency(installment) + ' via Pix agora + ' + formatCurrency(installment) + ' até 13/12';
 
     document.getElementById('btn-vista').style.background = isVista ? 'rgba(255,219,0,0.1)' : '#171310';
     document.getElementById('btn-vista').style.border = isVista ? '2px solid #FFDB00' : '1px solid rgba(245,241,234,0.16)';
@@ -301,12 +301,12 @@
     nota.style.display = (state.pixAtivo || state.pago) ? 'none' : '';
     nota.textContent = isVista
       ? 'Ao enviar, geramos o seu Pix (QR Code e Pix Copia e Cola). O pagamento é confirmado automaticamente, sem precisar enviar comprovante.'
-      : 'Ao enviar, geramos o Pix da entrada de 50% (' + formatCurrency(installment) + '), confirmado automaticamente. O restante (' + formatCurrency(installment) + ') o suporte combina com você pelo WhatsApp, até 22/10.';
+      : 'Ao enviar, geramos o Pix da entrada de 50% (' + formatCurrency(installment) + '), confirmado automaticamente. O restante (' + formatCurrency(installment) + ') o suporte combina com você pelo WhatsApp, até 13/12.';
 
     // caixa de "pago": texto de entrada (parcelado) ou do pagamento total (à vista)
     document.getElementById('pago-titulo').textContent = isParcelado ? 'Entrada confirmada ✓' : 'Pagamento confirmado ✓';
     document.getElementById('pago-texto').textContent = isParcelado
-      ? 'Sua entrada de ' + formatCurrency(installment) + ' está paga e o pedido está reservado. Falta a 2ª parcela de ' + formatCurrency(installment) + ', até 22/10 — o suporte combina com você pelo WhatsApp. Não precisa enviar comprovante da entrada.'
+      ? 'Sua entrada de ' + formatCurrency(installment) + ' está paga e o pedido está reservado. Falta a 2ª parcela de ' + formatCurrency(installment) + ', até 13/12 — o suporte combina com você pelo WhatsApp. Não precisa enviar comprovante da entrada.'
       : 'Seu pedido está pago e registrado. Não precisa enviar comprovante — a confirmação foi automática. Se quiser, avise o suporte pelo WhatsApp para acompanhar o pedido.';
 
     document.getElementById('pedido-enviado-box').style.display = (state.pedidoEnviado && state.manual) ? 'flex' : 'none';
@@ -347,7 +347,7 @@
       ? ((state.nome || '') + (state.piloto ? ' (nº ' + state.piloto + ')' : ''))
       : '[nome/nº de piloto]';
     var paymentLabel = isParcelado
-      ? ('Pix parcelado — entrada ' + formatCurrency(installment) + ' agora + ' + formatCurrency(installment) + ' até 22/10')
+      ? ('Pix parcelado — entrada ' + formatCurrency(installment) + ' agora + ' + formatCurrency(installment) + ' até 13/12')
       : ('À vista — ' + formatCurrency(total));
     var msg = 'Olá! Segue meu pedido da Camisa Oficial GDA:\n\n' +
       'Piloto: ' + pilotoInfo + '\n' +
@@ -501,6 +501,12 @@
 
   document.getElementById('btn-enviar').addEventListener('click', function () {
     if (!state.concordo || state.enviando || state.pedidoEnviado || state.pixAtivo || state.pago) return;
+
+    if (Date.now() >= new Date('2026-11-28T11:59:00-03:00').getTime()) {
+      mostrarErroPix('Os pedidos desta remessa foram encerrados no sábado, 28/11, às 11h59. Entre na lista de interesse para ser avisado da próxima remessa.');
+      setTimeout(function () { window.location.href = 'interesse-camisa.html'; }, 4000);
+      return;
+    }
 
     if (!window.gdaSupabase) {
       state.manual = true;

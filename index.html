@@ -252,11 +252,13 @@
         <div class="gda-off gda-off--pc" aria-hidden="true"><b>25% OFF</b><span>de R$ 19,90 por R$ 14,90</span></div>
         <div class="gda-off gda-off--cel" aria-hidden="true"><b>25% OFF</b><span>de R$ 19,90 por R$ 14,90</span></div>
       </a>
-      <a class='gda-mslide' data-slide='4' href='/interesse-camisa' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
+      <a class='gda-mslide gda-remessa-link' data-slide='4' href='/pedido-camisa' style='position: absolute; inset: 0; display: block; opacity: 0; transition: opacity .5s ease; background: #0F0C0A;'>
         <picture>
           <source media="(min-width: 761px)" srcset="img/remessa-finalizada-pc.jpg" width="1920" height="442">
-          <img class="gda-mslide-img" src="img/remessa-finalizada.jpg" alt="3ª Remessa finalizada — Camisa Oficial de Piloto GDA: entre na lista de interesse" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <img class="gda-mslide-img" src="img/remessa-finalizada.jpg" alt="Remessa relâmpago — Camisa Oficial de Piloto GDA: pedidos abertos até sábado, 28/11, às 11h59" style="width: 100%; height: 100%; object-fit: cover; display: block;">
         </picture>
+        <div class="gda-off gda-off--pc gda-remessa-selo" aria-hidden="true"><b>REABERTA</b><span>pedidos até sáb 28/11 · 11h59</span></div>
+        <div class="gda-off gda-off--cel gda-remessa-selo" aria-hidden="true"><b>REABERTA</b><span>pedidos até sáb 28/11 · 11h59</span></div>
       </a>
     </div>
     <button type="button" class="gda-mslide-arrow" data-dir="-1" aria-label="Tela anterior"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"></polyline></svg></button>
@@ -349,7 +351,7 @@
 
   <section id="remessa" style="padding: 90px 0; background: #1A1512; box-sizing: border-box; overflow: hidden;">
     <div class="gda-container-pad gda-remessa-head" style="max-width: 1240px; margin: 0 auto; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;">
-      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00">3ª Remessa · <span style="color: #FF6B5E;">finalizada</span></span>
+      <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #ffdb00"><span id="gda-remessa-tag">Remessa relâmpago · <span style="color: #3DDC84;">pedidos abertos</span></span></span>
       <h2 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 34px; color: #F5F1EA;">Camisa Oficial de Piloto GDA</h2>
     </div>
 
@@ -371,8 +373,8 @@
     </div>
 
     <div class="gda-container-pad gda-remessa-cta" style="max-width: 640px; margin: 0 auto; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px;">
-      <p class="gda-remessa-p" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; width: 646px">Os pedidos da 3ª remessa foram finalizados em 22/10.<br>Não ficou com a sua? Entre na lista de interesse e seja o primeiro a saber quando abrir a próxima remessa.<br>(Exclusivo para membros que possuem Número do Piloto).</p>
-      <a class='gda-remessa-btn' href='/interesse-camisa' style='display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: 999px; background-color: #ffdb00; color: #14110F; font-family: Manrope, sans-serif; font-weight: 700; font-size: 16px;'>Quero a minha camisa</a>
+      <p class="gda-remessa-p" style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; width: 646px" id="gda-remessa-txt">Reabrimos os pedidos por pouco tempo: <strong style="color: #FFDB00;">encerra no sábado, 28/11, às 11h59</strong>.<br>Pague à vista no Pix ou dê 50% de entrada e quite o restante em até 15 dias.<br>(Exclusivo para membros que possuem Número do Piloto).</p>
+      <a class='gda-remessa-btn gda-remessa-link' href='/pedido-camisa' style='display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: 999px; background-color: #ffdb00; color: #14110F; font-family: Manrope, sans-serif; font-weight: 700; font-size: 16px;'>Fazer meu pedido</a>
     </div>
   </section>
 
@@ -572,6 +574,24 @@
     });
     lb.addEventListener('click', function () { lb.classList.remove('open'); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lb.classList.remove('open'); });
+  }
+
+  // Remessa relâmpago: ao passar de 28/11/2026 11h59 (Brasília) a página volta
+  // sozinha para o modo "finalizada" + lista de interesse, sem precisar de deploy.
+  var REMESSA_FIM = new Date('2026-11-28T11:59:00-03:00').getTime();
+  if (Date.now() >= REMESSA_FIM) {
+    Array.prototype.slice.call(document.querySelectorAll('.gda-remessa-link')).forEach(function (a) {
+      a.setAttribute('href', '/interesse-camisa');
+    });
+    Array.prototype.slice.call(document.querySelectorAll('.gda-remessa-selo')).forEach(function (s) {
+      s.parentNode.removeChild(s);
+    });
+    var tag = document.getElementById('gda-remessa-tag');
+    if (tag) tag.innerHTML = 'Remessa relâmpago · <span style="color: #FF6B5E;">finalizada</span>';
+    var txt = document.getElementById('gda-remessa-txt');
+    if (txt) txt.innerHTML = 'Os pedidos da remessa relâmpago foram encerrados em 28/11.<br>Não ficou com a sua? Entre na lista de interesse e seja o primeiro a saber quando abrir a próxima remessa.<br>(Exclusivo para membros que possuem Número do Piloto).';
+    var btn = document.querySelector('.gda-remessa-btn');
+    if (btn) btn.textContent = 'Quero a minha camisa';
   }
 
   // Telas de passagem (recrutamento / camiseta / boné / adesivo / remessa de camisas)

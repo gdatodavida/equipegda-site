@@ -2,8 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<!-- REMESSA FINALIZADA: manda para a lista de interesse. Para reabrir os pedidos, apague a linha abaixo. -->
-<script>location.replace('interesse-camisa.html');</script>
+<!-- REMESSA RELÂMPAGO: pedidos abertos até 28/11/2026 às 11h59 (Brasília).
+     Depois desse horário manda sozinho para a lista de interesse.
+     Para reabrir de novo no futuro, é só trocar a data abaixo. -->
+<script>if (Date.now() >= new Date('2026-11-28T11:59:00-03:00').getTime()) location.replace('interesse-camisa.html');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pedido — Camisa Oficial GDA</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
@@ -34,8 +36,9 @@
     <section style="position: relative; display: flex; align-items: center; min-height: 340px; padding: 90px 40px 60px; box-sizing: border-box; background: linear-gradient(160deg, #1D1712 0%, #14110F 48%, #100D0B 100%); overflow: hidden;">
       <div style="position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg, rgba(245,241,234,0.025) 0px, rgba(245,241,234,0.025) 1px, transparent 1px, transparent 42px); pointer-events: none;"></div>
       <div style="position: relative; max-width: 640px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;">
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">3ª Remessa: Camisa Oficial GDA</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FFDB00;">Remessa relâmpago: Camisa Oficial GDA</span>
         <h1 style="margin: 0; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.1; color: #F5F1EA;">Faça seu pedido</h1>
+        <span style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: rgba(255,219,0,0.12); border: 1px solid rgba(255,219,0,0.45); font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 700; color: #FFDB00;">⏰ Pedidos até sábado, 28/11, às 11h59</span>
         <p style="margin: 0; font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; color: #D8D2C7; max-width: 480px;">Exclusivo para membros credenciados. Vamos começar identificando você.</p>
       </div>
     </section>
