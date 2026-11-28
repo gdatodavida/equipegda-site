@@ -124,7 +124,7 @@
 
       <div id="bloco-termo" style="display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; background: #171310; border-radius: 14px;">
         <span style="font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; color: #ffdb00">Termo de confirmação (leia com atenção)</span>
-        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #f5f1ea">Nossas camisas são feitas por encomenda: esta remessa relâmpago aceita pedidos até sábado, 28/11, às 11h59. Se você escolher pagar parcelado, a entrada de 50% reserva o seu pedido e o restante (50%) deve ser pago até 13/12 — o comprovante da 2ª parcela só é reconhecido quando enviado direto no WhatsApp do suporte, sem ele o pedido não é finalizado. Depois do prazo de pagamento, seu pedido segue para a fabricação; existe um prazo de produção e envio. O suporte avisa pelo WhatsApp o rastreio do seu pedido. Assim que estiver disponível pra retirada, você tem 15 dias pra buscar; depois disso o pedido é expirado,&nbsp;<br>pois não temos espaço pra estoque.</span>
+        <span style="font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.6; color: #f5f1ea">Nossas camisas são feitas por encomenda: esta remessa relâmpago aceita pedidos até segunda-feira, 30/11, às 17h59. Se você escolher pagar parcelado, a entrada de 50% reserva o seu pedido e o restante (50%) deve ser pago até 13/12 — o comprovante da 2ª parcela só é reconhecido quando enviado direto no WhatsApp do suporte, sem ele o pedido não é finalizado. Depois do prazo de pagamento, seu pedido segue para a fabricação; existe um prazo de produção e envio. O suporte avisa pelo WhatsApp o rastreio do seu pedido. Assim que estiver disponível pra retirada, você tem 15 dias pra buscar; depois disso o pedido é expirado,&nbsp;<br>pois não temos espaço pra estoque.</span>
         <label id="label-concordo" style="display: flex; align-items: center; gap: 10px; margin-top: 6px; font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #ffdb00; cursor: pointer;">
           <span id="concordo-mark" style="width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid #FFDB00; background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #14110F;"></span>
           Li e concordo
@@ -712,8 +712,8 @@
     }
     mostrarErroPix('');
 
-    if (Date.now() >= new Date('2026-11-28T11:59:00-03:00').getTime()) {
-      mostrarErroPix('Os pedidos desta remessa foram encerrados no sábado, 28/11, às 11h59. Entre na lista de interesse para ser avisado da próxima remessa.');
+    if (Date.now() >= new Date('2026-11-30T17:59:00-03:00').getTime()) {
+      mostrarErroPix('Os pedidos desta remessa foram encerrados no segunda-feira, 30/11, às 17h59. Entre na lista de interesse para ser avisado da próxima remessa.');
       setTimeout(function () { window.location.href = 'interesse-camisa.html'; }, 4000);
       return;
     }

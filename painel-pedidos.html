@@ -410,7 +410,7 @@
 
   // ----- Lista de interesse (próxima remessa) -----
   var CHAVE_MSG = 'gda_interesse_msg_relampago';
-  var MSG_PADRAO = 'Fala, {nome}! Aqui é do suporte da Equipe GDA. Você pediu para ser avisado: os pedidos da Camisa Oficial de Piloto GDA reabriram numa REMESSA RELÂMPAGO, só até amanhã, sábado (28/11), às 11h59. Camisa R$ 109,90 e balaclava R$ 39,90; dá para pagar à vista no Pix ou dar 50% de entrada e quitar em até 15 dias. Faça seu pedido direto aqui: equipegda.com.br/pedido-camisa  GDA toda vida!';
+  var MSG_PADRAO = 'Fala, {nome}! Aqui é do suporte da Equipe GDA. Você pediu para ser avisado: os pedidos da Camisa Oficial de Piloto GDA reabriram numa REMESSA RELÂMPAGO, só até segunda-feira (30/11), às 17h59. Camisa R$ 109,90 e balaclava R$ 39,90; dá para pagar à vista no Pix ou dar 50% de entrada e quitar em até 15 dias. Faça seu pedido direto aqui: equipegda.com.br/pedido-camisa  GDA toda vida!';
   var interessados = [];
   var msgEl = document.getElementById('interesse-msg');
   try { msgEl.value = localStorage.getItem(CHAVE_MSG) || MSG_PADRAO; } catch (e) { msgEl.value = MSG_PADRAO; }

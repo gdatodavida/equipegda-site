@@ -234,6 +234,17 @@
   .section-title:first-child{ margin-top:0; }
 
   .footfoot td{ font-weight:700; border-top:2px solid var(--border); border-bottom:none; }
+  .hora-lanc{ display:block; font-size:11px; color:var(--ink-faint); margin-top:2px; white-space:nowrap; }
+  .resumo-pag td{ border-bottom:none; padding-top:4px; padding-bottom:12px; }
+  .resumo-pag-box{ display:flex; flex-wrap:wrap; gap:8px; }
+  .resumo-pag-item{ display:flex; flex-direction:column; gap:2px; padding:8px 12px; border-radius:10px; background:var(--surface-alt); border:1px solid var(--border-soft); min-width:170px; }
+  .resumo-pag-item .rp-lab{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); }
+  .resumo-pag-item .rp-val{ font-family:"Oswald"; font-variant-numeric:tabular-nums; font-size:16px; font-weight:600; color:var(--ink); }
+  .resumo-pag-item .rp-sub{ font-size:11.5px; color:var(--ink-soft); }
+  .resumo-pag-item.vista{ border-color:var(--good-soft); }
+  .resumo-pag-item.vista .rp-val{ color:var(--good); }
+  .resumo-pag-item.receber{ border-color:var(--warn-soft); }
+  .resumo-pag-item.receber .rp-val{ color:var(--warn); }
 
   .setup-overlay{
     position:fixed; inset:0; background:var(--bg); z-index:100; display:flex; align-items:center; justify-content:center; padding:24px;
@@ -534,7 +545,7 @@
       </div>
       <div class="table-wrap">
         <table id="tblVendas">
-          <thead><tr><th>Data</th><th>Produto</th><th class="num-cell">Qtd</th><th class="num-cell">Preço</th><th class="num-cell">Total</th><th>Cliente</th><th>Vendedor(a)</th><th>Pagamento</th><th>Obs.</th><th></th></tr></thead>
+          <thead><tr><th>Data / hora</th><th>Produto</th><th class="num-cell">Qtd</th><th class="num-cell">Preço</th><th class="num-cell">Total</th><th>Cliente</th><th>Vendedor(a)</th><th>Pagamento</th><th>Obs.</th><th></th></tr></thead>
           <tbody></tbody>
           <tfoot></tfoot>
         </table>
@@ -693,6 +704,29 @@
     if(!iso) return '—';
     var p = String(iso).split('-'); if(p.length!==3) return iso;
     return p[2].slice(0,2)+'/'+p[1]+'/'+p[0];
+  }
+  // Momento em que a venda foi LANÇADA no painel (coluna ts; se faltar, created_at).
+  // ts pode vir como número (ms) ou como texto de data/hora, dependendo de quem gravou.
+  function launchDate(s){
+    var cand = [s.ts, s.created_at];
+    for(var i=0;i<cand.length;i++){
+      var v = cand[i];
+      if(v===undefined || v===null || v==='') continue;
+      var d = (typeof v==='number' || /^\d{10,}$/.test(String(v))) ? new Date(Number(v)) : new Date(v);
+      if(!isNaN(d.getTime())) return d;
+    }
+    return null;
+  }
+  function fmtHora(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+  // "lançada às 15:47" (mesmo dia da venda) ou "lançada em 29/11 às 15:47" (venda lançada depois).
+  function horaLancamentoHtml(s){
+    var d = launchDate(s); if(!d) return '';
+    var dia = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    var dataVenda = String(s.date||'').slice(0,10);
+    var txt = (dataVenda && dia!==dataVenda)
+      ? 'lançada em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+' às '+fmtHora(d)
+      : 'lançada às '+fmtHora(d);
+    return '<span class="hora-lanc">'+txt+'</span>';
   }
   function escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function initials(name){
@@ -1073,7 +1107,7 @@
   function feedItemHtml(s){
     return '<div class="feed-item">'+
       '<div><div>'+escapeHtml(s.product_name)+' <span class="qty-badge">x'+fmtInt(s.qty)+'</span></div>'+
-      '<div class="who">'+escapeHtml(s.seller||'—')+' · '+fmtDateBR(s.date)+'</div></div>'+
+      '<div class="who">'+escapeHtml(s.seller||'—')+' · '+fmtDateBR(s.date)+(launchDate(s) ? ' · '+fmtHora(launchDate(s)) : '')+'</div></div>'+
       '<div class="amt">'+fmtMoney(s.total)+'</div>'+
       '</div>';
   }
@@ -1488,7 +1522,7 @@
     var tb = document.querySelector('#tblVendas tbody');
     tb.innerHTML = rows.map(function(s){
       return '<tr>'+
-        '<td>'+fmtDateBR(s.date)+'</td>'+
+        '<td style="white-space:nowrap;">'+fmtDateBR(s.date)+horaLancamentoHtml(s)+'</td>'+
         '<td>'+escapeHtml(s.product_name)+'</td>'+
         '<td class="num-cell">'+fmtInt(s.qty)+'</td>'+
         '<td class="num-cell">'+fmtMoney(s.unit_price)+'</td>'+
@@ -1503,7 +1537,26 @@
     var totQty = rows.reduce(function(a,s){ return a+(Number(s.qty)||0); },0);
     var totVal = rows.reduce(function(a,s){ return a+(Number(s.total)||0); },0);
     var tf = document.querySelector('#tblVendas tfoot');
-    tf.innerHTML = rows.length ? ('<tr class="footfoot"><td colspan="2">Total ('+fmtInt(rows.length)+' venda(s))</td><td class="num-cell">'+fmtInt(totQty)+'</td><td></td><td class="num-cell">'+fmtMoney(totVal)+'</td><td colspan="5"></td></tr>') : '';
+    // Resumo por forma de pagamento (respeita os filtros de vendedor, produto, período e busca)
+    var rp = { vista:{qty:0,val:0,pix:0,din:0}, receber:{qty:0,val:0,pago:0,falta:0}, brinde:{qty:0,val:0} };
+    rows.forEach(function(s){
+      var q = Number(s.qty)||0, t = Number(s.total)||0;
+      if(isGift(s)){ rp.brinde.qty += q; rp.brinde.val += t; }
+      else if(isPending(s)){ rp.receber.qty += q; rp.receber.val += t; rp.receber.pago += paidAmountOf(s); rp.receber.falta += pendingAmountOf(s); }
+      else { rp.vista.qty += q; rp.vista.val += t; if(paymentMethodOf(s)==='pix') rp.vista.pix += t; else rp.vista.din += t; }
+    });
+    function item(cls, lab, val, sub){
+      return '<div class="resumo-pag-item '+cls+'"><span class="rp-lab">'+lab+'</span><span class="rp-val">'+fmtMoney(val)+'</span><span class="rp-sub">'+sub+'</span></div>';
+    }
+    var resumo = '<div class="resumo-pag-box">'+
+      item('vista', 'À vista (pago)', rp.vista.val, fmtInt(rp.vista.qty)+' produto(s) · Pix '+fmtMoney(rp.vista.pix)+' · Dinheiro '+fmtMoney(rp.vista.din))+
+      item('receber', 'A receber', rp.receber.val, fmtInt(rp.receber.qty)+' produto(s) · já entrou '+fmtMoney(rp.receber.pago)+' · falta '+fmtMoney(rp.receber.falta))+
+      (rp.brinde.qty ? item('', 'Brindes', rp.brinde.val, fmtInt(rp.brinde.qty)+' produto(s) · não entra no caixa') : '')+
+      '</div>';
+    tf.innerHTML = rows.length ? (
+      '<tr class="footfoot"><td colspan="2">Total ('+fmtInt(rows.length)+' venda(s))</td><td class="num-cell">'+fmtInt(totQty)+'</td><td></td><td class="num-cell">'+fmtMoney(totVal)+'</td><td colspan="5"></td></tr>'+
+      '<tr class="resumo-pag"><td colspan="10">'+resumo+'</td></tr>'
+    ) : '';
   }
 
   ['fVendedor','fProduto','fDe','fAte'].forEach(function(id){ document.getElementById(id).addEventListener('change', renderVendas); });
